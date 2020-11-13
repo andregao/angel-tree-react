@@ -3,10 +3,35 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Router } from '@reach/router';
+import Commitment from './pages/Commitment';
+import { StylesProvider } from '@material-ui/core/styles';
+import Admin from './pages/Admin';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import pink from '@material-ui/core/colors/pink';
+import cyan from '@material-ui/core/colors/cyan';
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: pink[700],
+    },
+    secondary: {
+      main: cyan[900],
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <StylesProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <App path='/' />
+          <Commitment path='pledge/:childId' />
+          <Admin path='admin/' />
+        </Router>
+      </ThemeProvider>
+    </StylesProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
