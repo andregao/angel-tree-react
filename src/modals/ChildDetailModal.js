@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
@@ -18,7 +18,8 @@ const ChildDetailModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
       scroll='paper'
     >
       <DialogTitle id='child-information'>
-        {currentChildInfo.age} YEAR OLD {currentChildInfo?.gender}
+        {currentChildInfo.age} year old{' '}
+        {currentChildInfo.gender.toLowerCase() === 'male' ? 'boy' : 'girl'}
       </DialogTitle>
       <DialogContent dividers style={{ backgroundColor: '#f5f5f5' }}>
         <ChildDetails childInfo={currentChildInfo} />

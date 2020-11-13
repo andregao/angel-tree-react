@@ -29,7 +29,8 @@ const Commitment = () => {
           </InputArea>
           <InfoArea>
             <Typography variant='h6' align='center' gutterBottom>
-              Buying for a {childInfo?.age} year old {childInfo?.gender}
+              Buying for a {childInfo?.age} year old{' '}
+              {childInfo?.gender.toLowerCase() === 'male' ? 'boy' : 'girl'}
             </Typography>
             {childInfo && <ChildDetails childInfo={childInfo} />}
             <Button
