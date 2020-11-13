@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Router } from '@reach/router';
 import Commitment from './pages/Commitment';
 import { StylesProvider } from '@material-ui/core/styles';
 import Admin from './pages/Admin';
@@ -25,11 +25,20 @@ ReactDOM.render(
   <React.StrictMode>
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <Router>
-          <App path='/' />
-          <Commitment path='pledge/:childId' />
-          <Admin path='admin/' />
-        </Router>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path='/'>
+              <App />
+            </Route>
+            <Route exact path='/'>
+              <App />
+            </Route>
+            <Route path='/pledge/:childId' children={<Commitment />} />
+            <Route path='/admin'>
+              <Admin />
+            </Route>
+          </Switch>
+        </BrowserRouter>
       </ThemeProvider>
     </StylesProvider>
   </React.StrictMode>,

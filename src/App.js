@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import TreeSvg from './assets/tree.svg';
 import OrnamentArea from './OrnamentArea';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 
 function App() {
   return (
@@ -16,7 +17,12 @@ function App() {
         </BranchesWithPaddings>
       </TreeContainer>
       <div style={{ position: 'absolute', right: 10, bottom: 30 }}>
-        <Button variant='contained' href='/admin' color='primary'>
+        <Button
+          variant='contained'
+          component={Link}
+          to='/admin'
+          color='primary'
+        >
           Admin
         </Button>
       </div>

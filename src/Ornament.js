@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+import { Link } from 'react-router-dom';
 
 const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
   const config = { variant, width, color };
@@ -20,7 +21,7 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
         <StyledButton size='small' onClick={onDetailsClick}>
           Info
         </StyledButton>
-        <StyledButton size='small' href={`/pledge/${child.id}`}>
+        <StyledButton size='small' component={Link} to={`/pledge/${child.id}`}>
           Donate
         </StyledButton>
       </div>

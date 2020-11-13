@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import { commitments } from '../mock';
 import EditCommitmentModal from '../modals/EditCommitmentModal';
 import ChildDetailModal from '../modals/ChildDetailModal';
+import { Link } from 'react-router-dom';
 
 const childColumns = [
   { field: 'id', headerName: 'ID', width: 50, type: 'number' },
@@ -127,7 +128,7 @@ const Admin = () => {
           </div>
         </Accordion>
         <ActionArea>
-          <Button variant='text' color='primary' href='/'>
+          <Button variant='text' color='primary' component={Link} to='/'>
             back
           </Button>
         </ActionArea>

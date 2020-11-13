@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -11,9 +12,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InstructionModal from '../modals/InstructionModal';
 import PageHeader from '../components/PageHeader';
 
-const Commitment = ({ childId }) => {
+const Commitment = () => {
+  const { childId } = useParams();
+  console.log('in commitment page', childId);
   const [isModalOpen, setModalOpen] = useState(false);
-
   const childInfo = children[childId];
   return (
     <>
@@ -46,7 +48,7 @@ const Commitment = ({ childId }) => {
             <Button variant='contained' color='primary'>
               submit
             </Button>
-            <Button variant='text' href='/'>
+            <Button variant='text' component={Link} to='/'>
               back
             </Button>
           </ActionArea>

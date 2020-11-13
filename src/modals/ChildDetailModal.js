@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import ChildDetails from '../components/ChildDetails';
 import DialogContent from '@material-ui/core/DialogContent';
+import { Link } from 'react-router-dom';
 
 const ChildDetailModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
   console.log('in child detail modal');
@@ -34,7 +35,8 @@ const ChildDetailModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
           variant='contained'
           color='primary'
           autoFocus
-          href={`/pledge/${currentChildInfo.id}`}
+          component={Link}
+          to={`/pledge/${currentChildInfo.id}`}
           disabled={currentChildInfo.committed}
         >
           Help this child
