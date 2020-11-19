@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import Dialog from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
-import { instructions } from '../mock';
+import { instructions } from '../mock/mock';
 import Button from '@material-ui/core/Button';
 
 const InstructionModal = ({ isModalOpen, setModalOpen }) => {

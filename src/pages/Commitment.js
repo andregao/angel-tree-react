@@ -4,7 +4,7 @@ import styled from 'styled-components/macro';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { children } from '../mock';
+import { children } from '../mock/mock';
 import ChildDetails from '../components/ChildDetails';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';

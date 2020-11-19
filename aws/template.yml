@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Angel tree web app backend
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  getTreeContentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/get-tree-content.getTreeContentHandler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 5
+      Description: Get all angels and gifts data for the Christmas tree
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: Summary
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /tree
+            Method: GET
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

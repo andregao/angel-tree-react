@@ -1,0 +1,16 @@
+{
+  "name": "angel-tree-aws",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^1.0.0-rc.6",
+    "@aws-sdk/util-dynamodb": "^1.0.0-rc.6"
+  },
+  "scripts": {
+    "dynamodb": "docker-compose up",
+    "sam": "sam build && sam local start-api",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import Ornament from './Ornament';
-import { children } from './mock';
+import { children } from './mock/mock';
 import ChildDetailModal from './modals/ChildDetailModal';
 
 const OrnamentArea = () => {
