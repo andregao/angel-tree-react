@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -25,20 +25,7 @@ ReactDOM.render(
   <React.StrictMode>
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path='/'>
-              <App />
-            </Route>
-            <Route exact path='/'>
-              <App />
-            </Route>
-            <Route path='/pledge/:childId' children={<Commitment />} />
-            <Route path='/admin'>
-              <Admin />
-            </Route>
-          </Switch>
-        </BrowserRouter>
+        <App />
       </ThemeProvider>
     </StylesProvider>
   </React.StrictMode>,

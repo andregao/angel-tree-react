@@ -2,7 +2,7 @@ import { commitments, genders, names, sizes, wishes } from './mockData';
 import { getRandomItem, getRandomItems } from '../utils';
 
 // generate a group of children
-const childrenCount = 50;
+const childrenCount = 120;
 const children = new Array(childrenCount);
 let id = 0;
 for (let i = 0; i < childrenCount; i++) {
@@ -13,7 +13,7 @@ for (let i = 0; i < childrenCount; i++) {
     age: Math.floor(Math.random() * 10) + 2,
     sizes: getRandomItems(sizes, Math.floor(Math.random() * 3 + 2)), // 2 to 4 sizes
     wishes: getRandomItems(wishes, Math.floor(Math.random() * 3 + 2)), // 2 to 4 items
-    committed: false,
+    committed: [true, false][Math.floor(Math.random() * 2)],
   };
   id++;
 }

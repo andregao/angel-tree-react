@@ -1,12 +1,12 @@
+const { DYNAMODB_ENDPOINT, REGION } = require('../env');
 const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
-const REGION = 'us-east-1';
-const ENDPOINT = 'http://Andre-Macbook.local:8000';
+
 let dbClient;
 if (process.env.AWS_SAM_LOCAL) {
   console.log('sam local detected');
   dbClient = new DynamoDBClient({
-    endpoint: ENDPOINT,
+    endpoint: DYNAMODB_ENDPOINT,
     region: REGION,
   });
 } else {
@@ -23,7 +23,7 @@ exports.getTreeContentHandler = async event => {
   console.info('received:', event);
   const params = {
     TableName: 'Summary',
-    Key: { Use: { S: 'tree' } },
+    Key: { use: { S: 'tree' } },
   };
 
   const { Item } = await dbClient.send(new GetItemCommand(params));
@@ -31,6 +31,10 @@ exports.getTreeContentHandler = async event => {
 
   const response = {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'OPTIONS,GET',
+    },
     body: JSON.stringify(item),
   };
 

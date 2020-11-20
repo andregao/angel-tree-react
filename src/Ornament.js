@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import OrnamentCollections from './OrnamentCollections';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { Link } from 'react-router-dom';
+import { ReactComponent as AngelSvg } from './assets/angel.svg';
+import { getRandomColor } from './services/ornament';
+import OrnamentSvg from './OrnamentSvg';
 
 const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
   const config = { variant, width, color };
@@ -27,6 +27,7 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
       </div>
     </ChildInfoContainer>
   );
+
   return (
     <Tooltip
       title={childInfo}
@@ -35,8 +36,15 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
       interactive
       leaveTouchDelay={60000}
     >
-      <Container width={width} glow={child.committed}>
-        <OrnamentCollections {...config} />
+      <Container width={width}>
+        {child.committed ? (
+          <StyledOrnament
+            fill={getRandomColor()}
+            rotation={Math.floor(Math.random() * 20) - 10}
+          />
+        ) : (
+          <Angel rotation={Math.floor(Math.random() * 50) - 25} />
+        )}
       </Container>
     </Tooltip>
   );
@@ -45,21 +53,27 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
 const Container = styled.li`
   display: inline-block;
   --width: ${({ width }) => width};
-  margin: calc(var(--width) * 0.25) calc(var(--width) * 0.55); //TODO: Random values within average range
+  margin: calc(var(--width) * 0.3) calc(var(--width) * 0.4); //TODO: Random values within average range
   width: var(--width);
-  ${({ glow }) => (glow ? '' : `filter: drop-shadow(0 0 0.7vmin white);`)}
-
-  @keyframes pulse {
-    50% {
-      //filter: brightness(120%); //high gpu
-      transform: scale(1.5);
-    }
-  }
-  &:hover {
-    cursor: pointer;
-    animation: pulse 5 ease-in-out 1.2s;
+  :hover {
+    filter: drop-shadow(0 0 0.7vmin white);
   }
 `;
+
+const Angel = styled(AngelSvg)`
+  fill: white;
+  transform: rotate(${({ rotation }) => rotation}deg);
+  filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);
+`;
+const StyledOrnament = styled(OrnamentSvg)`
+  filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);
+  transform: rotate(${({ rotation }) => rotation}deg);
+
+  > :first-child {
+    fill: ${({ fill }) => fill};
+  }
+`;
+
 const ChildInfoContainer = styled.section`
   display: flex;
   flex-direction: column;
@@ -95,7 +109,5 @@ const StyledButton = styled(Button)`
   color: inherit;
   border-color: inherit;
 `;
-const GiftIcon = styled(CardGiftcardIcon)`
-  color: white;
-`;
+
 export default Ornament;

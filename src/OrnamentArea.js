@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components/macro';
 import Ornament from './Ornament';
-import { children } from './mock/mock';
+import { children as mockChildren } from './mock/mock';
 import ChildDetailModal from './modals/ChildDetailModal';
+import { getTreeData } from './services/api';
+import { actions, initialState, reducer } from './services/state';
+import { Context } from './App';
+import {
+  getOrnamentsFromChildren,
+  getOrnamentWidth,
+} from './services/ornament';
 
 const OrnamentArea = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -11,13 +18,28 @@ const OrnamentArea = () => {
     setChildInfo(child);
     setModalOpen(true);
   };
+  const { state, dispatch } = useContext(Context);
+  useEffect(() => {
+    let abort = false;
+    getTreeData().then(
+      data => !abort && dispatch({ type: actions.treeRefresh, payload: data })
+    );
+    return () => {
+      abort = true;
+    };
+  }, []);
+  console.log(state);
+
+  const children = getOrnamentsFromChildren(mockChildren);
+  const ornamentWidth = getOrnamentWidth(children.length);
+
   return (
     <>
       <Container>
         {children.map(child => (
           <Ornament
             key={child.id}
-            width='4%'
+            width={ornamentWidth}
             child={child}
             onDetailsClick={() => handleOpenModal(child)}
           />

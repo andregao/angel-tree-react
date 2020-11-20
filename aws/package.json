@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dynamodb": "docker-compose up",
-    "sam": "sam build && sam local start-api",
+    "dynamodb-check": "aws dynamodb list-tables --endpoint-url http://127.0.0.1:8000",
+    "sam": "sam build && sam local start-api --port 3001",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

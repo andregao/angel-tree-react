@@ -1,37 +1,37 @@
 {
-  "Children": {
+  "children": {
     "L": [
       {
         "M": {
-          "Age": {
+          "age": {
             "N": "4"
           },
-          "Id": {
+          "id": {
             "S": "01"
           },
-          "Gender": {
+          "gender": {
             "S": "male"
           },
-          "Adopted": {
+          "adopted": {
             "BOOL": false
           }
         }
       },
       {
         "M": {
-          "Age": {
+          "age": {
             "N": "4"
           },
-          "Id": {
+          "id": {
             "S": "01"
           },
-          "Gender": {
+          "gender": {
             "S": "male"
           },
-          "Adopted": {
+          "adopted": {
             "BOOL": true
           },
-          "Date": {
+          "date": {
             "N": "1605651813183"
           }
         }
