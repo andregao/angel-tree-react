@@ -22,7 +22,8 @@ const OrnamentArea = () => {
   useEffect(() => {
     let abort = false;
     getTreeData().then(
-      data => !abort && dispatch({ type: actions.treeRefresh, payload: data })
+      data =>
+        !abort && dispatch({ type: actions.receiveTreeData, payload: data })
     );
     return () => {
       abort = true;
@@ -30,13 +31,13 @@ const OrnamentArea = () => {
   }, []);
   console.log(state);
 
-  const children = getOrnamentsFromChildren(mockChildren);
-  const ornamentWidth = getOrnamentWidth(children.length);
+  const children = getOrnamentsFromChildren(state.tree?.children);
+  const ornamentWidth = getOrnamentWidth(children?.length);
 
   return (
     <>
       <Container>
-        {children.map(child => (
+        {state.tree?.children?.map(child => (
           <Ornament
             key={child.id}
             width={ornamentWidth}

@@ -1,3 +1,7 @@
+import * as dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
+
 const variantOptions = ['round', 'oval', 'star'];
 const colorOptions = [
   '#983843',
@@ -52,7 +56,7 @@ export const getOrnamentWidth = count => {
 };
 export const getOrnamentsFromChildren = children => {
   // limit ornament count to 100 max
-  if (children.length > 100) {
+  if (children?.length > 100) {
     // sort available children first, then only take the first 100
     let sortedChildren = children
       .sort((a, b) => {
@@ -75,3 +79,5 @@ export const getOrnamentsFromChildren = children => {
     return children;
   }
 };
+
+export const getTimeFromNow = time => dayjs(time).fromNow();

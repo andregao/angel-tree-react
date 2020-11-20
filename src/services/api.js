@@ -6,5 +6,5 @@ export const FUNCTIONS_BASE_URL =
 export async function getTreeData() {
   const response = await fetch(`${FUNCTIONS_BASE_URL}/tree`);
   const data = await response.json();
-  return data.content.children;
+  return data.content;
 }

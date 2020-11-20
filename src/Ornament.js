@@ -4,8 +4,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { ReactComponent as AngelSvg } from './assets/angel.svg';
-import { getRandomColor } from './services/ornament';
+import { getRandomColor, getTimeFromNow } from './services/ornament';
 import OrnamentSvg from './OrnamentSvg';
+import Typography from '@material-ui/core/Typography';
 
 const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
   const config = { variant, width, color };
@@ -18,12 +19,24 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
         </span>
       </h3>
       <div className='actions'>
-        <StyledButton size='small' onClick={onDetailsClick}>
-          Info
-        </StyledButton>
-        <StyledButton size='small' component={Link} to={`/pledge/${child.id}`}>
-          Donate
-        </StyledButton>
+        {child.adopted ? (
+          <Typography variant='subtitle1'>
+            Claimed {getTimeFromNow(child.date)}
+          </Typography>
+        ) : (
+          <>
+            <StyledButton size='small' onClick={onDetailsClick}>
+              Info
+            </StyledButton>
+            <StyledButton
+              size='small'
+              component={Link}
+              to={`/pledge/${child.id}`}
+            >
+              Donate
+            </StyledButton>
+          </>
+        )}
       </div>
     </ChildInfoContainer>
   );
@@ -37,7 +50,7 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
       leaveTouchDelay={60000}
     >
       <Container width={width}>
-        {child.committed ? (
+        {child.adopted ? (
           <StyledOrnament
             fill={getRandomColor()}
             rotation={Math.floor(Math.random() * 20) - 10}
