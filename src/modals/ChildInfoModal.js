@@ -28,7 +28,7 @@ const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
         <Button
           color='primary'
           onClick={handleCloseModal}
-          disabled={currentChildInfo.committed}
+          disabled={currentChildInfo.donated}
         >
           Back
         </Button>
@@ -37,8 +37,8 @@ const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
           color='primary'
           autoFocus
           component={Link}
-          to={`/pledge/${currentChildInfo.id}`}
-          disabled={currentChildInfo.committed}
+          to={`/donate/${currentChildInfo.id}`}
+          disabled={currentChildInfo.donated}
         >
           Donate
         </Button>

@@ -37,7 +37,7 @@ const Ornament = ({ width, child, onDetailsClick }) => {
             <StyledButton
               size='small'
               component={Link}
-              to={`/pledge/${child.id}`}
+              to={`/donate/${child.id}`}
             >
               Donate
             </StyledButton>
