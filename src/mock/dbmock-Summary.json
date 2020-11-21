@@ -12,7 +12,7 @@
           "gender": {
             "S": "male"
           },
-          "adopted": {
+          "claimed": {
             "BOOL": false
           }
         }
@@ -28,11 +28,27 @@
           "gender": {
             "S": "female"
           },
-          "adopted": {
+          "claimed": {
             "BOOL": true
           },
           "date": {
             "N": "1605651813183"
+          }
+        }
+      },
+      {
+        "M": {
+          "age": {
+            "N": "9"
+          },
+          "id": {
+            "S": "03"
+          },
+          "gender": {
+            "S": "male"
+          },
+          "claimed": {
+            "BOOL": false
           }
         }
       }

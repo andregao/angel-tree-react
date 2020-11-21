@@ -57,9 +57,9 @@ exports.getChildInfoByIdHandler = async event => {
 
   const id = event.pathParameters.id;
   const params = {
-    TableName: 'Angel',
+    TableName: 'Child',
     Key: { id: { S: id } },
-    ProjectionExpression: 'sizes,wishes,adopted,#date',
+    ProjectionExpression: 'id,sizes,wishes,claimed,#date',
     // apparently 'date' is a dynamoDB 'reserved word'
     ExpressionAttributeNames: {
       '#date': 'date',

@@ -11,7 +11,7 @@ import EditChildModal from '../modals/EditChildModal';
 import Button from '@material-ui/core/Button';
 import { commitments } from '../mock/mock';
 import EditCommitmentModal from '../modals/EditCommitmentModal';
-import ChildDetailModal from '../modals/ChildDetailModal';
+import ChildInfoModal from '../modals/ChildInfoModal';
 import { Link } from 'react-router-dom';
 
 const childColumns = [
@@ -152,7 +152,7 @@ const Admin = () => {
         />
       )}
       {childInfo && (
-        <ChildDetailModal
+        <ChildInfoModal
           currentChildInfo={childInfo}
           isModalOpen={isChildDetailModalOpen}
           setModalOpen={setChildDetailModalOpen}

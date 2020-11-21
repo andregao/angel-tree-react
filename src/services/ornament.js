@@ -54,30 +54,27 @@ export const getOrnamentWidth = count => {
       return '10.5%';
   }
 };
-export const getOrnamentsFromChildren = children => {
-  // limit ornament count to 100 max
-  if (children?.length > 100) {
-    // sort available children first, then only take the first 100
-    let sortedChildren = children
-      .sort((a, b) => {
-        if (a.committed !== b.committed) {
-          if (!a.committed) {
-            return -1;
-          }
-          return 1;
-        }
-        return 0;
-      })
-      .slice(0, 100);
 
-    // shuffle ornaments
-    return sortedChildren
-      .map(child => ({ sort: Math.random(), value: child }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(item => item.value);
-  } else {
-    return children;
-  }
+// limit ornament count to 100 max
+export const limitChildren = children => {
+  // sort available children first, then only take the first 100
+  let sortedChildren = children
+    .sort((a, b) => {
+      if (a.committed !== b.committed) {
+        if (!a.committed) {
+          return -1;
+        }
+        return 1;
+      }
+      return 0;
+    })
+    .slice(0, 100);
+
+  // shuffle ornaments
+  return sortedChildren
+    .map(child => ({ sort: Math.random(), value: child }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(item => item.value);
 };
 
 export const getTimeFromNow = time => dayjs(time).fromNow();

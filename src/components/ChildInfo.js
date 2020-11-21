@@ -7,14 +7,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import CardContent from '@material-ui/core/CardContent';
 
-const ChildDetails = ({ childInfo }) => {
+const ChildInfo = ({ childInfo }) => {
   return (
     <Container>
       <Card variant='outlined'>
         <CardContent>
           <Typography color='textSecondary'>Wish List</Typography>
           <List component='ul' aria-label="child's wish list">
-            {childInfo.wishes.map(item => (
+            {childInfo.wishes?.map(item => (
               <ListItem key={item}>
                 <ListItemText primary={item} />
               </ListItem>
@@ -46,4 +46,4 @@ const Container = styled.article`
     flex: 1 1 10rem;
   }
 `;
-export default ChildDetails;
+export default ChildInfo;

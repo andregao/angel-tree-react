@@ -6,7 +6,7 @@ Resources:
   getTreeContentFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/tree.getTreeContentHandler
+      Handler: handlers/index.getTreeContentHandler
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 5
@@ -23,14 +23,14 @@ Resources:
   getChildInfoByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/tree.getChildInfoByIdHandler
+      Handler: handlers/index.getChildInfoByIdHandler
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 5
       Description: Get child public info using child id
       Policies:
         - DynamoDBReadPolicy:
-            TableName: Angel
+            TableName: Child
       Events:
         Api:
           Type: Api

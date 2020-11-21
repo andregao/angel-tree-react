@@ -3,11 +3,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import ChildDetails from '../components/ChildDetails';
+import ChildInfo from '../components/ChildInfo';
 import DialogContent from '@material-ui/core/DialogContent';
 import { Link } from 'react-router-dom';
 
-const ChildDetailModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
+const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
   console.log('in child detail modal');
   const handleCloseModal = () => setModalOpen(false);
   return (
@@ -22,7 +22,7 @@ const ChildDetailModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
         {currentChildInfo.gender.toLowerCase() === 'male' ? 'boy' : 'girl'}
       </DialogTitle>
       <DialogContent dividers style={{ backgroundColor: '#f5f5f5' }}>
-        <ChildDetails childInfo={currentChildInfo} />
+        <ChildInfo childInfo={currentChildInfo} />
       </DialogContent>
       <DialogActions>
         <Button
@@ -47,4 +47,4 @@ const ChildDetailModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
   );
 };
 
-export default ChildDetailModal;
+export default ChildInfoModal;

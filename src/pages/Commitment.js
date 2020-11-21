@@ -5,7 +5,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { children } from '../mock/mock';
-import ChildDetails from '../components/ChildDetails';
+import ChildInfo from '../components/ChildInfo';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -32,7 +32,7 @@ const Commitment = () => {
               Buying for a {childInfo?.age} year old{' '}
               {childInfo?.gender.toLowerCase() === 'male' ? 'boy' : 'girl'}
             </Typography>
-            {childInfo && <ChildDetails childInfo={childInfo} />}
+            {childInfo && <ChildInfo childInfo={childInfo} />}
             <Button
               variant='text'
               color='primary'

@@ -1,16 +1,31 @@
 export const actions = {
   receiveTreeData: 'RECEIVE_TREE_DATA',
+  receiveChildInfo: 'RECEIVE_CHILD_INFO',
 };
 
 export const initialState = {};
 
-export function reducer(state, { type, payload }) {
+export function treeReducer(state, { type, payload }) {
   switch (type) {
     case actions.receiveTreeData:
-      if (payload.updated === state.tree?.updated) {
+      // bypass state update if data is the same
+      if (payload.updated === state.updated) {
         return state;
       }
-      return { ...state, tree: payload };
+      return { ...payload };
+
+    default:
+      throw new Error('invalid action dispatched');
+  }
+}
+
+export function childrenReducer(state, { type, payload }) {
+  switch (type) {
+    case actions.receiveChildInfo:
+      return {
+        ...state,
+        [payload.id]: { ...state[payload.id], ...payload },
+      };
     default:
       throw new Error('invalid action dispatched');
   }

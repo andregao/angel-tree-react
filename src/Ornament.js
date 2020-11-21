@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useMemo } from 'react';
+import styled from 'styled-components/macro';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
@@ -8,8 +8,14 @@ import { getRandomColor, getTimeFromNow } from './services/ornament';
 import OrnamentSvg from './OrnamentSvg';
 import Typography from '@material-ui/core/Typography';
 
-const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
-  const config = { variant, width, color };
+const Ornament = ({ width, child, onDetailsClick }) => {
+  const fill = useMemo(() => getRandomColor(), []);
+  const ornamentIndex = useMemo(() => Math.floor(Math.random() * 3), []);
+  const ornamentRotation = useMemo(
+    () => Math.floor(Math.random() * 20) - 10,
+    []
+  );
+  const angelRotation = useMemo(() => Math.floor(Math.random() * 40) - 20, []);
   const childInfo = (
     <ChildInfoContainer>
       <h3 className='info'>
@@ -19,7 +25,7 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
         </span>
       </h3>
       <div className='actions'>
-        {child.adopted ? (
+        {child.claimed ? (
           <Typography variant='subtitle1'>
             Claimed {getTimeFromNow(child.date)}
           </Typography>
@@ -50,13 +56,14 @@ const Ornament = ({ variant, width, color, child, onDetailsClick }) => {
       leaveTouchDelay={60000}
     >
       <Container width={width}>
-        {child.adopted ? (
+        {child.claimed ? (
           <StyledOrnament
-            fill={getRandomColor()}
-            rotation={Math.floor(Math.random() * 20) - 10}
+            fill={fill}
+            rotation={ornamentRotation}
+            index={ornamentIndex}
           />
         ) : (
-          <Angel rotation={Math.floor(Math.random() * 50) - 25} />
+          <Angel rotation={angelRotation} />
         )}
       </Container>
     </Tooltip>

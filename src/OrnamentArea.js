@@ -2,42 +2,48 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components/macro';
 import Ornament from './Ornament';
 import { children as mockChildren } from './mock/mock';
-import ChildDetailModal from './modals/ChildDetailModal';
-import { getTreeData } from './services/api';
-import { actions, initialState, reducer } from './services/state';
-import { Context } from './App';
-import {
-  getOrnamentsFromChildren,
-  getOrnamentWidth,
-} from './services/ornament';
+import ChildInfoModal from './modals/ChildInfoModal';
+import { getChildInfo, getTreeData } from './services/api';
+import { actions, initialState, treeReducer } from './services/state';
+import { ChildrenContext, TreeContext } from './App';
+import { limitChildren, getOrnamentWidth } from './services/ornament';
 
 const OrnamentArea = () => {
+  const { treeState, treeDispatch } = useContext(TreeContext);
+  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [currentChildInfo, setChildInfo] = useState(null);
+  const [currentChildId, setCurrentChildId] = useState(null);
   const handleOpenModal = child => {
-    setChildInfo(child);
+    childrenDispatch({ type: actions.receiveChildInfo, payload: child });
+    getChildInfo(child.id).then(data =>
+      childrenDispatch({ type: actions.receiveChildInfo, payload: data })
+    );
+    setCurrentChildId(child.id);
     setModalOpen(true);
   };
-  const { state, dispatch } = useContext(Context);
   useEffect(() => {
     let abort = false;
     getTreeData().then(
       data =>
-        !abort && dispatch({ type: actions.receiveTreeData, payload: data })
+        !abort && treeDispatch({ type: actions.receiveTreeData, payload: data })
     );
     return () => {
       abort = true;
     };
   }, []);
-  console.log(state);
+  console.log('tree state', treeState);
+  console.log('children state', childrenState);
 
-  const children = getOrnamentsFromChildren(state.tree?.children);
+  const children =
+    treeState.children?.length > 100
+      ? limitChildren(treeState.children)
+      : treeState.children;
   const ornamentWidth = getOrnamentWidth(children?.length);
 
   return (
     <>
       <Container>
-        {state.tree?.children?.map(child => (
+        {treeState.children?.map(child => (
           <Ornament
             key={child.id}
             width={ornamentWidth}
@@ -47,9 +53,13 @@ const OrnamentArea = () => {
         ))}
       </Container>
 
-      {currentChildInfo && (
-        <ChildDetailModal
-          {...{ currentChildInfo, isModalOpen, setModalOpen }}
+      {currentChildId && (
+        <ChildInfoModal
+          {...{
+            currentChildInfo: childrenState[currentChildId],
+            isModalOpen,
+            setModalOpen,
+          }}
         />
       )}
     </>
