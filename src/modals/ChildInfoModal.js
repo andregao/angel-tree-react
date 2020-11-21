@@ -40,7 +40,7 @@ const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
           to={`/pledge/${currentChildInfo.id}`}
           disabled={currentChildInfo.committed}
         >
-          Help this child
+          Donate
         </Button>
       </DialogActions>
     </Dialog>

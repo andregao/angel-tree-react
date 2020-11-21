@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ReactComponent as Ornament1Svg } from './assets/ornament1.svg';
 import { ReactComponent as Ornament2Svg } from './assets/ornament2.svg';
 import { ReactComponent as Ornament3Svg } from './assets/ornament3.svg';

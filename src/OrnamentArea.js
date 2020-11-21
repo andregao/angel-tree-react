@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import Ornament from './Ornament';
-import { children as mockChildren } from './mock/mock';
 import ChildInfoModal from './modals/ChildInfoModal';
 import { getChildInfo, getTreeData } from './services/api';
-import { actions, initialState, treeReducer } from './services/state';
+import { actions } from './services/state';
 import { ChildrenContext, TreeContext } from './App';
-import { limitChildren, getOrnamentWidth } from './services/ornament';
+import { getOrnamentWidth, limitChildren } from './services/ornament';
 
 const OrnamentArea = () => {
   const { treeState, treeDispatch } = useContext(TreeContext);

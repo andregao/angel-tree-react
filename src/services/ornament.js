@@ -1,5 +1,6 @@
 import * as dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
 dayjs.extend(relativeTime);
 
 const variantOptions = ['round', 'oval', 'star'];

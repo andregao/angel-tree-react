@@ -25,9 +25,9 @@ const Ornament = ({ width, child, onDetailsClick }) => {
         </span>
       </h3>
       <div className='actions'>
-        {child.claimed ? (
+        {child.donated ? (
           <Typography variant='subtitle1'>
-            Claimed {getTimeFromNow(child.date)}
+            Donated {getTimeFromNow(child.date)}
           </Typography>
         ) : (
           <>
@@ -56,7 +56,7 @@ const Ornament = ({ width, child, onDetailsClick }) => {
       leaveTouchDelay={60000}
     >
       <Container width={width}>
-        {child.claimed ? (
+        {child.donated ? (
           <StyledOrnament
             fill={fill}
             rotation={ornamentRotation}

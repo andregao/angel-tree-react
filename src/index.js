@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Commitment from './pages/Commitment';
-import { StylesProvider } from '@material-ui/core/styles';
-import Admin from './pages/Admin';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import {
+  createMuiTheme,
+  StylesProvider,
+  ThemeProvider,
+} from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
 import cyan from '@material-ui/core/colors/cyan';
+
 const theme = createMuiTheme({
   palette: {
     primary: {

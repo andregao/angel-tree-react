@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useReducer, useState } from 'react';
+import React, { createContext, useMemo, useReducer } from 'react';
 
 import Tree from './pages/Tree';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';

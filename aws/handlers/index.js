@@ -13,6 +13,11 @@ if (process.env.AWS_SAM_LOCAL) {
   dbClient = new DynamoDBClient(REGION);
 }
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'OPTIONS,GET',
+};
+
 exports.getTreeContentHandler = async event => {
   if (event.httpMethod !== 'GET') {
     throw new Error(
@@ -31,8 +36,7 @@ exports.getTreeContentHandler = async event => {
     const response = {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,GET',
+        ...corsHeaders,
       },
       body: JSON.stringify(item),
     };
@@ -59,7 +63,7 @@ exports.getChildInfoByIdHandler = async event => {
   const params = {
     TableName: 'Child',
     Key: { id: { S: id } },
-    ProjectionExpression: 'id,sizes,wishes,claimed,#date',
+    ProjectionExpression: 'id,sizes,wishes,donated,#date',
     // apparently 'date' is a dynamoDB 'reserved word'
     ExpressionAttributeNames: {
       '#date': 'date',
@@ -71,8 +75,7 @@ exports.getChildInfoByIdHandler = async event => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'OPTIONS,GET',
+      ...corsHeaders,
     },
     body: JSON.stringify(item),
   };

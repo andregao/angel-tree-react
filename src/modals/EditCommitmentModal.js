@@ -1,11 +1,7 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import { itemsFromArray, itemsToArray } from '../utils';
+import { itemsToArray } from '../utils';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components/macro';
 

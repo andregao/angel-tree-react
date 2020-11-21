@@ -12,7 +12,7 @@
           "gender": {
             "S": "male"
           },
-          "claimed": {
+          "donated": {
             "BOOL": false
           }
         }
@@ -28,7 +28,7 @@
           "gender": {
             "S": "female"
           },
-          "claimed": {
+          "donated": {
             "BOOL": true
           },
           "date": {
@@ -47,7 +47,7 @@
           "gender": {
             "S": "male"
           },
-          "claimed": {
+          "donated": {
             "BOOL": false
           }
         }
