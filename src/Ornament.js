@@ -73,20 +73,31 @@ const Ornament = ({ width, child, onDetailsClick }) => {
 const Container = styled.li`
   display: inline-block;
   --width: ${({ width }) => width};
-  margin: calc(var(--width) * 0.3) calc(var(--width) * 0.4); //TODO: Random values within average range
+  margin: calc(var(--width) * 0.3) calc(var(--width) * 0.4);
   width: var(--width);
+  filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);
   :hover {
     filter: drop-shadow(0 0 0.7vmin white);
+  }
+  animation: fadeIn 1.5s;
+  opacity: 1;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+    }
   }
 `;
 
 const Angel = styled(AngelSvg)`
   fill: white;
   transform: rotate(${({ rotation }) => rotation}deg);
-  filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);
 `;
 const StyledOrnament = styled(OrnamentSvg)`
-  filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);
   transform: rotate(${({ rotation }) => rotation}deg);
 
   > :first-child {

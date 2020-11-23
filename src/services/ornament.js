@@ -20,18 +20,6 @@ const getRandomItem = collection =>
 export const getRandomVariant = () => getRandomItem(variantOptions);
 export const getRandomColor = () => getRandomItem(colorOptions);
 export const getOrnamentWidth = count => {
-  /* base on iphone 5 screen size
-    91-100: 3.4%
-    81-90: 3.7%
-    71-80: 4%
-    61-70: 4.35%
-    51-60: 4.65%
-    41-50: 4.9%
-    31-40: 5.5%
-    21-30: 6.3%
-    11-20: 7.4%
-    1-10: 10.5%
-  */
   switch (true) {
     case count > 90:
       return '3.4%';

@@ -29,25 +29,23 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Switch>
-        <ChildrenContext.Provider value={childrenContextValue}>
-          <Route exact path='/'>
-            <TreeContext.Provider value={treeContextValue}>
-              <Tree />
-            </TreeContext.Provider>
-          </Route>
-          <Route path='/donate/:childId'>
-            <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
+        <Switch>
+          <ChildrenContext.Provider value={childrenContextValue}>
+            <Route exact path='/'>
+              <TreeContext.Provider value={treeContextValue}>
+                <Tree />
+              </TreeContext.Provider>
+            </Route>
+            <Route path='/donate/:childId'>
               <Commitment />
-            </Suspense>
-          </Route>
-          <Route path='/admin'>
-            <Suspense fallback={<Loading />}>
+            </Route>
+            <Route path='/admin'>
               <Admin />
-            </Suspense>
-          </Route>
-        </ChildrenContext.Provider>
-      </Switch>
+            </Route>
+          </ChildrenContext.Provider>
+        </Switch>
+      </Suspense>
     </BrowserRouter>
   );
 }

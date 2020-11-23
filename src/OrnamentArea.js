@@ -6,6 +6,7 @@ import { getChildInfo, getTreeData } from './services/api';
 import { actions } from './services/state';
 import { ChildrenContext, TreeContext } from './App';
 import { getOrnamentWidth, limitChildren } from './services/ornament';
+import Twinkle from './components/Twinkle';
 
 const OrnamentArea = () => {
   const { treeState, treeDispatch } = useContext(TreeContext);
@@ -42,14 +43,18 @@ const OrnamentArea = () => {
   return (
     <>
       <Container>
-        {treeState.children?.map(child => (
-          <Ornament
-            key={child.id}
-            width={ornamentWidth}
-            child={child}
-            onDetailsClick={() => handleOpenModal(child)}
-          />
-        ))}
+        {treeState.children ? (
+          treeState.children.map(child => (
+            <Ornament
+              key={child.id}
+              width={ornamentWidth}
+              child={child}
+              onDetailsClick={() => handleOpenModal(child)}
+            />
+          ))
+        ) : (
+          <Twinkle />
+        )}
       </Container>
 
       {currentChildId && (

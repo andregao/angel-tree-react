@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import CardContent from '@material-ui/core/CardContent';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const ChildInfo = ({ childInfo }) => {
   return (
@@ -14,11 +15,15 @@ const ChildInfo = ({ childInfo }) => {
         <CardContent>
           <Typography color='textSecondary'>Wish List</Typography>
           <List component='ul' aria-label="child's wish list">
-            {childInfo.wishes?.map(item => (
-              <ListItem key={item}>
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
+            {childInfo.wishes ? (
+              childInfo.wishes.map(item => (
+                <ListItem key={item}>
+                  <ListItemText primary={item} />
+                </ListItem>
+              ))
+            ) : (
+              <ListSkeleton />
+            )}
           </List>
         </CardContent>
       </Card>
@@ -26,11 +31,15 @@ const ChildInfo = ({ childInfo }) => {
         <CardContent>
           <Typography color='textSecondary'>Sizes</Typography>
           <List component='ul' aria-label="child's wish list">
-            {childInfo.sizes?.map(item => (
-              <ListItem key={item}>
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
+            {childInfo.sizes ? (
+              childInfo.sizes.map(item => (
+                <ListItem key={item}>
+                  <ListItemText primary={item} />
+                </ListItem>
+              ))
+            ) : (
+              <ListSkeleton />
+            )}
           </List>
         </CardContent>
       </Card>
@@ -38,7 +47,6 @@ const ChildInfo = ({ childInfo }) => {
   );
 };
 const Container = styled.article`
-  padding: 0 9%;
   display: grid;
   grid-gap: 0.8rem;
   grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
@@ -46,4 +54,20 @@ const Container = styled.article`
     flex: 1 1 10rem;
   }
 `;
+
+const SkeletonContainer = styled.article`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  > * {
+    flex-basis: 24px;
+    margin: 8px 16px;
+  }
+`;
+const ListSkeleton = () => (
+  <SkeletonContainer>
+    <Skeleton variant='text' />
+    <Skeleton variant='text' />
+  </SkeletonContainer>
+);
 export default ChildInfo;
