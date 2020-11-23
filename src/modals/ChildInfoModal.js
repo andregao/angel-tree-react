@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
@@ -6,10 +6,22 @@ import Dialog from '@material-ui/core/Dialog';
 import ChildInfo from '../components/ChildInfo';
 import DialogContent from '@material-ui/core/DialogContent';
 import { Link } from 'react-router-dom';
+import { getChildInfo } from '../services/api';
+import { actions } from '../services/state';
+import { ChildrenContext } from '../App';
 
-const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
-  console.log('in child detail modal');
+const ChildInfoModal = ({ currentChildId, isModalOpen, setModalOpen }) => {
   const handleCloseModal = () => setModalOpen(false);
+
+  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
+  useEffect(() => {
+    !childrenState[currentChildId].wishes &&
+      getChildInfo(currentChildId).then(data =>
+        childrenDispatch({ type: actions.receiveChildInfo, payload: data })
+      );
+  }, [currentChildId]);
+
+  console.log('children state', childrenState);
   return (
     <Dialog
       aria-labelledby='child information popup'
@@ -18,11 +30,13 @@ const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
       scroll='paper'
     >
       <DialogTitle id='child-information'>
-        {currentChildInfo.age} year old{' '}
-        {currentChildInfo.gender.toLowerCase() === 'male' ? 'boy' : 'girl'}
+        {childrenState[currentChildId].age} YEAR OLD{' '}
+        {childrenState[currentChildId].gender.toLowerCase() === 'male'
+          ? 'BOY'
+          : 'GIRL'}
       </DialogTitle>
       <DialogContent dividers style={{ backgroundColor: '#f5f5f5' }}>
-        <ChildInfo childInfo={currentChildInfo} />
+        <ChildInfo childInfo={childrenState[currentChildId]} />
       </DialogContent>
       <DialogActions>
         <Button color='primary' onClick={handleCloseModal}>
@@ -33,7 +47,7 @@ const ChildInfoModal = ({ currentChildInfo, isModalOpen, setModalOpen }) => {
           color='primary'
           autoFocus
           component={Link}
-          to={`/donate/${currentChildInfo.id}`}
+          to={`/donate/${currentChildId}`}
         >
           Donate
         </Button>

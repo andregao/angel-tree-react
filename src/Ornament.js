@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import styled from 'styled-components/macro';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -7,6 +7,8 @@ import { ReactComponent as AngelSvg } from './assets/angel.svg';
 import { getRandomColor, getTimeFromNow } from './services/ornament';
 import OrnamentSvg from './OrnamentSvg';
 import Typography from '@material-ui/core/Typography';
+import { ChildrenContext } from './App';
+import { actions } from './services/state';
 
 const Ornament = ({ width, child, onDetailsClick }) => {
   const fill = useMemo(() => getRandomColor(), []);
@@ -16,8 +18,8 @@ const Ornament = ({ width, child, onDetailsClick }) => {
     []
   );
   const angelRotation = useMemo(() => Math.floor(Math.random() * 40) - 20, []);
-  const childInfo = (
-    <ChildInfoContainer>
+  const tooltipContent = (
+    <TooltipContentContainer>
       <h3 className='info'>
         <span className='age'>{child.age} YEAR OLD</span>
         <span className='gender'>
@@ -44,16 +46,21 @@ const Ornament = ({ width, child, onDetailsClick }) => {
           </>
         )}
       </div>
-    </ChildInfoContainer>
+    </TooltipContentContainer>
   );
-
+  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
+  const handleTooltipOpen = () => {
+    !childrenState[child.id] &&
+      childrenDispatch({ type: actions.receiveChildInfo, payload: child });
+  };
   return (
     <Tooltip
-      title={childInfo}
+      title={tooltipContent}
       enterTouchDelay={0}
       arrow
       interactive
       leaveTouchDelay={60000}
+      onOpen={handleTooltipOpen}
     >
       <Container width={width}>
         {child.donated ? (
@@ -105,7 +112,7 @@ const StyledOrnament = styled(OrnamentSvg)`
   }
 `;
 
-const ChildInfoContainer = styled.section`
+const TooltipContentContainer = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;

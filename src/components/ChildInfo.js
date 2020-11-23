@@ -49,7 +49,7 @@ const ChildInfo = ({ childInfo }) => {
 const Container = styled.article`
   display: grid;
   grid-gap: 0.8rem;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   & > * {
     flex: 1 1 10rem;
   }

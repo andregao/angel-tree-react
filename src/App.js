@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { childrenReducer, initialState, treeReducer } from './services/state';
 import Loading from './pages/Loading';
 
-const Commitment = React.lazy(() => import('./pages/Commitment'));
+const Commitment = React.lazy(() => import('./pages/Donation'));
 const Admin = React.lazy(() => import('./pages/Admin'));
 export const TreeContext = createContext({});
 export const ChildrenContext = createContext({});

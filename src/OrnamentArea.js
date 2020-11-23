@@ -2,22 +2,17 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import Ornament from './Ornament';
 import ChildInfoModal from './modals/ChildInfoModal';
-import { getChildInfo, getTreeData } from './services/api';
+import { getTreeData } from './services/api';
 import { actions } from './services/state';
-import { ChildrenContext, TreeContext } from './App';
+import { TreeContext } from './App';
 import { getOrnamentWidth, limitChildren } from './services/ornament';
 import Twinkle from './components/Twinkle';
 
 const OrnamentArea = () => {
   const { treeState, treeDispatch } = useContext(TreeContext);
-  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentChildId, setCurrentChildId] = useState(null);
   const handleOpenModal = child => {
-    childrenDispatch({ type: actions.receiveChildInfo, payload: child });
-    getChildInfo(child.id).then(data =>
-      childrenDispatch({ type: actions.receiveChildInfo, payload: data })
-    );
     setCurrentChildId(child.id);
     setModalOpen(true);
   };
@@ -32,7 +27,6 @@ const OrnamentArea = () => {
     };
   }, []);
   console.log('tree state', treeState);
-  console.log('children state', childrenState);
 
   const children =
     treeState.children?.length > 100
@@ -60,7 +54,7 @@ const OrnamentArea = () => {
       {currentChildId && (
         <ChildInfoModal
           {...{
-            currentChildInfo: childrenState[currentChildId],
+            currentChildId,
             isModalOpen,
             setModalOpen,
           }}
