@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { children } from '../mock/mock';
 import ChildInfo from '../components/ChildInfo';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -15,13 +13,31 @@ import { ChildrenContext } from '../App';
 import { getChildInfo } from '../services/api';
 import { actions } from '../services/state';
 import Heart from '../components/Heart';
+import dayjs from 'dayjs';
+import Paper from '@material-ui/core/Paper';
+
+const initialFormValues = { name: '', email: '', phone: '' };
 
 const Donation = () => {
-  const { childId } = useParams();
+  const { childId } = useParams(); // id from path parameter
   console.log('in donation page', childId);
-  const [isModalOpen, setModalOpen] = useState(false);
   const { childrenState, childrenDispatch } = useContext(ChildrenContext);
   const childInfo = childrenState[childId];
+
+  // form control
+  const donorInfo = childrenState.donorInfo || initialFormValues;
+  console.log(donorInfo);
+  const handleChange = ({ target: { name, value } }) => {
+    // setFormValues(prevValues => ({ ...prevValues, [name]: value }));
+    childrenDispatch({
+      type: actions.receiveDonorInfo,
+      payload: { name, value },
+    });
+  };
+  const handleSubmit = () => {};
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
   useEffect(() => {
     getChildInfo(childId).then(data =>
       childrenDispatch({ type: actions.receiveChildInfo, payload: data })
@@ -29,18 +45,62 @@ const Donation = () => {
   }, [childId]);
   return (
     <>
-      <Container maxWidth='sm' component='section'>
-        <PageHeader text='Donation Form' />
-        <form>
+      <Container>
+        {childInfo?.donated && (
+          <DonatedNoticeContainer>
+            <DonatedNoticePaper>
+              <Typography variant='h5' gutterBottom>
+                GREAT NEWS!
+              </Typography>
+              <Typography variant='body1' gutterBottom>
+                {' '}
+                Someone just made a commitment donating to this child{' '}
+                {dayjs(childInfo.date).fromNow()}
+              </Typography>
+              <Button
+                variant='contained'
+                color='primary'
+                component={Link}
+                to='/'
+              >
+                Pick another
+              </Button>
+            </DonatedNoticePaper>
+          </DonatedNoticeContainer>
+        )}
+        <PageHeader text='Commitment Form' />
+        <form onSubmit={handleSubmit}>
           <InputArea>
-            <TextField label='Full Name' variant='outlined' required />
-            <TextField label='Email' variant='outlined' required />
-            <TextField label='Phone' variant='outlined' required />
+            <TextField
+              autoFocus
+              label='Full Name'
+              variant='outlined'
+              required
+              name='name'
+              onChange={handleChange}
+              value={donorInfo.name}
+            />
+            <TextField
+              label='Email'
+              variant='outlined'
+              required
+              name='email'
+              onChange={handleChange}
+              value={donorInfo.email}
+            />
+            <TextField
+              label='Phone'
+              variant='outlined'
+              required
+              name='phone'
+              onChange={handleChange}
+              value={donorInfo.phone}
+            />
           </InputArea>
           {childInfo ? (
             <InfoArea>
               <Typography variant='h6' align='center' gutterBottom>
-                Buying for a {childInfo?.age} year old{' '}
+                Donating to a {childInfo?.age} year old{' '}
                 {childInfo.gender.toLowerCase() === 'male' ? 'boy' : 'girl'}
               </Typography>
               <ChildInfo childInfo={childInfo} />
@@ -63,7 +123,11 @@ const Donation = () => {
               control={<Checkbox checked name='agreement' />}
               label='I commit to give to this child'
             />
-            <Button variant='contained' color='primary'>
+            <Button
+              variant='contained'
+              color='primary'
+              disabled={childInfo?.donated}
+            >
               submit
             </Button>
             <Button variant='text' component={Link} to='/'>
@@ -76,6 +140,16 @@ const Donation = () => {
     </>
   );
 };
+
+const Container = styled.section`
+  max-width: 600px;
+  margin: auto;
+  padding: 0 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
 
 const InputArea = styled.section`
   display: flex;
@@ -110,6 +184,32 @@ const ActionArea = styled.section`
   align-items: center;
   > * {
     margin-bottom: 1rem;
+  }
+`;
+
+const DonatedNoticeContainer = styled.section`
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1rem;
+  > * {
+    z-index: 101;
+  }
+`;
+
+const DonatedNoticePaper = styled(Paper)`
+  padding: 2rem 1rem;
+  text-align: center;
+  > :last-child {
+    margin-top: 1rem;
   }
 `;
 

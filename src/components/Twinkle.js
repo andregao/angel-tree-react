@@ -8,7 +8,7 @@ const Light = ({ index }) => {
 };
 const StyledLight = styled.li`
   display: inline-block;
-  --width: 5%;
+  --width: 5.2%;
   width: var(--width);
   height: var(--width);
   margin: calc(var(--width) * 0.3) calc(var(--width) * 0.4);

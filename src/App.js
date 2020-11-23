@@ -2,7 +2,12 @@ import React, { createContext, Suspense, useMemo, useReducer } from 'react';
 
 import Tree from './pages/Tree';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { childrenReducer, initialState, treeReducer } from './services/state';
+import {
+  childrenReducer,
+  initialChildrenState,
+  initialTreeState,
+  treeReducer,
+} from './services/state';
 import Loading from './pages/Loading';
 
 const Commitment = React.lazy(() => import('./pages/Donation'));
@@ -12,7 +17,7 @@ export const ChildrenContext = createContext({});
 
 function App() {
   // tree state setup
-  const [treeState, treeDispatch] = useReducer(treeReducer, initialState);
+  const [treeState, treeDispatch] = useReducer(treeReducer, initialTreeState);
   const treeContextValue = useMemo(() => ({ treeState, treeDispatch }), [
     treeState,
   ]);
@@ -20,7 +25,7 @@ function App() {
   // children state setup
   const [childrenState, childrenDispatch] = useReducer(
     childrenReducer,
-    initialState
+    initialChildrenState
   );
   const childrenContextValue = useMemo(
     () => ({ childrenState, childrenDispatch }),
