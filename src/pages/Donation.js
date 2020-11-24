@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import Typography from '@material-ui/core/Typography';
@@ -10,39 +10,53 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InstructionModal from '../modals/InstructionModal';
 import PageHeader from '../components/PageHeader';
 import { ChildrenContext } from '../App';
-import { getChildInfo } from '../services/api';
+import { getChildInfo, sendSubmission } from '../services/api';
 import { actions } from '../services/state';
 import Heart from '../components/Heart';
 import dayjs from 'dayjs';
 import Paper from '@material-ui/core/Paper';
+import { validateForm } from '../services/utils';
+import useForm from '../services/useForm';
 
-const initialFormValues = { name: '', email: '', phone: '' };
+const formInitialValues = { name: '', email: '', phone: '' };
 
 const Donation = () => {
   const { childId } = useParams(); // id from path parameter
-  console.log('in donation page', childId);
   const { childrenState, childrenDispatch } = useContext(ChildrenContext);
+  console.log('childrenState:', childrenState);
   const childInfo = childrenState[childId];
 
   // form control
-  const donorInfo = childrenState.donorInfo || initialFormValues;
-  console.log(donorInfo);
-  const handleChange = ({ target: { name, value } }) => {
-    // setFormValues(prevValues => ({ ...prevValues, [name]: value }));
-    childrenDispatch({
-      type: actions.receiveDonorInfo,
-      payload: { name, value },
-    });
-  };
-  const handleSubmit = () => {};
+  const donorInfo = childrenState.donorInfo || formInitialValues;
+  const [isSubmitting, setSubmitting] = useState(false);
+  const { values, handleChange, handleBlur, handleSubmit, errors } = useForm(
+    donorInfo,
+    validateForm,
+    isSubmitting,
+    submitting => setSubmitting(submitting),
+    sendSubmission
+  );
+  console.log('errors', errors);
 
   const [isModalOpen, setModalOpen] = useState(false);
 
+  // Fetch latest child information on render
   useEffect(() => {
     getChildInfo(childId).then(data =>
       childrenDispatch({ type: actions.receiveChildInfo, payload: data })
     );
   }, [childId]);
+
+  // save form data to app state on unmount
+  const formValues = useRef(values);
+  formValues.current = values;
+  const saveForm = () =>
+    childrenDispatch({
+      type: actions.receiveDonorInfo,
+      payload: formValues.current,
+    });
+  useEffect(() => saveForm, []);
+
   return (
     <>
       <Container>
@@ -77,24 +91,33 @@ const Donation = () => {
               variant='outlined'
               required
               name='name'
+              onBlur={handleBlur}
               onChange={handleChange}
-              value={donorInfo.name}
+              value={values.name}
+              helperText={errors.name}
+              error={!!errors.name}
             />
             <TextField
               label='Email'
               variant='outlined'
               required
               name='email'
+              onBlur={handleBlur}
               onChange={handleChange}
-              value={donorInfo.email}
+              value={values.email}
+              helperText={errors.email}
+              error={!!errors.email}
             />
             <TextField
               label='Phone'
               variant='outlined'
               required
               name='phone'
+              onBlur={handleBlur}
               onChange={handleChange}
-              value={donorInfo.phone}
+              value={values.phone}
+              helperText={errors.phone}
+              error={!!errors.phone}
             />
           </InputArea>
           {childInfo ? (
@@ -124,9 +147,14 @@ const Donation = () => {
               label='I commit to give to this child'
             />
             <Button
+              type='submit'
               variant='contained'
               color='primary'
-              disabled={childInfo?.donated}
+              disabled={
+                childInfo?.donated ||
+                isSubmitting ||
+                Object.keys(errors).length !== 0
+              }
             >
               submit
             </Button>

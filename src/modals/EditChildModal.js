@@ -7,7 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import { itemsFromArray, itemsToArray } from '../utils';
+import { itemsFromArray, itemsToArray } from '../services/utils';
 
 const EditChildModal = ({
   isModalOpen,

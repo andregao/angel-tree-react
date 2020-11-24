@@ -1,7 +1,7 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
-import { itemsToArray } from '../utils';
+import { itemsToArray } from '../services/utils';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components/macro';
 

@@ -1,5 +1,5 @@
 import { commitments, genders, names, sizes, wishes } from './mockData';
-import { getRandomItem, getRandomItems } from '../utils';
+import { getRandomItem, getRandomItems } from '../services/utils';
 
 // generate a group of children
 const childrenCount = 120;

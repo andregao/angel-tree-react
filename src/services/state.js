@@ -34,7 +34,7 @@ export function childrenReducer(state, { type, payload }) {
     case actions.receiveDonorInfo:
       return {
         ...state,
-        donorInfo: { ...state.donorInfo, [payload.name]: payload.value },
+        donorInfo: payload,
       };
     default:
       throw new Error('invalid action dispatched');

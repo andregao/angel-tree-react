@@ -31,7 +31,6 @@ function App() {
     () => ({ childrenState, childrenDispatch }),
     [childrenState]
   );
-
   return (
     <BrowserRouter>
       <Suspense fallback={<Loading />}>

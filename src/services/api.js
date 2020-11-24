@@ -14,6 +14,10 @@ export async function getChildInfo(id) {
   return await response.json();
 }
 
+export async function sendSubmission(data) {
+  console.log('posting to database', data);
+}
+
 function wrapPromise(promise) {
   let status = 'pending';
   let result;
