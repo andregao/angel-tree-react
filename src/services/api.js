@@ -16,6 +16,15 @@ export async function getChildInfo(id) {
 
 export async function sendSubmission(data) {
   console.log('posting to database', data);
+  const { childId } = data;
+  return await fetch(`${FUNCTIONS_BASE_URL}/donate/${childId}`, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 }
 
 function wrapPromise(promise) {

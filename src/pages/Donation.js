@@ -28,6 +28,7 @@ const Donation = () => {
 
   // form control
   const donorInfo = childrenState.donorInfo || formInitialValues;
+  donorInfo.childId = childId; // embed current child id for post request
   const [isSubmitting, setSubmitting] = useState(false);
   const { values, handleChange, handleBlur, handleSubmit, errors } = useForm(
     donorInfo,

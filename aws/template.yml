@@ -2,14 +2,22 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Angel tree web app backend
 Transform: AWS::Serverless-2016-10-31
 
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    MemorySize: 128
+    Timeout: 5
+  Api:
+    Cors:
+      AllowMethods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+
 Resources:
   getTreeContentFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: handlers/index.getTreeContentHandler
-      Runtime: nodejs12.x
-      MemorySize: 128
-      Timeout: 5
       Description: Get all angels and gifts data for the Christmas tree
       Policies:
         - DynamoDBReadPolicy:
@@ -24,9 +32,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: handlers/index.getChildInfoByIdHandler
-      Runtime: nodejs12.x
-      MemorySize: 128
-      Timeout: 5
       Description: Get child public info using child id
       Policies:
         - DynamoDBReadPolicy:
@@ -37,6 +42,22 @@ Resources:
           Properties:
             Path: /child/info/{id}
             Method: GET
+  postDonationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/index.postDonationHandler
+      Description: Post donation form to dynamodb
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: Donation
+        - DynamoDBCrudPolicy:
+            TableName: Child
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /donate/{id}
+            Method: POST
 
 Outputs:
   WebEndpoint:
