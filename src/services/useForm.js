@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { ChildrenContext } from '../App';
+import { actions } from './state';
+import { useHistory } from 'react-router-dom';
 
 const useForm = (
   initialValues,
   validator,
   isSubmitting,
-  setSubmittingAction,
-  submitAction
+  setSubmitting,
+  submit
 ) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
@@ -28,14 +31,30 @@ const useForm = (
   };
 
   const handleSubmit = e => {
+    e.preventDefault();
     const { valuesAreValid, errors } = validator(values);
     setErrors(errors);
-    valuesAreValid && setSubmittingAction(true);
-    e.preventDefault();
+    valuesAreValid && setSubmitting(true);
   };
 
+  const history = useHistory();
   useEffect(() => {
-    isSubmitting && submitAction(values);
+    if (isSubmitting) {
+      submit(values).then(result => {
+        if (result.status === 200) {
+          console.log('donation success');
+          // redirect to success page
+          history.push('/success');
+        }
+        if (result.status === 403) {
+          console.log('already donated');
+          // prompt and click to go home
+          history.push('/pick-another');
+        }
+        // server error, retry
+        setSubmitting(false);
+      });
+    }
   }, [isSubmitting]);
 
   return { values, handleChange, handleBlur, handleSubmit, errors };

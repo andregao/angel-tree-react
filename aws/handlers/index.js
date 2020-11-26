@@ -8,8 +8,8 @@ const {
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 
 // v2 sdk
-// const AWS = require('aws-sdk');
-// const ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+const AWS = require('aws-sdk');
+const ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
 let dbClient;
 if (process.env.AWS_SAM_LOCAL) {
@@ -144,13 +144,16 @@ exports.postDonationHandler = async event => {
     const transactionResponse = await dbClient.send(
       new TransactWriteItemsCommand(transactParams)
     );
+    // const transactionResponse = await ddb
+    //   .transactWriteItems(transactParams)
+    //   .promise();
     console.log('transaction response from DynamoDB', transactionResponse);
     return {
       statusCode: 200,
       headers: {
         ...corsHeaders,
       },
-      body: 'Donation Submitted',
+      body: JSON.stringify({ result: 'Donation Submitted' }),
     };
   } catch (err) {
     const errorResponse = handleTransactWriteItemsError(err);
@@ -165,7 +168,7 @@ function handleTransactWriteItemsError(err) {
     console.error('Encountered error object was empty');
     return internal;
   }
-  if (!err.code) {
+  if (!err.code && !err.name) {
     console.error(
       `An exception occurred, investigate and configure retry strategy. Error: ${JSON.stringify(
         err
@@ -173,7 +176,7 @@ function handleTransactWriteItemsError(err) {
     );
     return internal;
   }
-  switch (err.code) {
+  switch (err.code || err.name) {
     case 'TransactionCanceledException':
       // used in react client
       console.error(
@@ -196,7 +199,7 @@ function handleTransactWriteItemsError(err) {
 }
 
 function handleCommonErrors(err) {
-  switch (err.code) {
+  switch (err.code || err.name) {
     case 'InternalServerError':
       console.error(
         `Internal Server Error, generally safe to retry with exponential back-off. Error: ${err.message}`

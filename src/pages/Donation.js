@@ -13,10 +13,11 @@ import { ChildrenContext } from '../App';
 import { getChildInfo, sendSubmission } from '../services/api';
 import { actions } from '../services/state';
 import Heart from '../components/Heart';
-import dayjs from 'dayjs';
-import Paper from '@material-ui/core/Paper';
 import { validateForm } from '../services/utils';
 import useForm from '../services/useForm';
+import DonatedNotice from '../DonatedNotice';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import dayjs from 'dayjs';
 
 const formInitialValues = { name: '', email: '', phone: '' };
 
@@ -30,6 +31,7 @@ const Donation = () => {
   const donorInfo = childrenState.donorInfo || formInitialValues;
   donorInfo.childId = childId; // embed current child id for post request
   const [isSubmitting, setSubmitting] = useState(false);
+  const [doAgree, setAgree] = useState(false);
   const { values, handleChange, handleBlur, handleSubmit, errors } = useForm(
     donorInfo,
     validateForm,
@@ -61,33 +63,10 @@ const Donation = () => {
   return (
     <>
       <Container>
-        {childInfo?.donated && (
-          <DonatedNoticeContainer>
-            <DonatedNoticePaper>
-              <Typography variant='h5' gutterBottom>
-                GREAT NEWS!
-              </Typography>
-              <Typography variant='body1' gutterBottom>
-                {' '}
-                Someone just made a commitment donating to this child{' '}
-                {dayjs(childInfo.date).fromNow()}
-              </Typography>
-              <Button
-                variant='contained'
-                color='primary'
-                component={Link}
-                to='/'
-              >
-                Pick another
-              </Button>
-            </DonatedNoticePaper>
-          </DonatedNoticeContainer>
-        )}
         <PageHeader text='Commitment Form' />
         <form onSubmit={handleSubmit}>
           <InputArea>
-            <TextField
-              autoFocus
+            <StyledTextField
               label='Full Name'
               variant='outlined'
               required
@@ -98,7 +77,7 @@ const Donation = () => {
               helperText={errors.name}
               error={!!errors.name}
             />
-            <TextField
+            <StyledTextField
               label='Email'
               variant='outlined'
               required
@@ -109,7 +88,7 @@ const Donation = () => {
               helperText={errors.email}
               error={!!errors.email}
             />
-            <TextField
+            <StyledTextField
               label='Phone'
               variant='outlined'
               required
@@ -144,8 +123,16 @@ const Donation = () => {
           )}
           <ActionArea>
             <FormControlLabel
-              control={<Checkbox checked name='agreement' />}
-              label='I commit to give to this child'
+              control={
+                <Checkbox
+                  checked={doAgree}
+                  onClick={() => setAgree(prev => !prev)}
+                  name='agreement'
+                />
+              }
+              label={`I agree to drop off all donations by Dec 14th (${dayjs().to(
+                dayjs('2020-12-14:12', 'YYYY-MM-DD:H')
+              )})`}
             />
             <Button
               type='submit'
@@ -153,19 +140,31 @@ const Donation = () => {
               color='primary'
               disabled={
                 childInfo?.donated ||
+                !doAgree ||
                 isSubmitting ||
                 Object.keys(errors).length !== 0
               }
             >
               submit
             </Button>
-            <Button variant='text' component={Link} to='/'>
+            <Button
+              variant='text'
+              component={Link}
+              to='/'
+              disabled={isSubmitting}
+            >
               back
             </Button>
           </ActionArea>
         </form>
       </Container>
       <InstructionModal {...{ isModalOpen, setModalOpen }} />
+
+      {/*already donated notice*/}
+      {childInfo?.donated && <DonatedNotice date={childInfo.date} />}
+
+      {/*submitting indicator*/}
+      {isSubmitting && <ProgressBar />}
     </>
   );
 };
@@ -188,7 +187,7 @@ const InputArea = styled.section`
   }
 `;
 const InfoArea = styled.section`
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -216,30 +215,15 @@ const ActionArea = styled.section`
   }
 `;
 
-const DonatedNoticeContainer = styled.section`
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem 1rem;
-  > * {
-    z-index: 101;
-  }
+const StyledTextField = styled(TextField)`
+  min-height: 5rem;
 `;
 
-const DonatedNoticePaper = styled(Paper)`
-  padding: 2rem 1rem;
-  text-align: center;
-  > :last-child {
-    margin-top: 1rem;
-  }
+const ProgressBar = styled(LinearProgress)`
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
 `;
 
 export default Donation;
