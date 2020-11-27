@@ -1,0 +1,16 @@
+{
+  "name": "angel-tree-aws-stream",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^1.0.0-rc.7",
+    "@aws-sdk/client-sns": "^1.0.0-rc.7",
+    "@aws-sdk/util-dynamodb": "^1.0.0-rc.7"
+  },
+  "scripts": {
+    "sam": "sam build && sam deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

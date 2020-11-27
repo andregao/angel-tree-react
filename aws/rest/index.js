@@ -1,15 +1,10 @@
-const { DYNAMODB_ENDPOINT, REGION } = require('../env');
+const { DYNAMODB_ENDPOINT, REGION } = require('./env');
 const {
   DynamoDBClient,
   GetItemCommand,
-  PutItemCommand,
   TransactWriteItemsCommand,
 } = require('@aws-sdk/client-dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
-
-// v2 sdk
-const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
 let dbClient;
 if (process.env.AWS_SAM_LOCAL) {
@@ -144,9 +139,6 @@ exports.postDonationHandler = async event => {
     const transactionResponse = await dbClient.send(
       new TransactWriteItemsCommand(transactParams)
     );
-    // const transactionResponse = await ddb
-    //   .transactWriteItems(transactParams)
-    //   .promise();
     console.log('transaction response from DynamoDB', transactionResponse);
     return {
       statusCode: 200,

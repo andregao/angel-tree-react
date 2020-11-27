@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Angel tree web app backend for dynamodb streams
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    MemorySize: 128
+    Timeout: 5
+
+Resources:
+  processDynamoDBDonationStreamFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 192
+      Handler: index.processDonationStreamHandler
+      Description: New donation item triggers SNS
+      Policies:
+        - AWSLambdaDynamoDBExecutionRole
+        - DynamoDBReadPolicy:
+            TableName: Child
+        - SNSPublishMessagePolicy:
+            TopicName: Donations
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Donation/stream/2020-11-26T08:48:40.902
+            BatchSize: 1
+            StartingPosition: LATEST
+      EventInvokeConfig:
+        MaximumRetryAttempts: 2

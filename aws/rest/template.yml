@@ -17,7 +17,7 @@ Resources:
   getTreeContentFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/index.getTreeContentHandler
+      Handler: index.getTreeContentHandler
       Description: Get all angels and gifts data for the Christmas tree
       Policies:
         - DynamoDBReadPolicy:
@@ -31,7 +31,7 @@ Resources:
   getChildInfoByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/index.getChildInfoByIdHandler
+      Handler: index.getChildInfoByIdHandler
       Description: Get child public info using child id
       Policies:
         - DynamoDBReadPolicy:
@@ -45,7 +45,7 @@ Resources:
   postDonationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/index.postDonationHandler
+      Handler: index.postDonationHandler
       Description: Post donation form to dynamodb
       Policies:
         - DynamoDBWritePolicy:
