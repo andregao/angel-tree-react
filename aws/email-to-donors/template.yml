@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Angel tree web app backend for dynamodb stream trigger email donors
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    MemorySize: 128
+    Timeout: 5
+
+Resources:
+  processDynamoDBDonationStreamEmailDonorsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.processDonationStreamEmailDonorsHandler
+      Description: New donation item triggers email to the donor
+      Policies:
+        - AWSLambdaDynamoDBExecutionRole
+        - DynamoDBReadPolicy:
+            TableName: Child
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Donation/stream/2020-11-26T08:48:40.902
+            BatchSize: 1
+            StartingPosition: LATEST
+            Enabled: false
+      EventInvokeConfig:
+        MaximumRetryAttempts: 2

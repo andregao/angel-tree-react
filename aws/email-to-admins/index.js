@@ -25,8 +25,8 @@ exports.processDonationStreamHandler = (event, context, callback) => {
             Subject: `New donation from ${donorName} to ${childName}`,
             Message: `${donorName} just made a commitment to donate to ${childName} for the following items:
 
-    Wishes: ${JSON.stringify(wishes)}
-    Sizes: ${JSON.stringify(sizes)}
+    Wishes: ${JSON.stringify(wishes).join(', ')}
+    Sizes: ${JSON.stringify(sizes).join(', ')}
 
 Donor Contact:
 
