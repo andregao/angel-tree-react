@@ -2,14 +2,13 @@
 
 # dependencies
 node_modules/
-/aws/node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
 
-# production
+# build artifact
 /build
 .aws-sam/
 
