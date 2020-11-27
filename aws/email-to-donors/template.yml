@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Angel tree web app backend for dynamodb stream trigger email donors
+Description: Angel tree dynamodb donation table stream trigger email to donors
 Transform: AWS::Serverless-2016-10-31
 
 Globals:
@@ -12,8 +12,8 @@ Resources:
   processDynamoDBDonationStreamEmailDonorsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.processDonationStreamEmailDonorsHandler
-      Description: New donation item triggers email to the donor
+      Handler: index.donationStreamEmailDonors
+      Description: New donation item triggers SendGrid email to the donor
       Policies:
         - AWSLambdaDynamoDBExecutionRole
         - DynamoDBReadPolicy:

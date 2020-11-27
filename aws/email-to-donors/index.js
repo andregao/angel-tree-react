@@ -6,11 +6,7 @@ require('dotenv').config();
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SG_API_KEY);
 
-exports.processDonationStreamEmailDonorsHandler = (
-  event,
-  context,
-  callback
-) => {
+exports.donationStreamEmailDonors = (event, context, callback) => {
   event.Records.forEach(record => {
     if (record.eventName === 'INSERT') {
       // get child details
@@ -29,7 +25,7 @@ exports.processDonationStreamEmailDonorsHandler = (
 
           const msg = {
             to: email,
-            from: { email: 'soiamarobot@gmail.com', name: 'Angel Tree' },
+            from: { email: process.env.SG_SENDER, name: 'Angel Tree' },
             templateId: process.env.SG_TEMPLATE_ID,
             dynamicTemplateData: {
               donorName,

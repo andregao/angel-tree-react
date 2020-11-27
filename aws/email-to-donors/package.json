@@ -1,5 +1,5 @@
 {
-  "name": "angel-tree-aws-stream-email-donors",
+  "name": "angel-tree-donation-stream-email-donors",
   "version": "1.0.0",
   "description": "",
   "dependencies": {

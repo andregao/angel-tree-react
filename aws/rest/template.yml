@@ -58,6 +58,20 @@ Resources:
           Properties:
             Path: /donate/{id}
             Method: POST
+  postChildFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.postChildHandler
+      Description: Post new child item to dynamodb
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: Child
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /child
+            Method: POST
 
 Outputs:
   WebEndpoint:

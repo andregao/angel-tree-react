@@ -1,4 +1,5 @@
-const { DYNAMODB_ENDPOINT, REGION } = require('./env');
+const DYNAMODB_ENDPOINT = 'http://docker.for.mac.localhost:8000';
+const REGION = 'us-east-1';
 const {
   DynamoDBClient,
   GetItemCommand,
@@ -151,6 +152,15 @@ exports.postDonationHandler = async event => {
     const errorResponse = handleTransactWriteItemsError(err);
     return { ...errorResponse, headers: { ...corsHeaders } };
   }
+};
+
+exports.postChildHandler = async event => {
+  if (event.httpMethod !== 'POST') {
+    throw new Error(
+      `postDonation only accept POST method, you tried: ${event.httpMethod}`
+    );
+  }
+  console.info('received:', event);
 };
 
 // error handling template from AWS, made meaningful in a few cases to client

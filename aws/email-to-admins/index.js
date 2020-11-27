@@ -7,7 +7,7 @@ const TABLE_STREAM_TOPIC_ARN = 'arn:aws:sns:us-east-1:486040421677:Donations';
 const sns = new SNSClient(REGION);
 const dbClient = new DynamoDBClient(REGION);
 
-exports.processDonationStreamHandler = (event, context, callback) => {
+exports.donationStreamEmailAdmins = (event, context, callback) => {
   event.Records.forEach(record => {
     if (record.eventName === 'INSERT') {
       // get child details
