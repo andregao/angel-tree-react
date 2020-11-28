@@ -72,7 +72,20 @@ Resources:
           Properties:
             Path: /child
             Method: POST
-
+  putChildFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.putChildHandler
+      Description: Update child item in dynamodb
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: Child
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /child
+            Method: PUT
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"

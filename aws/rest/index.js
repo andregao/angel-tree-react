@@ -4,6 +4,7 @@ const {
   DynamoDBClient,
   GetItemCommand,
   PutItemCommand,
+  UpdateItemCommand,
   TransactWriteItemsCommand,
 } = require('@aws-sdk/client-dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
@@ -165,8 +166,8 @@ exports.postChildHandler = async event => {
   // organize data
   const data = JSON.parse(event.body);
   const { name, wishes, sizes, age, gender } = data;
-  const created = Date.now();
-  const id = created.toString().slice(-9) + Math.floor(Math.random() * 100);
+  const timestamp = Date.now();
+  const id = timestamp.toString().slice(-9) + Math.floor(Math.random() * 100);
   const childDetails = {
     id,
     name,
@@ -174,7 +175,7 @@ exports.postChildHandler = async event => {
     sizes,
     age,
     gender,
-    created,
+    donated: false,
   };
   // compose put item request
   const params = {
@@ -190,7 +191,7 @@ exports.postChildHandler = async event => {
       body: JSON.stringify(childDetails),
     };
   } catch (err) {
-    handlePutItemError(err);
+    handlePutItemUpdateItemError(err);
     return {
       statusCode: 500,
     };
@@ -207,14 +208,48 @@ exports.putChildHandler = async event => {
   // organize data
   const data = JSON.parse(event.body);
   const { name, wishes, sizes, age, gender, id } = data;
-  const created = Date.now();
-  const childDetails = { name, wishes, sizes, age, gender, created };
-  // check if the child is already donated before putItem
+  // compose updateItem request
+  const params = {
+    TableName: 'Child',
+    Key: { id: { S: id } },
+    ConditionExpression: 'donated = :false',
+    UpdateExpression:
+      'SET #n = :name, ' +
+      'wishes = :wishes, ' +
+      '#s = :s, ' +
+      'age = :age, ' +
+      'gender = :gender',
+    ExpressionAttributeNames: {
+      '#n': 'name',
+      '#s': 'sizes',
+    },
+    ExpressionAttributeValues: marshall({
+      ':false': false,
+      ':name': name,
+      ':wishes': wishes,
+      ':s': sizes,
+      ':age': age,
+      ':gender': gender,
+    }),
+  };
+  try {
+    await dbClient.send(new UpdateItemCommand(params));
+    console.log('updateItem success, childId:', id);
+    return {
+      statusCode: 200,
+    };
+  } catch (err) {
+    handlePutItemUpdateItemError(err);
+    return {
+      statusCode: 500,
+    };
+  }
 };
 
 // error handling templates from AWS, made meaningful in a few cases to client
 const internal = { statusCode: 500 };
-function handlePutItemError(err) {
+
+function handlePutItemUpdateItemError(err) {
   if (!err) {
     console.error('Encountered error object was empty');
     return;
