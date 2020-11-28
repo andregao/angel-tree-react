@@ -9,6 +9,7 @@ const {
   TransactWriteItemsCommand,
 } = require('@aws-sdk/client-dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+require('dotenv').config();
 
 let dbClient;
 if (process.env.AWS_SAM_LOCAL) {
@@ -164,6 +165,23 @@ exports.postChildHandler = async event => {
     );
   }
   console.info('postChild received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+    };
+  }
   // organize data
   const data = JSON.parse(event.body);
   const { name, wishes, sizes, age, gender } = data;
@@ -206,6 +224,23 @@ exports.putChildHandler = async event => {
     );
   }
   console.info('putChild received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+    };
+  }
   // organize data
   const id = event.pathParameters.id;
   const data = JSON.parse(event.body);
@@ -249,6 +284,24 @@ exports.putChildHandler = async event => {
 };
 exports.deleteChildHandler = async event => {
   console.info('deleteChild received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+    };
+  }
+
   // organize data
   const id = event.pathParameters.id;
   // compose delete request
