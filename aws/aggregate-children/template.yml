@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Angel tree dynamodb child table stream trigger aggregation to summary table
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    MemorySize: 128
+    Timeout: 5
+
+Resources:
+  DynamoDBChildItemStreamFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 192
+      Handler: index.childItemStreamAggregateToSummary
+      Description: Child item update triggers aggregation to summary table
+      Policies:
+        - AWSLambdaDynamoDBExecutionRole
+        - DynamoDBReadPolicy:
+            TableName: Child
+        - SNSPublishMessagePolicy:
+            TopicName: Donations
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Child/stream/2020-11-28T07:41:27.762
+            BatchSize: 1
+            StartingPosition: LATEST
+            Enabled: false
+      EventInvokeConfig:
+        MaximumRetryAttempts: 2

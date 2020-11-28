@@ -5,6 +5,7 @@ const {
   GetItemCommand,
   PutItemCommand,
   UpdateItemCommand,
+  DeleteItemCommand,
   TransactWriteItemsCommand,
 } = require('@aws-sdk/client-dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
@@ -162,7 +163,7 @@ exports.postChildHandler = async event => {
       `postChild only accept POST method, you tried: ${event.httpMethod}`
     );
   }
-  console.info('received:', event);
+  console.info('postChild received:', event);
   // organize data
   const data = JSON.parse(event.body);
   const { name, wishes, sizes, age, gender } = data;
@@ -191,7 +192,7 @@ exports.postChildHandler = async event => {
       body: JSON.stringify(childDetails),
     };
   } catch (err) {
-    handlePutItemUpdateItemError(err);
+    handleCRUDError(err);
     return {
       statusCode: 500,
     };
@@ -204,10 +205,11 @@ exports.putChildHandler = async event => {
       `postChild only accept PUT method, you tried: ${event.httpMethod}`
     );
   }
-  console.info('received:', event);
+  console.info('putChild received:', event);
   // organize data
+  const id = event.pathParameters.id;
   const data = JSON.parse(event.body);
-  const { name, wishes, sizes, age, gender, id } = data;
+  const { name, wishes, sizes, age, gender } = data;
   // compose updateItem request
   const params = {
     TableName: 'Child',
@@ -239,17 +241,40 @@ exports.putChildHandler = async event => {
       statusCode: 200,
     };
   } catch (err) {
-    handlePutItemUpdateItemError(err);
+    handleCRUDError(err);
     return {
       statusCode: 500,
     };
   }
 };
-
+exports.deleteChildHandler = async event => {
+  console.info('deleteChild received:', event);
+  // organize data
+  const id = event.pathParameters.id;
+  // compose delete request
+  const params = {
+    TableName: 'Child',
+    Key: {
+      id: { S: id },
+    },
+  };
+  try {
+    await dbClient.send(new DeleteItemCommand(params));
+    console.log('deleteItem success, childId:', id);
+    return {
+      statusCode: 200,
+    };
+  } catch (err) {
+    handleCRUDError(err);
+    return {
+      statusCode: 500,
+    };
+  }
+};
 // error handling templates from AWS, made meaningful in a few cases to client
 const internal = { statusCode: 500 };
 
-function handlePutItemUpdateItemError(err) {
+function handleCRUDError(err) {
   if (!err) {
     console.error('Encountered error object was empty');
     return;

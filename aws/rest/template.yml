@@ -84,8 +84,22 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /child
+            Path: /child/{id}
             Method: PUT
+  deleteChildFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.deleteChildHandler
+      Description: Delete child item in dynamodb
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: Child
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /child/{id}
+            Method: DELETE
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
