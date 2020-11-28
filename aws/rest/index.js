@@ -3,6 +3,7 @@ const REGION = 'us-east-1';
 const {
   DynamoDBClient,
   GetItemCommand,
+  PutItemCommand,
   TransactWriteItemsCommand,
 } = require('@aws-sdk/client-dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
@@ -157,14 +158,96 @@ exports.postDonationHandler = async event => {
 exports.postChildHandler = async event => {
   if (event.httpMethod !== 'POST') {
     throw new Error(
-      `postDonation only accept POST method, you tried: ${event.httpMethod}`
+      `postChild only accept POST method, you tried: ${event.httpMethod}`
     );
   }
   console.info('received:', event);
+  // organize data
+  const data = JSON.parse(event.body);
+  const { name, wishes, sizes, age, gender } = data;
+  const created = Date.now();
+  const id = created.toString().slice(-9) + Math.floor(Math.random() * 100);
+  const childDetails = {
+    id,
+    name,
+    wishes,
+    sizes,
+    age,
+    gender,
+    created,
+  };
+  // compose put item request
+  const params = {
+    TableName: 'Child',
+    Item: marshall(childDetails),
+    ConditionExpression: `attribute_not_exists(id)`,
+  };
+  try {
+    await dbClient.send(new PutItemCommand(params));
+    console.log('putItem success, childId:', id);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(childDetails),
+    };
+  } catch (err) {
+    handlePutItemError(err);
+    return {
+      statusCode: 500,
+    };
+  }
 };
 
-// error handling template from AWS, made meaningful in a few cases to client
+exports.putChildHandler = async event => {
+  if (event.httpMethod !== 'PUT') {
+    throw new Error(
+      `postChild only accept PUT method, you tried: ${event.httpMethod}`
+    );
+  }
+  console.info('received:', event);
+  // organize data
+  const data = JSON.parse(event.body);
+  const { name, wishes, sizes, age, gender, id } = data;
+  const created = Date.now();
+  const childDetails = { name, wishes, sizes, age, gender, created };
+  // check if the child is already donated before putItem
+};
+
+// error handling templates from AWS, made meaningful in a few cases to client
 const internal = { statusCode: 500 };
+function handlePutItemError(err) {
+  if (!err) {
+    console.error('Encountered error object was empty');
+    return;
+  }
+  if (!err.code && !err.name) {
+    console.error(
+      `An exception occurred, investigate and configure retry strategy. Error: ${JSON.stringify(
+        err
+      )}`
+    );
+    return;
+  }
+  switch (err.code || err.name) {
+    case 'ConditionalCheckFailedException':
+      console.error(
+        `Condition check specified in the operation failed, review and update the condition check before retrying. Error: ${err.message}`
+      );
+      return;
+    case 'TransactionConflictException':
+      console.error(`Operation was rejected because there is an ongoing transaction for the item, generally safe to retry ' +
+       'with exponential back-off. Error: ${err.message}`);
+      return;
+    case 'ItemCollectionSizeLimitExceededException':
+      console.error(
+        `An item collection is too large, you're using Local Secondary Index and exceeded size limit of` +
+          `items per partition key. Consider using Global Secondary Index instead. Error: ${err.message}`
+      );
+      return;
+    default:
+      break;
+  }
+  handleCommonErrors(err);
+}
 function handleTransactWriteItemsError(err) {
   if (!err) {
     console.error('Encountered error object was empty');
@@ -195,7 +278,6 @@ function handleTransactWriteItemsError(err) {
       return internal;
     default:
       break;
-    // Common DynamoDB API errors are handled below
   }
   handleCommonErrors(err);
 }
