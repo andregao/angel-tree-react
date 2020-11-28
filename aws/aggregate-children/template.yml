@@ -19,15 +19,15 @@ Resources:
         - AWSLambdaDynamoDBExecutionRole
         - DynamoDBReadPolicy:
             TableName: Child
-        - SNSPublishMessagePolicy:
-            TopicName: Donations
+        - DynamoDBCrudPolicy:
+            TableName: Summary
       Events:
         Stream:
           Type: DynamoDB
           Properties:
-            Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Child/stream/2020-11-28T07:41:27.762
+            Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Child/stream/2020-11-28T11:41:23.534
             BatchSize: 1
             StartingPosition: LATEST
-            Enabled: false
+            Enabled: true
       EventInvokeConfig:
         MaximumRetryAttempts: 2
