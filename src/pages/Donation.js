@@ -18,6 +18,7 @@ import useForm from '../services/useForm';
 import DonatedNotice from '../DonatedNotice';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import dayjs from 'dayjs';
+import ProgressBar from '../components/ProgressBar';
 
 const formInitialValues = { name: '', email: '', phone: '' };
 
@@ -164,7 +165,7 @@ const Donation = () => {
       {childInfo?.donated && <DonatedNotice date={childInfo.date} />}
 
       {/*submitting indicator*/}
-      {isSubmitting && <ProgressBar />}
+      {isSubmitting && <ProgressBar position='fixed' />}
     </>
   );
 };
@@ -217,13 +218,6 @@ const ActionArea = styled.section`
 
 const StyledTextField = styled(TextField)`
   min-height: 5rem;
-`;
-
-const ProgressBar = styled(LinearProgress)`
-  width: 100%;
-  position: fixed;
-  left: 0;
-  bottom: 0;
 `;
 
 export default Donation;

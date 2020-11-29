@@ -4,9 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {
-  unstable_createMuiStrictModeTheme as createMuiTheme,
   StylesProvider,
   ThemeProvider,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
 import cyan from '@material-ui/core/colors/cyan';

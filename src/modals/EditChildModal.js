@@ -1,61 +1,81 @@
-import React, { useContext, useState } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import TextField from '@material-ui/core/TextField';
-import styled from 'styled-components/macro';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import { itemsFromArray, itemsToArray } from '../services/utils';
-import { postNewChild } from '../services/api';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../App';
+import { deleteChild, getChildInfo, updateChild } from '../services/api';
 import { actions } from '../services/state';
+import Dialog from '@material-ui/core/Dialog';
+import styled from 'styled-components/macro';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import ChildForm from '../components/ChildForm';
+import { itemsToArray } from '../services/utils';
 import { useHistory } from 'react-router-dom';
+import Heart from '../components/Heart';
+import ProgressBar from '../components/ProgressBar';
 
-const initialChildState = {
-  name: '',
-  age: '',
-  gender: '',
-  wishes: [],
-  sizes: [],
-};
-
-const EditChildModal = ({ isModalOpen, setModalOpen, childData, setData }) => {
-  // const { name, gender, age, wishes, sizes, id, donated } = childData;
+const EditChildModal = ({ isModalOpen, setModalOpen, id }) => {
   const history = useHistory();
-
-  // add a child
   const { appState, appDispatch } = useContext(AppContext);
-  const [currentChild, setCurrentChild] = useState(initialChildState);
   const [isSubmitting, setSubmitting] = useState(false);
-  console.log({ currentChild });
-  const { name, gender, age, wishes, sizes } = currentChild;
+  const [currentChild, setCurrentChild] = useState(null);
+
+  let dataReady = !!(
+    appState.children &&
+    appState.children[id] &&
+    appState.children[id].wishes
+  );
+  console.log({ dataReady });
+  console.log('currentChild', currentChild);
+  // fetch child info on load
+  useEffect(() => {
+    id &&
+      getChildInfo(id).then(data => {
+        appDispatch({ type: actions.receiveChildInfoAdmin, payload: data });
+      });
+  }, [id]);
+  // update local state after fetching from app state
+  useEffect(() => {
+    dataReady && setCurrentChild(appState.children[id]);
+    console.log('current child id: in effect', id);
+  }, [dataReady, id]);
   const handleCloseModal = () => {
-    setCurrentChild(initialChildState);
     setSubmitting(false);
+    dataReady = false;
+    // setCurrentChild(null);
     setModalOpen(false);
   };
-  const [defaultValues] = useState(() => ({
-    wishes: itemsFromArray(wishes),
-    sizes: itemsFromArray(sizes),
-  }));
+  const handleSave = () => {
+    setSubmitting(true);
+    const { adminSecret } = appState;
+    updateChild(currentChild, adminSecret).then(result => {
+      if (result.status === 200) {
+        appDispatch({
+          type: actions.updateChildDetails,
+          payload: currentChild,
+        });
+        handleCloseModal();
+      }
+      // not authorized redirect
+      if (result.status === 403) {
+        history.push('/login');
+      }
+    });
+  };
   const handleChange = ({ target: { name, value } }) => {
     if (name === 'wishes' || name === 'sizes') {
       value = itemsToArray(value);
     }
     setCurrentChild({ ...currentChild, [name]: value });
   };
-  const handleSave = () => {
+  const handleDelete = () => {
     setSubmitting(true);
     const { adminSecret } = appState;
-    postNewChild(currentChild, adminSecret).then(result => {
+    const { id } = currentChild;
+    deleteChild(id, adminSecret).then(result => {
       if (result.status === 200) {
-        result.json().then(child => {
-          appDispatch({ type: actions.receiveChildDetails, payload: child });
-          handleCloseModal();
+        appDispatch({
+          type: actions.deleteChild,
+          payload: id,
         });
+        handleCloseModal();
       }
       // not authorized redirect
       if (result.status === 403) {
@@ -71,108 +91,25 @@ const EditChildModal = ({ isModalOpen, setModalOpen, childData, setData }) => {
       scroll='paper'
     >
       <Container>
-        <form>
-          <InputArea>
-            <TextField
-              label='Full Name'
-              variant='outlined'
-              required
-              value={name}
-              name={'name'}
-              onChange={handleChange}
-            />
-            <FormControl variant='outlined'>
-              <InputLabel id='select-gender-label'>Gender</InputLabel>
-              <Select
-                labelId='select-gender-label'
-                id='select-gender'
-                value={gender}
-                name='gender'
-                label='Gender'
-                onChange={handleChange}
-              >
-                <MenuItem value='male'>Male</MenuItem>
-                <MenuItem value='female'>Female</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label='Age'
-              variant='outlined'
-              required
-              value={age}
-              type='number'
-              name={'age'}
-              onChange={handleChange}
-            />
-            <TextField
-              label='Wishes'
-              variant='outlined'
-              required
-              defaultValue={defaultValues.wishes}
-              helperText='Use commas to separate the items'
-              name={'wishes'}
-              onChange={handleChange}
-            />
-            <TextField
-              label='Sizes'
-              variant='outlined'
-              defaultValue={defaultValues.sizes}
-              helperText='Use commas to separate each size'
-              name={'sizes'}
-              onChange={handleChange}
-            />
-          </InputArea>
-          <ActionArea>
-            {/*{id !== undefined && (*/}
-            {/*  <Button*/}
-            {/*    variant='text'*/}
-            {/*    color='secondary'*/}
-            {/*    onClick={handleCloseModal}*/}
-            {/*    disabled={donated}*/}
-            {/*  >*/}
-            {/*    delete*/}
-            {/*  </Button>*/}
-            {/*)}*/}
-            <Button variant='text' onClick={handleCloseModal}>
-              cancel
-            </Button>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={handleSave}
-              disabled={isSubmitting}
-            >
-              save
-            </Button>
-          </ActionArea>
-        </form>
-        {isSubmitting && <ProgressBar />}
+        {dataReady ? (
+          <ChildForm
+            handleCloseModal={handleCloseModal}
+            isSubmitting={isSubmitting}
+            data={appState.children[id]}
+            handleSave={handleSave}
+            handleChange={handleChange}
+            handleDelete={handleDelete}
+          />
+        ) : (
+          <Heart />
+        )}
+        {isSubmitting && <ProgressBar position='absolute' />}
       </Container>
     </Dialog>
   );
 };
-
 const Container = styled.section`
   padding: 1rem;
   position: relative;
-`;
-
-const InputArea = styled.section`
-  display: flex;
-  flex-direction: column;
-  & > * {
-    margin-bottom: 0.8rem;
-  }
-`;
-
-const ActionArea = styled.footer`
-  display: flex;
-  justify-content: space-between;
-`;
-const ProgressBar = styled(LinearProgress)`
-  width: 100%;
-  position: absolute;
-  left: 0;
-  bottom: 0;
 `;
 export default EditChildModal;

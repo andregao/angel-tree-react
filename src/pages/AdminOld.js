@@ -7,7 +7,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import { DataGrid } from '@material-ui/data-grid';
 import { children, commitments } from '../mock/mock';
-import EditChildModal from '../modals/EditChildModal';
+import AddChildModal from '../modals/AddChildModal';
 import Button from '@material-ui/core/Button';
 import EditCommitmentModal from '../modals/EditCommitmentModal';
 import ChildInfoModal from '../modals/ChildInfoModal';
@@ -159,7 +159,7 @@ const AdminOld = () => {
         </ActionArea>
       </section>
       {currentRow?.data?.wishes && (
-        <EditChildModal
+        <AddChildModal
           isModalOpen={isEditChildModalOpen}
           setModalOpen={setEditChildModalOpen}
           childData={currentRow.data}

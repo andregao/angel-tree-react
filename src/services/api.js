@@ -1,6 +1,6 @@
 export const FUNCTIONS_BASE_URL =
   process.env.NODE_ENV === 'development'
-    ? 'http://Andre-Macbook.local:3001'
+    ? 'http://docker.for.mac.localhost:3001'
     : 'https://3bd2j300fk.execute-api.us-east-1.amazonaws.com/Prod';
 
 export async function getTreeData() {
@@ -42,7 +42,6 @@ export async function sendSubmission(data) {
 }
 
 export async function postNewChild(data, secret) {
-  console.log('posting new child', data);
   return await fetch(`${FUNCTIONS_BASE_URL}/child`, {
     method: 'POST',
     mode: 'cors',
@@ -51,6 +50,29 @@ export async function postNewChild(data, secret) {
       Authorization: `Bearer ${secret}`,
     },
     body: JSON.stringify(data),
+  });
+}
+
+export async function updateChild(data, secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/child/${data.id}`, {
+    method: 'PUT',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${secret}`,
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteChild(id, secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/child/${id}`, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${secret}`,
+    },
   });
 }
 

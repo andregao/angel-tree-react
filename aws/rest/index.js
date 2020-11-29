@@ -345,6 +345,7 @@ exports.putChildHandler = async event => {
     console.log('secret missing');
     return {
       statusCode: 403,
+      headers: { ...corsHeaders },
     };
   }
   const secretWord = event.headers.Authorization.split('Bearer ')[1];
@@ -352,6 +353,7 @@ exports.putChildHandler = async event => {
     console.log('secret incorrect');
     return {
       statusCode: 403,
+      headers: { ...corsHeaders },
     };
   }
   // organize data
@@ -387,11 +389,13 @@ exports.putChildHandler = async event => {
     console.log('updateItem success, childId:', id);
     return {
       statusCode: 200,
+      headers: { ...corsHeaders },
     };
   } catch (err) {
     handleCRUDError(err);
     return {
       statusCode: 500,
+      headers: { ...corsHeaders },
     };
   }
 };
@@ -405,6 +409,7 @@ exports.deleteChildHandler = async event => {
     console.log('secret missing');
     return {
       statusCode: 403,
+      headers: { ...corsHeaders },
     };
   }
   const secretWord = event.headers.Authorization.split('Bearer ')[1];
@@ -412,6 +417,7 @@ exports.deleteChildHandler = async event => {
     console.log('secret incorrect');
     return {
       statusCode: 403,
+      headers: { ...corsHeaders },
     };
   }
 
@@ -429,11 +435,13 @@ exports.deleteChildHandler = async event => {
     console.log('deleteItem success, childId:', id);
     return {
       statusCode: 200,
+      headers: { ...corsHeaders },
     };
   } catch (err) {
     handleCRUDError(err);
     return {
       statusCode: 500,
+      headers: { ...corsHeaders },
     };
   }
 };

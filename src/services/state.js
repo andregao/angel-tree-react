@@ -8,6 +8,9 @@ export const actions = {
   receiveAdminSecret: 'RECEIVE_ADMIN_SECRET',
   receiveChildrenData: 'RECEIVE_CHILDREN_DATA',
   receiveDonationsData: 'RECEIVE_DONATIONS_DATA',
+  receiveChildInfoAdmin: 'RECEIVE_CHILD_INFO_ADMIN',
+  updateChildDetails: 'UPDATE_CHILD_DETAILS',
+  deleteChild: 'DELETE_CHILD',
 };
 
 export const initialTreeState = {};
@@ -61,13 +64,39 @@ export function appReducer(state, { type, payload }) {
         donations: payload,
       };
     case actions.receiveChildDetails:
-      const id = payload.id;
       const newChildren = { ...state.children };
-      newChildren.ids = [...state.children.ids, id];
-      newChildren[id] = payload;
+      newChildren.ids = [...state.children.ids, payload.id];
+      newChildren[payload.id] = payload;
       return {
         ...state,
         children: newChildren,
+      };
+    case actions.receiveChildInfoAdmin:
+      return {
+        ...state,
+        children: {
+          ...state.children,
+          [payload.id]: {
+            ...state.children[payload.id],
+            ...payload,
+          },
+        },
+      };
+    case actions.updateChildDetails:
+      return {
+        ...state,
+        children: {
+          ...state.children,
+          [payload.id]: payload,
+        },
+      };
+    case actions.deleteChild:
+      return {
+        ...state,
+        children: {
+          ...state.children,
+          ids: state.children.ids.filter(id => id !== payload),
+        },
       };
     default:
       throw new Error('invalid action dispatched');

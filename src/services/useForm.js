@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../App';
-import { actions } from './state';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 const useForm = (
