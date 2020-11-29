@@ -60,10 +60,10 @@ exports.getTreeContentHandler = async event => {
   }
 };
 
-exports.getAdminContentHandler = async event => {
+exports.getChildrenSummaryHandler = async event => {
   if (event.httpMethod !== 'GET') {
     throw new Error(
-      `getAdminContent only accept GET method, you tried: ${event.httpMethod}`
+      `getChildrenSummary only accept GET method, you tried: ${event.httpMethod}`
     );
   }
   console.info('received:', event);
@@ -89,7 +89,62 @@ exports.getAdminContentHandler = async event => {
   // compose getItem request
   const params = {
     TableName: 'Summary',
-    Key: { use: { S: 'admin' } },
+    Key: { use: { S: 'children' } },
+  };
+  try {
+    const { Item } = await dbClient.send(new GetItemCommand(params));
+    const item = unmarshall(Item);
+
+    const response = {
+      statusCode: 200,
+      headers: {
+        ...corsHeaders,
+      },
+      body: JSON.stringify(item),
+    };
+
+    console.info(
+      `response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`
+    );
+    return response;
+  } catch (err) {
+    handleCRUDError(err);
+    return {
+      statusCode: 500,
+    };
+  }
+};
+
+exports.getDonationsSummaryHandler = async event => {
+  if (event.httpMethod !== 'GET') {
+    throw new Error(
+      `getDonationsSummary only accept GET method, you tried: ${event.httpMethod}`
+    );
+  }
+  console.info('received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  // compose getItem request
+  const params = {
+    TableName: 'Summary',
+    Key: { use: { S: 'donations' } },
   };
   try {
     const { Item } = await dbClient.send(new GetItemCommand(params));
@@ -228,6 +283,7 @@ exports.postChildHandler = async event => {
     console.log('secret missing');
     return {
       statusCode: 403,
+      headers: { ...corsHeaders },
     };
   }
   const secretWord = event.headers.Authorization.split('Bearer ')[1];
@@ -235,6 +291,7 @@ exports.postChildHandler = async event => {
     console.log('secret incorrect');
     return {
       statusCode: 403,
+      headers: { ...corsHeaders },
     };
   }
   // organize data
@@ -262,6 +319,7 @@ exports.postChildHandler = async event => {
     console.log('putItem success, childId:', id);
     return {
       statusCode: 200,
+      headers: { ...corsHeaders },
       body: JSON.stringify(childDetails),
     };
   } catch (err) {

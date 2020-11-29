@@ -1,117 +1,174 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { AppContext } from '../App';
+import { Link, useHistory } from 'react-router-dom';
+import { getChildrenData, getDonationsData } from '../services/api';
+import { actions } from '../services/state';
 import PageHeader from '../components/PageHeader';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
-import { DataGrid } from '@material-ui/data-grid';
-import { children, commitments } from '../mock/mock';
-import EditChildModal from '../modals/EditChildModal';
 import Button from '@material-ui/core/Button';
-import EditCommitmentModal from '../modals/EditCommitmentModal';
-import ChildInfoModal from '../modals/ChildInfoModal';
-import { Link, useHistory } from 'react-router-dom';
-import { ChildrenContext } from '../App';
-import { getAdminData } from '../services/api';
-import { actions } from '../services/state';
-
-const childColumns = [
-  { field: 'id', headerName: 'ID', width: 50, type: 'number' },
-  { field: 'name', headerName: 'Name', width: 170 },
-  // { field: 'gender', headerName: 'Gender', width: 80 },
-  // { field: 'age', headerName: 'Age', width: 60, type: 'number' },
-  // { field: 'wishes', headerName: 'Wishes', width: 200, sortable: false },
-  // { field: 'sizes', headerName: 'Sizes', width: 200, sortable: false },
-  // { field: 'committed', headerName: 'Committed', width: 110 },
-  { field: 'sponsor', headerName: 'Sponsor', width: 170 },
-];
-const childRows = children;
-const commitmentColumns = [
-  { field: 'id', headerName: 'ID', width: 50, type: 'number' },
-  { field: 'name', headerName: 'Name', width: 170 },
-  // { field: 'email', headerName: 'Email', width: 200 },
-  // { field: 'phone', headerName: 'Phone', width: 130 },
-  { field: 'childName', headerName: 'Child Name', width: 170 },
-  // { field: 'childId', headerName: 'Child ID', width: 85, type: 'number' },
-];
-const commitmentRows = commitments;
+import EditChildModal from '../modals/EditChildModal';
+import { DataGrid } from '@material-ui/data-grid';
+import dayjs from 'dayjs';
 
 const Admin = () => {
-  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
-  console.log('children state:', childrenState);
-  // fetch admin summary data on render
+  const { appState, appDispatch } = useContext(AppContext);
+  console.log('app state:', appState);
+  // eagerly fetch children summary data on render
   const history = useHistory();
-  const { adminSecret } = childrenState;
-
+  const { adminSecret, children, donations } = appState;
   useEffect(() => {
-    getAdminData(adminSecret).then(result => {
+    getChildrenData(adminSecret).then(result => {
       if (result.status === 200) {
         result.json().then(({ content }) => {
-          childrenDispatch({
-            type: actions.receiveAdminData,
+          appDispatch({
+            type: actions.receiveChildrenData,
             payload: content,
           });
         });
       }
-      // not authorized
+      // not authorized redirect
       if (result.status === 403) {
         history.push('/login');
       }
     });
   }, []);
 
+  // add and edit children
   const [isEditChildModalOpen, setEditChildModalOpen] = useState(false);
-  const [isEditCommitmentModalOpen, setEditCommitmentModalOpen] = useState(
-    false
-  );
-  const [currentRow, setCurrentRow] = useState(null);
-  const [childInfo, setChildInfo] = useState(null);
-  const [isChildDetailModalOpen, setChildDetailModalOpen] = useState(false);
-  const setData = data => {
-    setCurrentRow(prev => ({ ...prev, data }));
-  };
-  const handleCellClick = event => {
-    const { field, data } = event;
-    // ignore attempts to edit id and committed
-    const ignores = ['id', 'committed'];
-    if (ignores.some(f => f === field)) {
-      return;
-    }
-
-    setCurrentRow({ data, field });
-    console.log(data);
-    // decide which modal to use
-    if (data.email) {
-      // commitment table
-      if (field !== 'childName' && field !== 'childId') {
-        setEditCommitmentModalOpen(true);
-      } else {
-        setChildInfo(children[data.childId]);
-        setChildDetailModalOpen(true);
-      }
-    } else {
-      setEditChildModalOpen(true);
-    }
-  };
   const handleAddChild = () => {
-    setCurrentRow({
-      data: {
-        name: '',
-        gender: 'female',
-        age: 0,
-        wishes: [],
-        sizes: [],
-      },
-    });
     setEditChildModalOpen(true);
   };
 
+  // children data grid
+  const handleEditChildClick = id => {
+    console.log('edit child button clicked, id:', id);
+  };
+  const childrenColumns = [
+    { field: 'id', headerName: 'ID', width: 130, type: 'number' },
+    { field: 'name', headerName: 'Name', width: 170 },
+    { field: 'donated', headerName: 'Donated', width: 90 },
+    { field: 'donorName', headerName: 'Donor', width: 170 },
+    {
+      field: 'editChild',
+      headerName: 'Action',
+      width: 80,
+      sortable: false,
+      renderCell: ({ data }) => (
+        <Button
+          color='primary'
+          size='small'
+          disabled={data.donated}
+          onClick={() => handleEditChildClick(data.id)}
+        >
+          Edit
+        </Button>
+      ),
+    },
+    {
+      field: 'viewDonor',
+      headerName: 'Donation',
+      width: 120,
+      sortable: false,
+      renderCell: ({ data }) => (
+        <Button color='primary' size='small' disabled={!data.donated}>
+          Donor info
+        </Button>
+      ),
+    },
+  ];
+  let childrenRows = [];
+  if (children) {
+    childrenRows = children.ids.map(id => {
+      // inject id
+      let child = children[id];
+      child.id = id;
+      return child;
+    });
+  }
+
+  //donation data grid
+  const donationColumns = [
+    { field: 'id', headerName: 'ID', width: 130, type: 'number' },
+    { field: 'name', headerName: 'Donor Name', width: 160 },
+    { field: 'phone', headerName: 'Phone Number', width: 130 },
+    { field: 'childName', headerName: 'Donate To', width: 160 },
+    {
+      field: 'date',
+      headerName: 'Donation Date',
+      width: 130,
+      valueGetter: params => dayjs(params.data.date).format('h:mma MMM DD'),
+    },
+    {
+      field: 'viewDonation',
+      headerName: 'More',
+      width: 80,
+      sortable: false,
+      renderCell: ({ data }) => (
+        <Button
+          color='primary'
+          size='small'
+          onClick={() => handleEditDonationClick(data.id)}
+        >
+          Details
+        </Button>
+      ),
+    },
+    {
+      field: 'viewChild',
+      headerName: 'Child',
+      width: 120,
+      sortable: false,
+      renderCell: ({ data }) => (
+        <Button
+          color='primary'
+          size='small'
+          onClick={() => handleEditDonationClick(data.id)}
+        >
+          Child Info
+        </Button>
+      ),
+    },
+  ];
+  let donationRows = [];
+  if (donations) {
+    donationRows = donations.ids.map(id => {
+      // inject id
+      let donation = donations[id];
+      donation.id = id;
+      return donation;
+    });
+  }
+  const handleExpansion = (event, expanded) => {
+    if (expanded) {
+      getDonationsData(adminSecret).then(result => {
+        if (result.status === 200) {
+          result.json().then(({ content }) => {
+            appDispatch({
+              type: actions.receiveDonationsData,
+              payload: content,
+            });
+          });
+        }
+        // not authorized redirect
+        if (result.status === 403) {
+          history.push('/login');
+        }
+      });
+    }
+  };
+  const handleEditDonationClick = id => {
+    console.log('edit donation button clicked, donation id:', id);
+  };
   return (
     <>
-      <section>
+      <Container>
         <PageHeader text='Admin Area' />
-        <Accordion>
+        {/*children accordion*/}
+        <Accordion expanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             id='children-expansion'
@@ -129,26 +186,29 @@ const Admin = () => {
           </AccordionAction>
           <div style={{ height: 660, width: '100%' }}>
             <DataGrid
-              rows={childRows}
-              columns={childColumns}
+              rows={childrenRows}
+              columns={childrenColumns}
               pageSize={10}
-              onCellClick={handleCellClick}
+              autoHeight
+              loading={childrenRows.length === 0}
             />
           </div>
         </Accordion>
-        <Accordion>
+        {/*donations accordion*/}
+        <Accordion onChange={handleExpansion}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            id='commitments-expansion'
+            id='children-expansion'
           >
-            <Typography variant='h6'>Commitments</Typography>
+            <Typography variant='h6'>Donations</Typography>
           </AccordionSummary>
           <div style={{ height: 660, width: '100%' }}>
             <DataGrid
-              rows={commitmentRows}
-              columns={commitmentColumns}
+              rows={donationRows}
+              columns={donationColumns}
               pageSize={10}
-              onCellClick={handleCellClick}
+              autoHeight
+              loading={donationRows.length === 0}
             />
           </div>
         </Accordion>
@@ -157,36 +217,25 @@ const Admin = () => {
             back
           </Button>
         </ActionArea>
-      </section>
-      {currentRow?.data?.wishes && (
-        <EditChildModal
-          isModalOpen={isEditChildModalOpen}
-          setModalOpen={setEditChildModalOpen}
-          childData={currentRow.data}
-          setData={setData}
-          clickedField={currentRow.field}
-        />
-      )}
-      {currentRow?.data?.email && (
-        <EditCommitmentModal
-          isModalOpen={isEditCommitmentModalOpen}
-          setModalOpen={setEditCommitmentModalOpen}
-          commitmentData={currentRow.data}
-          setData={setData}
-          clickedField={currentRow.field}
-        />
-      )}
-      {childInfo && (
-        <ChildInfoModal
-          currentChildInfo={childInfo}
-          isModalOpen={isChildDetailModalOpen}
-          setModalOpen={setChildDetailModalOpen}
-        />
-      )}
+      </Container>
+
+      <EditChildModal
+        isModalOpen={isEditChildModalOpen}
+        setModalOpen={setEditChildModalOpen}
+        // childData={currentChild.data}
+        // setData={setData}
+      />
     </>
   );
 };
 
+const Container = styled.section`
+  height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
 const AccordionAction = styled.div`
   padding: 0 1rem 1rem;
   display: flex;
@@ -197,5 +246,4 @@ const ActionArea = styled.footer`
   display: flex;
   justify-content: center;
 `;
-
 export default Admin;

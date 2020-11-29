@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ChildrenContext } from '../App';
+import { AppContext } from '../App';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
@@ -9,8 +9,8 @@ const supportEmail = 'example@school.com';
 
 const Success = () => {
   const {
-    childrenState: { donorInfo },
-  } = useContext(ChildrenContext);
+    appState: { donorInfo },
+  } = useContext(AppContext);
   const { name, email } = donorInfo;
   return (
     <Container>

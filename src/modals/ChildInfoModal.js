@@ -8,20 +8,20 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { Link } from 'react-router-dom';
 import { getChildInfo } from '../services/api';
 import { actions } from '../services/state';
-import { ChildrenContext } from '../App';
+import { AppContext } from '../App';
 
 const ChildInfoModal = ({ currentChildId, isModalOpen, setModalOpen }) => {
   const handleCloseModal = () => setModalOpen(false);
 
-  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
+  const { appState, appDispatch } = useContext(AppContext);
   useEffect(() => {
-    !childrenState[currentChildId].wishes &&
+    !appState[currentChildId].wishes &&
       getChildInfo(currentChildId).then(data =>
-        childrenDispatch({ type: actions.receiveChildInfo, payload: data })
+        appDispatch({ type: actions.receiveChildInfo, payload: data })
       );
   }, [currentChildId]);
 
-  console.log('children state', childrenState);
+  console.log('children state', appState);
   return (
     <Dialog
       aria-labelledby='child information popup'
@@ -30,13 +30,13 @@ const ChildInfoModal = ({ currentChildId, isModalOpen, setModalOpen }) => {
       scroll='paper'
     >
       <DialogTitle id='child-information'>
-        {childrenState[currentChildId].age} YEAR OLD{' '}
-        {childrenState[currentChildId].gender.toLowerCase() === 'male'
+        {appState[currentChildId].age} YEAR OLD{' '}
+        {appState[currentChildId].gender.toLowerCase() === 'male'
           ? 'BOY'
           : 'GIRL'}
       </DialogTitle>
       <DialogContent dividers style={{ backgroundColor: '#f5f5f5' }}>
-        <ChildInfo childInfo={childrenState[currentChildId]} />
+        <ChildInfo childInfo={appState[currentChildId]} />
       </DialogContent>
       <DialogActions>
         <Button color='primary' onClick={handleCloseModal}>

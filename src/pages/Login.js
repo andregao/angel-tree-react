@@ -4,27 +4,26 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
-import { ChildrenContext } from '../App';
+import { AppContext } from '../App';
 import { actions } from '../services/state';
+import PageHeader from '../components/PageHeader';
 
 const Login = () => {
   const history = useHistory();
   const {
-    childrenState: { adminSecret },
-    childrenDispatch,
-  } = useContext(ChildrenContext);
+    appState: { adminSecret },
+    appDispatch,
+  } = useContext(AppContext);
 
   const handleClick = e => {
     e.preventDefault();
     history.push('/admin');
   };
   const handleChange = ({ target: { value } }) =>
-    childrenDispatch({ type: actions.receiveAdminSecret, payload: value });
+    appDispatch({ type: actions.receiveAdminSecret, payload: value });
   return (
     <Container>
-      <Typography variant='h2' gutterBottom>
-        Admin Login
-      </Typography>
+      <PageHeader text='Admin Login' />
       <TextField
         label='enter secret phrase'
         variant='outlined'
@@ -52,7 +51,6 @@ const Container = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
   > * {
     max-width: 600px;
   }

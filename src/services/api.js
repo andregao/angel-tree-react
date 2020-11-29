@@ -9,14 +9,19 @@ export async function getTreeData() {
   return data.content;
 }
 
-export async function getAdminData(secret) {
-  return await fetch(`${FUNCTIONS_BASE_URL}/admin`, {
+export async function getChildrenData(secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/children`, {
     headers: {
       Authorization: `Bearer ${secret}`,
     },
   });
-  // const data = await response.json();
-  // return data.content;
+}
+export async function getDonationsData(secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/donations`, {
+    headers: {
+      Authorization: `Bearer ${secret}`,
+    },
+  });
 }
 
 export async function getChildInfo(id) {
@@ -25,13 +30,25 @@ export async function getChildInfo(id) {
 }
 
 export async function sendSubmission(data) {
-  console.log('posting to database', data);
   const { childId } = data;
   return await fetch(`${FUNCTIONS_BASE_URL}/donate/${childId}`, {
     method: 'POST',
     mode: 'cors',
     headers: {
       'content-type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+export async function postNewChild(data, secret) {
+  console.log('posting new child', data);
+  return await fetch(`${FUNCTIONS_BASE_URL}/child`, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${secret}`,
     },
     body: JSON.stringify(data),
   });

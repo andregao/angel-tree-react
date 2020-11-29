@@ -28,11 +28,11 @@ Resources:
           Properties:
             Path: /tree
             Method: GET
-  getAdminContentFunction:
+  getChildrenSummaryFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.getAdminContentHandler
-      Description: Get all summary data for admin page
+      Handler: index.getChildrenSummaryHandler
+      Description: Get children summary data for admin page
       Policies:
         - DynamoDBReadPolicy:
             TableName: Summary
@@ -40,7 +40,21 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /admin
+            Path: /children
+            Method: GET
+  getDonationsSummaryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.getDonationsSummaryHandler
+      Description: Get donations summary data for admin page
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: Summary
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /donations
             Method: GET
   getChildInfoByIdFunction:
     Type: AWS::Serverless::Function

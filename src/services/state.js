@@ -1,9 +1,13 @@
 export const actions = {
+  // tree actions
   receiveTreeData: 'RECEIVE_TREE_DATA',
+  // app actions
   receiveChildInfo: 'RECEIVE_CHILD_INFO',
+  receiveChildDetails: 'RECEIVE_CHILD_DETAILS',
   receiveDonorInfo: 'RECEIVE_DONOR_INFO',
   receiveAdminSecret: 'RECEIVE_ADMIN_SECRET',
-  receiveAdminData: 'RECEIVE_ADMIN_DATA',
+  receiveChildrenData: 'RECEIVE_CHILDREN_DATA',
+  receiveDonationsData: 'RECEIVE_DONATIONS_DATA',
 };
 
 export const initialTreeState = {};
@@ -22,12 +26,14 @@ export function treeReducer(state, { type, payload }) {
   }
 }
 
-export const initialChildrenState = {
+export const initialAppState = {
   donorInfo: { name: '', email: '', phone: '' },
   adminSecret: '',
+  children: null,
+  donations: null,
 };
 
-export function childrenReducer(state, { type, payload }) {
+export function appReducer(state, { type, payload }) {
   switch (type) {
     case actions.receiveChildInfo:
       return {
@@ -44,10 +50,24 @@ export function childrenReducer(state, { type, payload }) {
         ...state,
         adminSecret: payload,
       };
-    case actions.receiveAdminData:
+    case actions.receiveChildrenData:
       return {
         ...state,
-        admin: payload,
+        children: payload,
+      };
+    case actions.receiveDonationsData:
+      return {
+        ...state,
+        donations: payload,
+      };
+    case actions.receiveChildDetails:
+      const id = payload.id;
+      const newChildren = { ...state.children };
+      newChildren.ids = [...state.children.ids, id];
+      newChildren[id] = payload;
+      return {
+        ...state,
+        children: newChildren,
       };
     default:
       throw new Error('invalid action dispatched');

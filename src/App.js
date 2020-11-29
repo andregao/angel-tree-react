@@ -3,8 +3,8 @@ import React, { createContext, Suspense, useMemo, useReducer } from 'react';
 import Tree from './pages/Tree';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import {
-  childrenReducer,
-  initialChildrenState,
+  appReducer,
+  initialAppState,
   initialTreeState,
   treeReducer,
 } from './services/state';
@@ -16,7 +16,7 @@ const Login = React.lazy(() => import('./pages/Login'));
 const Success = React.lazy(() => import('./pages/Success'));
 const PickAnother = React.lazy(() => import('./pages/PickAnother'));
 export const TreeContext = createContext({});
-export const ChildrenContext = createContext({});
+export const AppContext = createContext({});
 
 function App() {
   // tree state setup
@@ -25,20 +25,16 @@ function App() {
     treeState,
   ]);
 
-  // children state setup
-  const [childrenState, childrenDispatch] = useReducer(
-    childrenReducer,
-    initialChildrenState
-  );
-  const childrenContextValue = useMemo(
-    () => ({ childrenState, childrenDispatch }),
-    [childrenState]
-  );
+  // app state setup
+  const [appState, appDispatch] = useReducer(appReducer, initialAppState);
+  const appContextValue = useMemo(() => ({ appState, appDispatch }), [
+    appState,
+  ]);
   return (
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Switch>
-          <ChildrenContext.Provider value={childrenContextValue}>
+          <AppContext.Provider value={appContextValue}>
             <Route exact path='/'>
               <TreeContext.Provider value={treeContextValue}>
                 <Tree />
@@ -56,10 +52,11 @@ function App() {
             <Route path='/admin'>
               <Admin />
             </Route>
+
             <Route path='/login'>
               <Login />
             </Route>
-          </ChildrenContext.Provider>
+          </AppContext.Provider>
         </Switch>
       </Suspense>
     </BrowserRouter>

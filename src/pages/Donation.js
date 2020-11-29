@@ -9,7 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import InstructionModal from '../modals/InstructionModal';
 import PageHeader from '../components/PageHeader';
-import { ChildrenContext } from '../App';
+import { AppContext } from '../App';
 import { getChildInfo, sendSubmission } from '../services/api';
 import { actions } from '../services/state';
 import Heart from '../components/Heart';
@@ -23,12 +23,12 @@ const formInitialValues = { name: '', email: '', phone: '' };
 
 const Donation = () => {
   const { childId } = useParams(); // id from path parameter
-  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
-  console.log('childrenState:', childrenState);
-  const childInfo = childrenState[childId];
+  const { appState, appDispatch } = useContext(AppContext);
+  console.log('appState:', appState);
+  const childInfo = appState[childId];
 
   // form control
-  const donorInfo = childrenState.donorInfo || formInitialValues;
+  const donorInfo = appState.donorInfo || formInitialValues;
   donorInfo.childId = childId; // embed current child id for post request
   const [isSubmitting, setSubmitting] = useState(false);
   const [doAgree, setAgree] = useState(false);
@@ -46,7 +46,7 @@ const Donation = () => {
   // Fetch latest child information on render
   useEffect(() => {
     getChildInfo(childId).then(data =>
-      childrenDispatch({ type: actions.receiveChildInfo, payload: data })
+      appDispatch({ type: actions.receiveChildInfo, payload: data })
     );
   }, [childId]);
 
@@ -54,7 +54,7 @@ const Donation = () => {
   const formValues = useRef(values);
   formValues.current = values;
   const saveForm = () =>
-    childrenDispatch({
+    appDispatch({
       type: actions.receiveDonorInfo,
       payload: formValues.current,
     });

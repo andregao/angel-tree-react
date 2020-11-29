@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { ChildrenContext } from '../App';
+import { AppContext } from '../App';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
@@ -10,14 +10,14 @@ import dayjs from 'dayjs';
 
 const PickAnother = () => {
   // get information from state
-  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
-  const { name, childId } = childrenState.donorInfo;
-  const { date } = childrenState[childId];
+  const { appState, appDispatch } = useContext(AppContext);
+  const { name, childId } = appState.donorInfo;
+  const { date } = appState[childId];
 
   // Fetch latest child information on render
   useEffect(() => {
     getChildInfo(childId).then(data =>
-      childrenDispatch({ type: actions.receiveChildInfo, payload: data })
+      appDispatch({ type: actions.receiveChildInfo, payload: data })
     );
   }, [childId]);
 

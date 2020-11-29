@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 export const itemsFromArray = array => {
   let result = '';
   array.map(item => (result += `${item}, `));

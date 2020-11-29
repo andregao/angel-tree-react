@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { ChildrenContext } from '../App';
+import { AppContext } from '../App';
 import { actions } from './state';
 import { useHistory } from 'react-router-dom';
 

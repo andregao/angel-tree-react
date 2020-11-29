@@ -7,7 +7,7 @@ import { ReactComponent as AngelSvg } from './assets/angel.svg';
 import { getRandomColor, getTimeFromNow } from './services/ornament';
 import OrnamentSvg from './OrnamentSvg';
 import Typography from '@material-ui/core/Typography';
-import { ChildrenContext } from './App';
+import { AppContext } from './App';
 import { actions } from './services/state';
 
 const Ornament = ({ width, child, onDetailsClick }) => {
@@ -48,10 +48,10 @@ const Ornament = ({ width, child, onDetailsClick }) => {
       </div>
     </TooltipContentContainer>
   );
-  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
+  const { appState, appDispatch } = useContext(AppContext);
   const handleTooltipOpen = () => {
-    !childrenState[child.id] &&
-      childrenDispatch({ type: actions.receiveChildInfo, payload: child });
+    !appState[child.id] &&
+      appDispatch({ type: actions.receiveChildInfo, payload: child });
   };
   return (
     <Tooltip
