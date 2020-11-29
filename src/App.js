@@ -9,11 +9,12 @@ import {
   treeReducer,
 } from './services/state';
 import Loading from './pages/Loading';
-import PickAnother from './pages/PickAnother';
 
 const Commitment = React.lazy(() => import('./pages/Donation'));
 const Admin = React.lazy(() => import('./pages/Admin'));
+const Login = React.lazy(() => import('./pages/Login'));
 const Success = React.lazy(() => import('./pages/Success'));
+const PickAnother = React.lazy(() => import('./pages/PickAnother'));
 export const TreeContext = createContext({});
 export const ChildrenContext = createContext({});
 
@@ -46,14 +47,17 @@ function App() {
             <Route path='/donate/:childId'>
               <Commitment />
             </Route>
-            <Route path='/admin'>
-              <Admin />
-            </Route>
             <Route path='/success'>
               <Success />
             </Route>
             <Route path='/pick-another'>
               <PickAnother />
+            </Route>
+            <Route path='/admin'>
+              <Admin />
+            </Route>
+            <Route path='/login'>
+              <Login />
             </Route>
           </ChildrenContext.Provider>
         </Switch>

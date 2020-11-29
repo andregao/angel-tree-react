@@ -28,6 +28,20 @@ Resources:
           Properties:
             Path: /tree
             Method: GET
+  getAdminContentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.getAdminContentHandler
+      Description: Get all summary data for admin page
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: Summary
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /admin
+            Method: GET
   getChildInfoByIdFunction:
     Type: AWS::Serverless::Function
     Properties:

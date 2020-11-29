@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PageHeader from '../components/PageHeader';
@@ -11,30 +11,56 @@ import EditChildModal from '../modals/EditChildModal';
 import Button from '@material-ui/core/Button';
 import EditCommitmentModal from '../modals/EditCommitmentModal';
 import ChildInfoModal from '../modals/ChildInfoModal';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { ChildrenContext } from '../App';
+import { getAdminData } from '../services/api';
+import { actions } from '../services/state';
 
 const childColumns = [
   { field: 'id', headerName: 'ID', width: 50, type: 'number' },
   { field: 'name', headerName: 'Name', width: 170 },
-  { field: 'gender', headerName: 'Gender', width: 80 },
-  { field: 'age', headerName: 'Age', width: 60, type: 'number' },
-  { field: 'wishes', headerName: 'Wishes', width: 200, sortable: false },
-  { field: 'sizes', headerName: 'Sizes', width: 200, sortable: false },
-  { field: 'committed', headerName: 'Committed', width: 110 },
+  // { field: 'gender', headerName: 'Gender', width: 80 },
+  // { field: 'age', headerName: 'Age', width: 60, type: 'number' },
+  // { field: 'wishes', headerName: 'Wishes', width: 200, sortable: false },
+  // { field: 'sizes', headerName: 'Sizes', width: 200, sortable: false },
+  // { field: 'committed', headerName: 'Committed', width: 110 },
   { field: 'sponsor', headerName: 'Sponsor', width: 170 },
 ];
 const childRows = children;
 const commitmentColumns = [
   { field: 'id', headerName: 'ID', width: 50, type: 'number' },
   { field: 'name', headerName: 'Name', width: 170 },
-  { field: 'email', headerName: 'Email', width: 200 },
-  { field: 'phone', headerName: 'Phone', width: 130 },
+  // { field: 'email', headerName: 'Email', width: 200 },
+  // { field: 'phone', headerName: 'Phone', width: 130 },
   { field: 'childName', headerName: 'Child Name', width: 170 },
-  { field: 'childId', headerName: 'Child ID', width: 85, type: 'number' },
+  // { field: 'childId', headerName: 'Child ID', width: 85, type: 'number' },
 ];
 const commitmentRows = commitments;
 
 const Admin = () => {
+  const { childrenState, childrenDispatch } = useContext(ChildrenContext);
+  console.log('children state:', childrenState);
+  // fetch admin summary data on render
+  const history = useHistory();
+  const { adminSecret } = childrenState;
+
+  useEffect(() => {
+    getAdminData(adminSecret).then(result => {
+      if (result.status === 200) {
+        result.json().then(({ content }) => {
+          childrenDispatch({
+            type: actions.receiveAdminData,
+            payload: content,
+          });
+        });
+      }
+      // not authorized
+      if (result.status === 403) {
+        history.push('/login');
+      }
+    });
+  }, []);
+
   const [isEditChildModalOpen, setEditChildModalOpen] = useState(false);
   const [isEditCommitmentModalOpen, setEditCommitmentModalOpen] = useState(
     false

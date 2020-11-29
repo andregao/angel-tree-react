@@ -60,6 +60,61 @@ exports.getTreeContentHandler = async event => {
   }
 };
 
+exports.getAdminContentHandler = async event => {
+  if (event.httpMethod !== 'GET') {
+    throw new Error(
+      `getAdminContent only accept GET method, you tried: ${event.httpMethod}`
+    );
+  }
+  console.info('received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  // compose getItem request
+  const params = {
+    TableName: 'Summary',
+    Key: { use: { S: 'admin' } },
+  };
+  try {
+    const { Item } = await dbClient.send(new GetItemCommand(params));
+    const item = unmarshall(Item);
+
+    const response = {
+      statusCode: 200,
+      headers: {
+        ...corsHeaders,
+      },
+      body: JSON.stringify(item),
+    };
+
+    console.info(
+      `response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`
+    );
+    return response;
+  } catch (err) {
+    handleCRUDError(err);
+    return {
+      statusCode: 500,
+    };
+  }
+};
+
 exports.getChildInfoByIdHandler = async event => {
   if (event.httpMethod !== 'GET') {
     throw new Error(

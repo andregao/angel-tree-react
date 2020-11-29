@@ -9,6 +9,16 @@ export async function getTreeData() {
   return data.content;
 }
 
+export async function getAdminData(secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/admin`, {
+    headers: {
+      Authorization: `Bearer ${secret}`,
+    },
+  });
+  // const data = await response.json();
+  // return data.content;
+}
+
 export async function getChildInfo(id) {
   const response = await fetch(`${FUNCTIONS_BASE_URL}/child/info/${id}`);
   return await response.json();
