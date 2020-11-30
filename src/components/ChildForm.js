@@ -15,6 +15,7 @@ const ChildForm = ({
   handleSave,
   handleCloseModal,
   handleDelete,
+  readOnly,
 }) => {
   const { name, gender, age, wishes, sizes } = data;
   return (
@@ -27,6 +28,9 @@ const ChildForm = ({
           defaultValue={name}
           name={'name'}
           onChange={handleChange}
+          InputProps={{
+            readOnly,
+          }}
         />
         <FormControl variant='outlined' required>
           <InputLabel id='select-gender-label'>Gender</InputLabel>
@@ -37,6 +41,9 @@ const ChildForm = ({
             name='gender'
             label='Gender'
             onChange={handleChange}
+            inputProps={{
+              readOnly,
+            }}
           >
             <MenuItem value='male'>Male</MenuItem>
             <MenuItem value='female'>Female</MenuItem>
@@ -50,6 +57,9 @@ const ChildForm = ({
           type='number'
           name={'age'}
           onChange={handleChange}
+          InputProps={{
+            readOnly,
+          }}
         />
         <TextField
           label='Wishes'
@@ -59,6 +69,9 @@ const ChildForm = ({
           helperText='Use commas to separate the items'
           name={'wishes'}
           onChange={handleChange}
+          InputProps={{
+            readOnly,
+          }}
         />
         <TextField
           label='Sizes'
@@ -67,35 +80,46 @@ const ChildForm = ({
           helperText='Use commas to separate each size'
           name={'sizes'}
           onChange={handleChange}
+          InputProps={{
+            readOnly,
+          }}
         />
       </InputArea>
       <ActionArea>
-        {handleDelete && (
-          <Button
-            variant='text'
-            color='secondary'
-            onClick={handleDelete}
-            disabled={isSubmitting}
-          >
-            delete
+        {readOnly ? (
+          <Button variant='text' onClick={handleCloseModal} fullWidth>
+            close
           </Button>
+        ) : (
+          <>
+            {handleDelete && (
+              <Button
+                variant='outlined'
+                color='secondary'
+                onClick={handleDelete}
+                disabled={isSubmitting}
+              >
+                delete
+              </Button>
+            )}
+            <Button
+              variant='text'
+              onClick={handleCloseModal}
+              disabled={isSubmitting}
+            >
+              cancel
+            </Button>
+            <Button
+              variant='contained'
+              color='primary'
+              type='submit'
+              onClick={handleSave}
+              disabled={isSubmitting}
+            >
+              save
+            </Button>
+          </>
         )}
-        <Button
-          variant='text'
-          onClick={handleCloseModal}
-          disabled={isSubmitting}
-        >
-          cancel
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          type='submit'
-          onClick={handleSave}
-          disabled={isSubmitting}
-        >
-          save
-        </Button>
       </ActionArea>
     </form>
   );

@@ -67,6 +67,7 @@ const AddChildModal = ({ isModalOpen, setModalOpen }) => {
           handleSave={handleSave}
           handleChange={handleChange}
           data={currentChild}
+          readOnly={false}
         />
 
         {isSubmitting && <ProgressBar position='absolute' />}

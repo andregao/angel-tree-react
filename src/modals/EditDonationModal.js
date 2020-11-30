@@ -1,24 +1,24 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
-import { itemsToArray } from '../services/utils';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components/macro';
 
-const EditCommitmentModal = ({
+const EditDonationModal = ({
   isModalOpen,
   setModalOpen,
-  commitmentData,
+  data,
   setData,
-  clickedField,
+  readOnly,
 }) => {
-  const { name, email, phone, id } = commitmentData;
-  const handleCloseModal = () => setModalOpen(false);
+  const { name, phone, email } = data;
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setData(null);
+  };
   const handleChange = ({ target: { name, value } }) => {
-    if (name === 'wishes' || name === 'sizes') {
-      value = itemsToArray(value);
-    }
-    setData({ ...commitmentData, [name]: value });
+    setData({ ...data, [name]: value });
   };
   return (
     <Dialog
@@ -37,7 +37,9 @@ const EditCommitmentModal = ({
               value={name}
               name={'name'}
               onChange={handleChange}
-              autoFocus={clickedField === 'name'}
+              InputProps={{
+                readOnly,
+              }}
             />
             <TextField
               label='Email'
@@ -46,7 +48,9 @@ const EditCommitmentModal = ({
               value={email}
               name={'email'}
               onChange={handleChange}
-              autoFocus={clickedField === 'email'}
+              InputProps={{
+                readOnly,
+              }}
             />
             <TextField
               label='Phone'
@@ -55,29 +59,39 @@ const EditCommitmentModal = ({
               value={phone}
               name={'phone'}
               onChange={handleChange}
-              autoFocus={clickedField === 'phone'}
+              InputProps={{
+                readOnly,
+              }}
             />
           </InputArea>
           <ActionArea>
-            {/*{id !== undefined && (*/}
-            {/*  <Button*/}
-            {/*    variant='text'*/}
-            {/*    color='secondary'*/}
-            {/*    onClick={() => setModalOpen(false)}*/}
-            {/*  >*/}
-            {/*    delete*/}
-            {/*  </Button>*/}
-            {/*)}*/}
-            <Button variant='text' onClick={() => setModalOpen(false)}>
-              cancel
-            </Button>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={() => setModalOpen(false)}
-            >
-              save
-            </Button>
+            {readOnly ? (
+              <Button variant='text' onClick={handleCloseModal} fullWidth>
+                close
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant='text'
+                  color='secondary'
+                  size='small'
+                  onClick={() => setModalOpen(false)}
+                >
+                  delete
+                </Button>
+                <Button variant='text' size='small' onClick={handleCloseModal}>
+                  cancel
+                </Button>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  size='small'
+                  onClick={() => setModalOpen(false)}
+                >
+                  save
+                </Button>
+              </>
+            )}
           </ActionArea>
         </form>
       </Container>
@@ -95,10 +109,9 @@ const InputArea = styled.section`
     margin-bottom: 0.8rem;
   }
 `;
-
 const ActionArea = styled.footer`
   display: flex;
   justify-content: space-between;
 `;
 
-export default EditCommitmentModal;
+export default EditDonationModal;

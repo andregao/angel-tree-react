@@ -16,19 +16,22 @@ import dayjs from 'dayjs';
 import EditChildModal from '../modals/EditChildModal';
 import ProgressBar from '../components/ProgressBar';
 import CachedIcon from '@material-ui/icons/Cached';
+import EditDonationModal from '../modals/EditDonationModal';
 
 const Admin = () => {
   const { appState, appDispatch } = useContext(AppContext);
-  console.log('app state:', appState);
-  // eagerly fetch children summary data on render
-  const history = useHistory();
   const { adminSecret, children, donations } = appState;
+  console.log('app state:', appState);
+  // fetch summary data on render
+  const history = useHistory();
   const [needRefresh, setRefresh] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (needRefresh) {
       setLoading(true);
+      let receivedChildren = false;
+      let receivedDonations = false;
       getChildrenData(adminSecret).then(result => {
         if (result.status === 200) {
           result.json().then(({ content }) => {
@@ -42,54 +45,101 @@ const Admin = () => {
         if (result.status === 403) {
           history.push('/login');
         }
-        setLoading(false);
+        receivedChildren = true;
+        receivedDonations && setLoading(false);
+      });
+      getDonationsData(adminSecret).then(result => {
+        if (result.status === 200) {
+          result.json().then(({ content }) => {
+            appDispatch({
+              type: actions.receiveDonationsData,
+              payload: content,
+            });
+          });
+        }
+        // not authorized redirect
+        if (result.status === 403) {
+          history.push('/login');
+        }
+        receivedDonations = true;
+        receivedChildren && setLoading(false);
       });
       setRefresh(false);
     }
   }, [needRefresh]);
 
-  // add and edit children
+  // add, edit and view children
   const [isAddChildModalOpen, setAddChildModalOpen] = useState(false);
   const [isEditChildModalOpen, setEditChildModalOpen] = useState(false);
   const [childId, setChildId] = useState(null);
+  const [childReadOnly, setChildReadOnly] = useState(false);
 
   const handleAddChild = () => setAddChildModalOpen(true);
-
-  // children data grid
   const handleEditChildClick = id => {
+    setChildReadOnly(false);
     setChildId(id);
     setEditChildModalOpen(true);
   };
-  console.log('child id in admin', childId);
+  const handleViewChildClick = id => {
+    setChildReadOnly(true);
+    setChildId(id);
+    setEditChildModalOpen(true);
+  };
+
+  // view and edit donation info
+  const [isEditDonationModalOpen, setEditDonationModalOpen] = useState(false);
+  const [currentDonation, setCurrentDonation] = useState(null);
+  const [donationReadOnly, setDonationReadOnly] = useState(true);
+  const handleDonationInfoClick = id => {
+    setDonationReadOnly(true);
+    setCurrentDonation(appState.donations[id]);
+    setEditDonationModalOpen(true);
+  };
+  const handleEditDonationClick = id => {
+    setDonationReadOnly(false);
+    setCurrentDonation(appState.donations[id]);
+    setEditDonationModalOpen(true);
+  };
+
+  // children data grid
   const childrenColumns = [
     { field: 'id', headerName: 'ID', width: 130, type: 'number' },
-    { field: 'name', headerName: 'Name', width: 170 },
-    { field: 'donated', headerName: 'Donated', width: 90 },
-    { field: 'donorName', headerName: 'Donor', width: 170 },
+    { field: 'name', headerName: 'Child Name', width: 170 },
     {
-      field: 'editChild',
+      field: 'action',
       headerName: 'Action',
       width: 80,
+      sortable: false,
+      renderCell: ({ data }) =>
+        data.donated ? (
+          <Button size='small' onClick={() => handleViewChildClick(data.id)}>
+            View
+          </Button>
+        ) : (
+          <Button
+            color='primary'
+            size='small'
+            onClick={() => handleEditChildClick(data.id)}
+          >
+            Edit
+          </Button>
+        ),
+    },
+    { field: 'donated', headerName: 'Donated', width: 90 },
+    { field: 'donorName', headerName: 'Donor Name', width: 170 },
+    {
+      field: 'viewDonor',
+      headerName: 'Donation',
+      width: 90,
       sortable: false,
       renderCell: ({ data }) => (
         <Button
           color='primary'
           size='small'
-          disabled={data.donated}
-          onClick={() => handleEditChildClick(data.id)}
+          disabled={!data.donated}
+          onClick={() => handleDonationInfoClick(data.donationId)}
         >
-          Edit
-        </Button>
-      ),
-    },
-    {
-      field: 'viewDonor',
-      headerName: 'Donation',
-      width: 120,
-      sortable: false,
-      renderCell: ({ data }) => (
-        <Button color='primary' size='small' disabled={!data.donated}>
-          Donor info
+          Info
         </Button>
       ),
     },
@@ -109,16 +159,9 @@ const Admin = () => {
     { field: 'id', headerName: 'ID', width: 130, type: 'number' },
     { field: 'name', headerName: 'Donor Name', width: 160 },
     { field: 'phone', headerName: 'Phone Number', width: 130 },
-    { field: 'childName', headerName: 'Donate To', width: 160 },
-    {
-      field: 'date',
-      headerName: 'Donation Date',
-      width: 130,
-      valueGetter: params => dayjs(params.data.date).format('h:mma MMM DD'),
-    },
     {
       field: 'viewDonation',
-      headerName: 'More',
+      headerName: 'Action',
       width: 80,
       sortable: false,
       renderCell: ({ data }) => (
@@ -127,24 +170,31 @@ const Admin = () => {
           size='small'
           onClick={() => handleEditDonationClick(data.id)}
         >
-          Details
+          Edit
         </Button>
       ),
     },
+    { field: 'childName', headerName: 'Donate To', width: 160 },
     {
       field: 'viewChild',
-      headerName: 'Child',
+      headerName: 'More',
       width: 120,
       sortable: false,
       renderCell: ({ data }) => (
         <Button
           color='primary'
           size='small'
-          onClick={() => handleEditDonationClick(data.id)}
+          onClick={() => handleViewChildClick(data.childId)}
         >
           Child Info
         </Button>
       ),
+    },
+    {
+      field: 'date',
+      headerName: 'Donation Date',
+      width: 130,
+      valueGetter: params => dayjs(params.data.date).format('MM/DD h:mma'),
     },
   ];
   let donationRows = [];
@@ -156,27 +206,7 @@ const Admin = () => {
       return donation;
     });
   }
-  const handleExpansion = (event, expanded) => {
-    if (expanded) {
-      getDonationsData(adminSecret).then(result => {
-        if (result.status === 200) {
-          result.json().then(({ content }) => {
-            appDispatch({
-              type: actions.receiveDonationsData,
-              payload: content,
-            });
-          });
-        }
-        // not authorized redirect
-        if (result.status === 403) {
-          history.push('/login');
-        }
-      });
-    }
-  };
-  const handleEditDonationClick = id => {
-    console.log('edit donation button clicked, donation id:', id);
-  };
+
   return (
     <>
       <Container>
@@ -187,15 +217,16 @@ const Admin = () => {
             expandIcon={<ExpandMoreIcon />}
             id='children-expansion'
           >
-            <Typography variant='h6'>Children</Typography>
+            <Typography variant='h6'>Children List</Typography>
           </AccordionSummary>
           <AccordionAction>
             <Button
-              color='primary'
               size='small'
               startIcon={<CachedIcon />}
-              variant='contained'
+              variant='outlined'
+              color='primary'
               onClick={() => setRefresh(true)}
+              disabled={isLoading}
             >
               Refresh
             </Button>
@@ -219,13 +250,25 @@ const Admin = () => {
           </div>
         </Accordion>
         {/*donations accordion*/}
-        <Accordion onChange={handleExpansion}>
+        <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             id='children-expansion'
           >
-            <Typography variant='h6'>Donations</Typography>
+            <Typography variant='h6'>Donations List</Typography>
           </AccordionSummary>
+          <AccordionAction>
+            <Button
+              color='primary'
+              size='small'
+              startIcon={<CachedIcon />}
+              variant='outlined'
+              onClick={() => setRefresh(true)}
+              disabled={isLoading}
+            >
+              Refresh
+            </Button>
+          </AccordionAction>
           <div style={{ height: 660, width: '100%' }}>
             <DataGrid
               rows={donationRows}
@@ -243,15 +286,29 @@ const Admin = () => {
         </ActionArea>
       </Container>
 
-      <AddChildModal
-        isModalOpen={isAddChildModalOpen}
-        setModalOpen={setAddChildModalOpen}
-      />
-      <EditChildModal
-        isModalOpen={isEditChildModalOpen}
-        setModalOpen={setEditChildModalOpen}
-        id={childId}
-      />
+      {isAddChildModalOpen && (
+        <AddChildModal
+          isModalOpen={isAddChildModalOpen}
+          setModalOpen={setAddChildModalOpen}
+        />
+      )}
+      {isEditChildModalOpen && (
+        <EditChildModal
+          isModalOpen={isEditChildModalOpen}
+          setModalOpen={setEditChildModalOpen}
+          id={childId}
+          readOnly={childReadOnly}
+        />
+      )}
+      {isEditDonationModalOpen && (
+        <EditDonationModal
+          isModalOpen={isEditDonationModalOpen}
+          setModalOpen={setEditDonationModalOpen}
+          data={currentDonation}
+          setData={setCurrentDonation}
+          readOnly={donationReadOnly}
+        />
+      )}
       {isLoading && <ProgressBar position='fixed' />}
     </>
   );

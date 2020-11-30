@@ -4,14 +4,13 @@ import { deleteChild, getChildInfo, updateChild } from '../services/api';
 import { actions } from '../services/state';
 import Dialog from '@material-ui/core/Dialog';
 import styled from 'styled-components/macro';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import ChildForm from '../components/ChildForm';
 import { itemsToArray } from '../services/utils';
 import { useHistory } from 'react-router-dom';
 import Heart from '../components/Heart';
 import ProgressBar from '../components/ProgressBar';
 
-const EditChildModal = ({ isModalOpen, setModalOpen, id }) => {
+const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
   const history = useHistory();
   const { appState, appDispatch } = useContext(AppContext);
   const [isSubmitting, setSubmitting] = useState(false);
@@ -39,7 +38,6 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id }) => {
   const handleCloseModal = () => {
     setSubmitting(false);
     dataReady = false;
-    // setCurrentChild(null);
     setModalOpen(false);
   };
   const handleSave = () => {
@@ -99,6 +97,7 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id }) => {
             handleSave={handleSave}
             handleChange={handleChange}
             handleDelete={handleDelete}
+            readOnly={readOnly}
           />
         ) : (
           <Heart />
