@@ -21,6 +21,8 @@ import dayjs from 'dayjs';
 import EditChildModal from '../modals/EditChildModal';
 import CachedIcon from '@material-ui/icons/Cached';
 import DonationModal from '../modals/DonationModal';
+import DonationsAccordion from '../components/DonationsAccordion';
+import ChildrenAccordion from '../components/ChildrenAccordion';
 
 const Admin = () => {
   const { appState, appDispatch } = useContext(AppContext);
@@ -31,9 +33,6 @@ const Admin = () => {
   const [needRefresh, setRefresh] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
-  // donation data grid depends on children data for the child name
-  // this flag counter act the race condition of two fetch requests
-  const [childrenReady, setChildrenReady] = useState(false);
   useEffect(() => {
     if (needRefresh) {
       setLoading(true);
@@ -52,7 +51,6 @@ const Admin = () => {
         if (result.status === 403) {
           history.push('/login');
         }
-        setChildrenReady(true);
         receivedChildren = true;
         receivedDonations && setLoading(false);
       });
@@ -203,10 +201,6 @@ const Admin = () => {
   }
 
   //donation data grid
-  const getChildName = params => {
-    const childId = params.getValue('childId');
-    return appState.children[childId].name;
-  };
   const donationColumns = [
     { field: 'id', headerName: 'ID', width: 130, type: 'number' },
     { field: 'name', headerName: 'Donor Name', width: 160 },
@@ -230,7 +224,6 @@ const Admin = () => {
       field: 'childName',
       headerName: 'Donate To',
       width: 160,
-      valueGetter: getChildName,
     },
     {
       field: 'viewChild',
@@ -255,11 +248,12 @@ const Admin = () => {
     },
   ];
   let donationRows = [];
-  if (donations) {
+  if (donations?.ids?.length > 0 && children?.ids?.length > 0) {
     donationRows = donations.ids.map(id => {
-      // inject id
+      // inject id and child name
       let donation = donations[id];
       donation.id = id;
+      donation.childName = children[donation.childId].name;
       return donation;
     });
   }
@@ -269,74 +263,21 @@ const Admin = () => {
       <Container>
         <PageHeader text='Admin Area' />
         {/*children accordion*/}
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            id='children-expansion'
-          >
-            <Typography variant='h6'>Children List</Typography>
-          </AccordionSummary>
-          <AccordionAction>
-            <Button
-              size='small'
-              startIcon={<CachedIcon />}
-              variant='outlined'
-              color='primary'
-              onClick={() => setRefresh(true)}
-              disabled={isLoading}
-            >
-              Refresh
-            </Button>
-            <Button
-              color='primary'
-              size='small'
-              variant='contained'
-              onClick={handleAddChild}
-            >
-              Add a child
-            </Button>
-          </AccordionAction>
-          <div style={{ height: 660, width: '100%' }}>
-            <DataGrid
-              rows={childrenRows}
-              columns={childrenColumns}
-              pageSize={10}
-              autoHeight
-              loading={isLoading}
-            />
-          </div>
-        </Accordion>
+        <ChildrenAccordion
+          isLoading={isLoading}
+          setRefresh={setRefresh}
+          handleAddChild={handleAddChild}
+          columns={childrenColumns}
+          rows={childrenRows}
+        />
         {/*donations accordion*/}
-        {childrenReady && (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              id='children-expansion'
-            >
-              <Typography variant='h6'>Donations List</Typography>
-            </AccordionSummary>
-            <AccordionAction>
-              <Button
-                color='primary'
-                size='small'
-                startIcon={<CachedIcon />}
-                variant='outlined'
-                onClick={() => setRefresh(true)}
-                disabled={isLoading}
-              >
-                Refresh
-              </Button>
-            </AccordionAction>
-            <div style={{ height: 660, width: '100%' }}>
-              <DataGrid
-                rows={donationRows}
-                columns={donationColumns}
-                pageSize={10}
-                autoHeight
-                loading={isLoading}
-              />
-            </div>
-          </Accordion>
+        {donationRows.length > 0 && (
+          <DonationsAccordion
+            setRefresh={setRefresh}
+            isLoading={isLoading}
+            rows={donationRows}
+            columns={donationColumns}
+          />
         )}
         <ActionArea>
           <Button variant='text' color='primary' component={Link} to='/'>
@@ -383,14 +324,7 @@ const Container = styled.section`
   background-color: #fbf5e9;
   min-height: 100vh;
 `;
-const AccordionAction = styled.div`
-  padding: 0 1rem 1rem;
-  display: flex;
-  justify-content: flex-end;
-  > * {
-    margin-left: 1rem;
-  }
-`;
+
 const ActionArea = styled.footer`
   padding: 1rem;
   display: flex;
