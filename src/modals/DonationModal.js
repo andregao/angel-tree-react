@@ -3,12 +3,16 @@ import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components/macro';
+import ProgressBar from '../components/ProgressBar';
 
-const EditDonationModal = ({
+const DonationModal = ({
   isModalOpen,
   setModalOpen,
   data,
   setData,
+  handleDelete,
+  handleSave,
+  isSubmitting,
   readOnly,
 }) => {
   const { name, phone, email } = data;
@@ -72,21 +76,29 @@ const EditDonationModal = ({
             ) : (
               <>
                 <Button
-                  variant='text'
+                  variant='outlined'
                   color='secondary'
                   size='small'
-                  onClick={() => setModalOpen(false)}
+                  onClick={handleDelete}
+                  disabled={isSubmitting}
                 >
                   delete
                 </Button>
-                <Button variant='text' size='small' onClick={handleCloseModal}>
+                <Button
+                  variant='text'
+                  size='small'
+                  onClick={handleCloseModal}
+                  disabled={isSubmitting}
+                >
                   cancel
                 </Button>
                 <Button
                   variant='contained'
                   color='primary'
                   size='small'
-                  onClick={() => setModalOpen(false)}
+                  type='submit'
+                  onClick={handleSave}
+                  disabled={isSubmitting}
                 >
                   save
                 </Button>
@@ -94,6 +106,7 @@ const EditDonationModal = ({
             )}
           </ActionArea>
         </form>
+        {isSubmitting && <ProgressBar position='absolute' />}
       </Container>
     </Dialog>
   );
@@ -101,6 +114,7 @@ const EditDonationModal = ({
 
 const Container = styled.section`
   padding: 1rem;
+  position: relative;
 `;
 const InputArea = styled.section`
   display: flex;
@@ -114,4 +128,4 @@ const ActionArea = styled.footer`
   justify-content: space-between;
 `;
 
-export default EditDonationModal;
+export default DonationModal;

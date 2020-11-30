@@ -9,7 +9,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import { children, commitments } from '../mock/mock';
 import AddChildModal from '../modals/AddChildModal';
 import Button from '@material-ui/core/Button';
-import EditDonationModal from '../modals/EditDonationModal';
+import DonationModal from '../modals/DonationModal';
 import ChildInfoModal from '../modals/ChildInfoModal';
 import { Link, useHistory } from 'react-router-dom';
 import { AppContext } from '../App';
@@ -168,7 +168,7 @@ const AdminOld = () => {
         />
       )}
       {currentRow?.data?.email && (
-        <EditDonationModal
+        <DonationModal
           isModalOpen={isEditCommitmentModalOpen}
           setModalOpen={setEditCommitmentModalOpen}
           commitmentData={currentRow.data}

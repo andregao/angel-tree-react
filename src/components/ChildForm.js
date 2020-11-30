@@ -65,7 +65,7 @@ const ChildForm = ({
           label='Wishes'
           variant='outlined'
           required
-          defaultValue={itemsFromArray(wishes)}
+          defaultValue={wishes ? itemsFromArray(wishes) : ''}
           helperText='Use commas to separate the items'
           name={'wishes'}
           onChange={handleChange}
@@ -76,7 +76,7 @@ const ChildForm = ({
         <TextField
           label='Sizes'
           variant='outlined'
-          defaultValue={itemsFromArray(sizes)}
+          defaultValue={sizes ? itemsFromArray(sizes) : ''}
           helperText='Use commas to separate each size'
           name={'sizes'}
           onChange={handleChange}

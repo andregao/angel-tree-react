@@ -9,6 +9,7 @@ import { itemsToArray } from '../services/utils';
 import { useHistory } from 'react-router-dom';
 import Heart from '../components/Heart';
 import ProgressBar from '../components/ProgressBar';
+import { LoadingText } from '../pages/Loading';
 
 const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
   const history = useHistory();
@@ -68,6 +69,7 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
     const { adminSecret } = appState;
     const { id } = currentChild;
     deleteChild(id, adminSecret).then(result => {
+      setSubmitting(false);
       if (result.status === 200) {
         appDispatch({
           type: actions.deleteChild,
@@ -100,7 +102,10 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
             readOnly={readOnly}
           />
         ) : (
-          <Heart />
+          <section style={{ textAlign: 'center' }}>
+            <Heart />
+            <LoadingText>Loading Child Info</LoadingText>
+          </section>
         )}
         {isSubmitting && <ProgressBar position='absolute' />}
       </Container>

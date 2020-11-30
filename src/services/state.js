@@ -11,6 +11,8 @@ export const actions = {
   receiveChildInfoAdmin: 'RECEIVE_CHILD_INFO_ADMIN',
   updateChildDetails: 'UPDATE_CHILD_DETAILS',
   deleteChild: 'DELETE_CHILD',
+  updateDonationDetails: 'UPDATE_DONATION_DETAILS',
+  deleteDonation: 'DELETE_DONATION',
 };
 
 export const initialTreeState = {};
@@ -96,6 +98,22 @@ export function appReducer(state, { type, payload }) {
         children: {
           ...state.children,
           ids: state.children.ids.filter(id => id !== payload),
+        },
+      };
+    case actions.deleteDonation:
+      return {
+        ...state,
+        donations: {
+          ...state.donations,
+          ids: state.donations.ids.filter(id => id !== payload),
+        },
+      };
+    case actions.updateDonationDetails:
+      return {
+        ...state,
+        donations: {
+          ...state.donations,
+          [payload.id]: payload,
         },
       };
     default:

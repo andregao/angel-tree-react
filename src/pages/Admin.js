@@ -2,7 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { AppContext } from '../App';
 import { Link, useHistory } from 'react-router-dom';
-import { getChildrenData, getDonationsData } from '../services/api';
+import {
+  deleteDonation,
+  getChildrenData,
+  getDonationsData,
+  updateDonation,
+} from '../services/api';
 import { actions } from '../services/state';
 import PageHeader from '../components/PageHeader';
 import Accordion from '@material-ui/core/Accordion';
@@ -16,7 +21,7 @@ import dayjs from 'dayjs';
 import EditChildModal from '../modals/EditChildModal';
 import ProgressBar from '../components/ProgressBar';
 import CachedIcon from '@material-ui/icons/Cached';
-import EditDonationModal from '../modals/EditDonationModal';
+import DonationModal from '../modals/DonationModal';
 
 const Admin = () => {
   const { appState, appDispatch } = useContext(AppContext);
@@ -87,18 +92,58 @@ const Admin = () => {
   };
 
   // view and edit donation info
-  const [isEditDonationModalOpen, setEditDonationModalOpen] = useState(false);
+  const [isDonationModalOpen, setDonationModalOpen] = useState(false);
   const [currentDonation, setCurrentDonation] = useState(null);
   const [donationReadOnly, setDonationReadOnly] = useState(true);
+  const [donationModalSubmitting, setDonationModalSubmitting] = useState(false);
+  console.log('current donation:', currentDonation);
   const handleDonationInfoClick = id => {
     setDonationReadOnly(true);
     setCurrentDonation(appState.donations[id]);
-    setEditDonationModalOpen(true);
+    setDonationModalOpen(true);
   };
   const handleEditDonationClick = id => {
     setDonationReadOnly(false);
     setCurrentDonation(appState.donations[id]);
-    setEditDonationModalOpen(true);
+    setDonationModalOpen(true);
+  };
+  const handleDeleteDonation = () => {
+    setDonationModalSubmitting(true);
+    const { id } = currentDonation;
+    deleteDonation(id, adminSecret).then(result => {
+      setDonationModalSubmitting(false);
+      if (result.status === 200) {
+        appDispatch({
+          type: actions.deleteDonation,
+          payload: id,
+        });
+        setDonationModalOpen(false);
+        setCurrentDonation(null);
+      }
+      // not authorized redirect
+      if (result.status === 403) {
+        history.push('/login');
+      }
+    });
+  };
+  const handleSaveDonation = () => {
+    setDonationModalSubmitting(true);
+
+    updateDonation(currentDonation, adminSecret).then(result => {
+      setDonationModalSubmitting(false);
+      if (result.status === 200) {
+        appDispatch({
+          type: actions.updateDonationDetails,
+          payload: currentDonation,
+        });
+        setDonationModalOpen(false);
+        setCurrentDonation(null);
+      }
+      // not authorized redirect
+      if (result.status === 403) {
+        history.push('/login');
+      }
+    });
   };
 
   // children data grid
@@ -212,7 +257,7 @@ const Admin = () => {
       <Container>
         <PageHeader text='Admin Area' />
         {/*children accordion*/}
-        <Accordion expanded>
+        <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             id='children-expansion'
@@ -245,7 +290,7 @@ const Admin = () => {
               columns={childrenColumns}
               pageSize={10}
               autoHeight
-              loading={childrenRows.length === 0}
+              loading={isLoading}
             />
           </div>
         </Accordion>
@@ -275,7 +320,7 @@ const Admin = () => {
               columns={donationColumns}
               pageSize={10}
               autoHeight
-              loading={donationRows.length === 0}
+              loading={isLoading}
             />
           </div>
         </Accordion>
@@ -300,26 +345,29 @@ const Admin = () => {
           readOnly={childReadOnly}
         />
       )}
-      {isEditDonationModalOpen && (
-        <EditDonationModal
-          isModalOpen={isEditDonationModalOpen}
-          setModalOpen={setEditDonationModalOpen}
+      {isDonationModalOpen && (
+        <DonationModal
+          isModalOpen={isDonationModalOpen}
+          setModalOpen={setDonationModalOpen}
           data={currentDonation}
           setData={setCurrentDonation}
+          handleDelete={handleDeleteDonation}
+          handleSave={handleSaveDonation}
           readOnly={donationReadOnly}
+          isSubmitting={donationModalSubmitting}
         />
       )}
-      {isLoading && <ProgressBar position='fixed' />}
     </>
   );
 };
 
 const Container = styled.section`
-  height: 100vh;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  background-color: #fbf5e9;
+  min-height: 100vh;
 `;
 const AccordionAction = styled.div`
   padding: 0 1rem 1rem;

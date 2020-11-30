@@ -76,6 +76,29 @@ export async function deleteChild(id, secret) {
   });
 }
 
+export async function updateDonation(data, secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/donation/${data.id}`, {
+    method: 'PUT',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${secret}`,
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteDonation(id, secret) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/donation/${id}`, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${secret}`,
+    },
+  });
+}
+
 function wrapPromise(promise) {
   let status = 'pending';
   let result;

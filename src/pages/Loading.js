@@ -6,7 +6,7 @@ const Loading = () => {
   return (
     <Container>
       <Heart children={<div />} />
-      <FullPageText>just a sec</FullPageText>
+      <LoadingText>just a sec</LoadingText>
     </Container>
   );
 };
@@ -19,7 +19,7 @@ const Container = styled.section`
   align-items: center;
 `;
 
-export const FullPageText = styled.h2`
+export const LoadingText = styled.h2`
   color: #cc231e;
 `;
 
