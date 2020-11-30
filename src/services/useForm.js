@@ -40,12 +40,10 @@ const useForm = (
     if (isSubmitting) {
       submit(values).then(result => {
         if (result.status === 200) {
-          console.log('donation success');
           // redirect to success page
           history.push('/success');
         }
         if (result.status === 403) {
-          console.log('already donated');
           // prompt and click to go home
           history.push('/pick-another');
         }

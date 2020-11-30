@@ -22,9 +22,9 @@ Resources:
         Stream:
           Type: DynamoDB
           Properties:
-            Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Donation/stream/2020-11-30T11:16:10.344
+            Stream: arn:aws:dynamodb:us-west-1:486040421677:table/Donation/stream/2020-11-30T12:18:18.646
             BatchSize: 1
             StartingPosition: LATEST
-            Enabled: false
+            Enabled: true
       EventInvokeConfig:
         MaximumRetryAttempts: 2

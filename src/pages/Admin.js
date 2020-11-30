@@ -25,7 +25,7 @@ import DonationModal from '../modals/DonationModal';
 const Admin = () => {
   const { appState, appDispatch } = useContext(AppContext);
   const { adminSecret, children, donations } = appState;
-  console.log('app state:', appState);
+  // console.log('app state:', appState);
   // fetch summary data on render
   const history = useHistory();
   const [needRefresh, setRefresh] = useState(true);
@@ -99,7 +99,7 @@ const Admin = () => {
   const [currentDonation, setCurrentDonation] = useState(null);
   const [donationReadOnly, setDonationReadOnly] = useState(true);
   const [donationModalSubmitting, setDonationModalSubmitting] = useState(false);
-  console.log('current donation:', currentDonation);
+  // console.log('current donation:', currentDonation);
   const handleDonationInfoClick = id => {
     setDonationReadOnly(true);
     setCurrentDonation(appState.donations[id]);

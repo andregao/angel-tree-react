@@ -3,7 +3,7 @@ const { unmarshall } = require('@aws-sdk/util-dynamodb');
 const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns');
 
 const REGION = 'us-west-1';
-const TABLE_STREAM_TOPIC_ARN = 'arn:aws:sns:us-east-1:486040421677:Donations';
+const TABLE_STREAM_TOPIC_ARN = 'arn:aws:sns:us-west-1:486040421677:Donations';
 const sns = new SNSClient(REGION);
 const dbClient = new DynamoDBClient(REGION);
 
@@ -25,8 +25,8 @@ exports.donationStreamEmailAdmins = (event, context, callback) => {
             Subject: `New donation from ${donorName} to ${childName}`,
             Message: `${donorName} just made a commitment to donate to ${childName} for the following items:
 
-    Wishes: ${JSON.stringify(wishes).join(', ')}
-    Sizes: ${JSON.stringify(sizes).join(', ')}
+    Wishes: ${wishes.join(', ')}
+    Sizes: ${sizes.join(', ')}
 
 Donor Contact:
 

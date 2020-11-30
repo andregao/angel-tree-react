@@ -24,7 +24,7 @@ const AddChildModal = ({ isModalOpen, setModalOpen }) => {
   const { appState, appDispatch } = useContext(AppContext);
   const [currentChild, setCurrentChild] = useState(initialChildState);
   const [isSubmitting, setSubmitting] = useState(false);
-  console.log({ currentChild });
+  // console.log({ currentChild });
   const handleCloseModal = () => {
     setCurrentChild(initialChildState);
     setSubmitting(false);

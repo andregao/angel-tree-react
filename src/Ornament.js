@@ -39,6 +39,7 @@ const Ornament = ({ width, child, onDetailsClick }) => {
             <StyledButton
               size='small'
               component={Link}
+              variant='outlined'
               to={`/donate/${child.id}`}
             >
               Donate
@@ -146,6 +147,7 @@ const TooltipContentContainer = styled.section`
 const StyledButton = styled(Button)`
   color: inherit;
   border-color: inherit;
+  margin: 0.5rem 0.2rem;
 `;
 
 export default Ornament;

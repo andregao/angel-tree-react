@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TreeSvg from '../assets/tree.svg';
 import OrnamentArea from '../OrnamentArea';
-import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components/macro';
+import { Typography } from '@material-ui/core';
+import { AppContext } from '../App';
 
 const Tree = () => {
+  const {
+    appState: { adminSecret },
+  } = useContext(AppContext);
+  const history = useHistory();
+
+  const handleAdmin = () => history.push(adminSecret ? '/admin' : '/login');
   return (
     <Container>
+      <SiteTitle variant='h6' color='primary' onClick={handleAdmin}>
+        Mater Academy Bonanza Angel Tree 2020
+      </SiteTitle>
       <TreeContainer>
         <TreeImage src={TreeSvg} />
         <BranchesWithPaddings>
@@ -18,16 +28,16 @@ const Tree = () => {
       </TreeContainer>
 
       {/*temporary button*/}
-      <div style={{ position: 'absolute', right: 10, bottom: 30 }}>
-        <Button
-          variant='contained'
-          component={Link}
-          to='/admin'
-          color='primary'
-        >
-          Admin
-        </Button>
-      </div>
+      {/*<div style={{ position: 'fixed', right: 10, bottom: 30 }}>*/}
+      {/*  <Button*/}
+      {/*    variant='contained'*/}
+      {/*    component={Link}*/}
+      {/*    to={adminSecret ? '/admin' : '/login'}*/}
+      {/*    color='primary'*/}
+      {/*  >*/}
+      {/*    Admin*/}
+      {/*  </Button>*/}
+      {/*</div>*/}
     </Container>
   );
 };
@@ -40,6 +50,16 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: start;
+`;
+
+const SiteTitle = styled(Typography)`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+  padding: 0 1rem;
+  background-color: rgba(251, 245, 233, 0.8);
 `;
 
 const TreeContainer = styled.ul`

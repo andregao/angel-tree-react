@@ -1,6 +1,6 @@
 export const FUNCTIONS_BASE_URL =
   process.env.NODE_ENV === 'development'
-    ? 'http://docker.for.mac.localhost:3001'
+    ? 'https://st71g32d7l.execute-api.us-west-1.amazonaws.com/Prod'
     : 'https://st71g32d7l.execute-api.us-west-1.amazonaws.com/Prod';
 
 export async function getTreeData() {

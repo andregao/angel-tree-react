@@ -43,8 +43,8 @@ exports.childItemStreamAggregateToSummary = async (event, context) => {
   if (eventName === 'INSERT' || eventName === 'MODIFY') {
     const updatedChild = unmarshall(NewImage);
     console.log('stream record unpacked', JSON.stringify(updatedChild));
-    const { donated, id, gender, age } = updatedChild;
-    const newChild = { donated, id, gender, age };
+    const { donated, date, id, gender, age } = updatedChild;
+    const newChild = { donated, id, gender, age, date: date ? date : 0 };
     // modify tree content
     eventName === 'INSERT' &&
       (newTreeChildren = [...prevTreeChildren, newChild]);

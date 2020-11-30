@@ -22,8 +22,8 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
     appState.children[id] &&
     appState.children[id].wishes
   );
-  console.log({ dataReady });
-  console.log('currentChild', currentChild);
+  // console.log({ dataReady });
+  // console.log('currentChild', currentChild);
   // fetch child info on load
   useEffect(() => {
     id &&
@@ -34,7 +34,7 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
   // update local state after fetching from app state
   useEffect(() => {
     dataReady && setCurrentChild(appState.children[id]);
-    console.log('current child id: in effect', id);
+    // console.log('current child id: in effect', id);
   }, [dataReady, id]);
   const handleCloseModal = () => {
     setSubmitting(false);

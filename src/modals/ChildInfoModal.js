@@ -21,7 +21,7 @@ const ChildInfoModal = ({ currentChildId, isModalOpen, setModalOpen }) => {
       );
   }, [currentChildId]);
 
-  console.log('children state', appState);
+  // console.log('children state', appState);
   return (
     <Dialog
       aria-labelledby='child information popup'

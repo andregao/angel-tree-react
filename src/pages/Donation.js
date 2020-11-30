@@ -24,7 +24,7 @@ const formInitialValues = { name: '', email: '', phone: '' };
 const Donation = () => {
   const { childId } = useParams(); // id from path parameter
   const { appState, appDispatch } = useContext(AppContext);
-  console.log('appState:', appState);
+  // console.log('appState:', appState);
   const childInfo = appState[childId];
 
   // form control
@@ -39,7 +39,7 @@ const Donation = () => {
     submitting => setSubmitting(submitting),
     sendSubmission
   );
-  console.log('errors', errors);
+  // console.log('errors', errors);
 
   const [isModalOpen, setModalOpen] = useState(false);
 

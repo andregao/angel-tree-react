@@ -14,9 +14,12 @@ const Login = () => {
     appDispatch,
   } = useContext(AppContext);
 
-  const handleClick = e => {
+  const handleLogin = e => {
     e.preventDefault();
     history.push('/admin');
+  };
+  const handleBack = () => {
+    history.push('/');
   };
   const handleChange = ({ target: { value } }) =>
     appDispatch({ type: actions.receiveAdminSecret, payload: value });
@@ -32,13 +35,16 @@ const Login = () => {
         required
       />
       <Button
-        variant='contained'
+        variant='outlined'
         color='primary'
-        onClick={handleClick}
+        onClick={handleLogin}
         type='submit'
         disabled={!adminSecret}
       >
         Let me in
+      </Button>
+      <Button variant='contained' color='primary' onClick={handleBack}>
+        Oops, back to tree
       </Button>
     </Container>
   );
@@ -53,7 +59,7 @@ const Container = styled.form`
   > * {
     max-width: 600px;
   }
-  > :last-child {
+  > button {
     margin-top: 1rem;
   }
 `;
