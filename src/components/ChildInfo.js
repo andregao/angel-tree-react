@@ -9,13 +9,14 @@ import CardContent from '@material-ui/core/CardContent';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 const ChildInfo = ({ childInfo }) => {
+  const { sizes, wishes } = childInfo;
   return (
     <Container>
       <Card variant='outlined'>
         <CardContent>
           <Typography color='textSecondary'>Wish List</Typography>
           <List component='ul' aria-label="child's wish list">
-            {childInfo.wishes ? (
+            {wishes ? (
               childInfo.wishes.map(item => (
                 <ListItem key={item}>
                   <ListItemText primary={item} />
@@ -31,12 +32,14 @@ const ChildInfo = ({ childInfo }) => {
         <CardContent>
           <Typography color='textSecondary'>Sizes</Typography>
           <List component='ul' aria-label="child's wish list">
-            {childInfo.sizes ? (
+            {sizes ? (
               childInfo.sizes.map(item => (
                 <ListItem key={item}>
                   <ListItemText primary={item} />
                 </ListItem>
               ))
+            ) : wishes ? (
+              <Typography variant='body2'>No Sizing Info</Typography>
             ) : (
               <ListSkeleton />
             )}

@@ -17,16 +17,14 @@ const ChildrenAccordion = ({
   handleAddChild,
 }) => {
   const [filter, setFilter] = useState('');
-  const handleChange = ({ target: { value } }) =>
-    setFilter(value.toLowerCase());
-
+  const handleChange = ({ target: { value } }) => setFilter(value);
   const [filteredRows, setFilteredRows] = useState(rows);
   useEffect(() => {
-    const result = rows.filter(item =>
-      item.name.toLowerCase().includes(filter)
-    );
+    const result = rows.filter(item => {
+      return item.name.toLowerCase().includes(filter.toLowerCase());
+    });
     setFilteredRows(result);
-  }, [filter]);
+  }, [filter, rows]);
   return (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} id='children-expansion'>
@@ -40,7 +38,7 @@ const ChildrenAccordion = ({
           onChange={handleChange}
           value={filter}
         />
-        <div className='buttons'>
+        <ButtonGroup>
           <Button
             size='small'
             startIcon={<CachedIcon />}
@@ -57,9 +55,9 @@ const ChildrenAccordion = ({
             variant='contained'
             onClick={handleAddChild}
           >
-            Add a child
+            Add child
           </Button>
-        </div>
+        </ButtonGroup>
       </AccordionActions>
       <div style={{ height: 660, width: '100%' }}>
         <DataGrid
@@ -74,10 +72,23 @@ const ChildrenAccordion = ({
   );
 };
 const AccordionActions = styled.div`
-  padding: 0 1rem 1rem;
+  padding: 0 1rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  > .buttons > * {
+  align-items: center;
+  //> :first-child {
+  //  margin-right: 1rem;
+  //}
+  > * {
+    margin-bottom: 1rem;
+  }
+`;
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  > :not(:first-child) {
     margin-left: 1rem;
   }
 `;

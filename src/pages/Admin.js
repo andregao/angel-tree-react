@@ -10,16 +10,10 @@ import {
 } from '../services/api';
 import { actions } from '../services/state';
 import PageHeader from '../components/PageHeader';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import AddChildModal from '../modals/AddChildModal';
-import { DataGrid } from '@material-ui/data-grid';
 import dayjs from 'dayjs';
 import EditChildModal from '../modals/EditChildModal';
-import CachedIcon from '@material-ui/icons/Cached';
 import DonationModal from '../modals/DonationModal';
 import DonationsAccordion from '../components/DonationsAccordion';
 import ChildrenAccordion from '../components/ChildrenAccordion';

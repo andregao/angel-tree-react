@@ -11,15 +11,14 @@ import TextField from '@material-ui/core/TextField';
 
 const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {
   const [filter, setFilter] = useState('');
-  const handleChange = ({ target: { value } }) =>
-    setFilter(value.toLowerCase());
+  const handleChange = ({ target: { value } }) => setFilter(value);
   const [filteredRows, setFilteredRows] = useState(rows);
   useEffect(() => {
     const result = rows.filter(item =>
-      item.name.toLowerCase().includes(filter)
+      item.name.toLowerCase().includes(filter.toLowerCase())
     );
     setFilteredRows(result);
-  }, [filter]);
+  }, [filter, rows]);
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} id='children-expansion'>
@@ -57,9 +56,13 @@ const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {
   );
 };
 const AccordionAction = styled.div`
-  padding: 1rem;
+  padding: 0 1rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  > * {
+    margin-bottom: 1rem;
+  }
 `;
 export default DonationsAccordion;
