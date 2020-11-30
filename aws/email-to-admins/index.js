@@ -2,7 +2,7 @@ const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
 const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns');
 
-const REGION = 'us-east-1';
+const REGION = 'us-west-1';
 const TABLE_STREAM_TOPIC_ARN = 'arn:aws:sns:us-east-1:486040421677:Donations';
 const sns = new SNSClient(REGION);
 const dbClient = new DynamoDBClient(REGION);

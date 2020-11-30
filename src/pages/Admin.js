@@ -19,7 +19,6 @@ import AddChildModal from '../modals/AddChildModal';
 import { DataGrid } from '@material-ui/data-grid';
 import dayjs from 'dayjs';
 import EditChildModal from '../modals/EditChildModal';
-import ProgressBar from '../components/ProgressBar';
 import CachedIcon from '@material-ui/icons/Cached';
 import DonationModal from '../modals/DonationModal';
 
@@ -32,6 +31,9 @@ const Admin = () => {
   const [needRefresh, setRefresh] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
+  // donation data grid depends on children data for the child name
+  // this flag counter act the race condition of two fetch requests
+  const [childrenReady, setChildrenReady] = useState(false);
   useEffect(() => {
     if (needRefresh) {
       setLoading(true);
@@ -50,6 +52,7 @@ const Admin = () => {
         if (result.status === 403) {
           history.push('/login');
         }
+        setChildrenReady(true);
         receivedChildren = true;
         receivedDonations && setLoading(false);
       });
@@ -200,6 +203,10 @@ const Admin = () => {
   }
 
   //donation data grid
+  const getChildName = params => {
+    const childId = params.getValue('childId');
+    return appState.children[childId].name;
+  };
   const donationColumns = [
     { field: 'id', headerName: 'ID', width: 130, type: 'number' },
     { field: 'name', headerName: 'Donor Name', width: 160 },
@@ -219,7 +226,12 @@ const Admin = () => {
         </Button>
       ),
     },
-    { field: 'childName', headerName: 'Donate To', width: 160 },
+    {
+      field: 'childName',
+      headerName: 'Donate To',
+      width: 160,
+      valueGetter: getChildName,
+    },
     {
       field: 'viewChild',
       headerName: 'More',
@@ -227,7 +239,7 @@ const Admin = () => {
       sortable: false,
       renderCell: ({ data }) => (
         <Button
-          color='primary'
+          variant='outlined'
           size='small'
           onClick={() => handleViewChildClick(data.childId)}
         >
@@ -295,35 +307,37 @@ const Admin = () => {
           </div>
         </Accordion>
         {/*donations accordion*/}
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            id='children-expansion'
-          >
-            <Typography variant='h6'>Donations List</Typography>
-          </AccordionSummary>
-          <AccordionAction>
-            <Button
-              color='primary'
-              size='small'
-              startIcon={<CachedIcon />}
-              variant='outlined'
-              onClick={() => setRefresh(true)}
-              disabled={isLoading}
+        {childrenReady && (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              id='children-expansion'
             >
-              Refresh
-            </Button>
-          </AccordionAction>
-          <div style={{ height: 660, width: '100%' }}>
-            <DataGrid
-              rows={donationRows}
-              columns={donationColumns}
-              pageSize={10}
-              autoHeight
-              loading={isLoading}
-            />
-          </div>
-        </Accordion>
+              <Typography variant='h6'>Donations List</Typography>
+            </AccordionSummary>
+            <AccordionAction>
+              <Button
+                color='primary'
+                size='small'
+                startIcon={<CachedIcon />}
+                variant='outlined'
+                onClick={() => setRefresh(true)}
+                disabled={isLoading}
+              >
+                Refresh
+              </Button>
+            </AccordionAction>
+            <div style={{ height: 660, width: '100%' }}>
+              <DataGrid
+                rows={donationRows}
+                columns={donationColumns}
+                pageSize={10}
+                autoHeight
+                loading={isLoading}
+              />
+            </div>
+          </Accordion>
+        )}
         <ActionArea>
           <Button variant='text' color='primary' component={Link} to='/'>
             back

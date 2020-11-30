@@ -16,7 +16,6 @@ import Heart from '../components/Heart';
 import { validateForm } from '../services/utils';
 import useForm from '../services/useForm';
 import DonatedNotice from '../DonatedNotice';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import dayjs from 'dayjs';
 import ProgressBar from '../components/ProgressBar';
 

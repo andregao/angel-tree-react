@@ -3,8 +3,8 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "angel-tree-donation-stream-email-admins"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-eqph7jq284wt"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-yw7uhv87elqf"
 s3_prefix = "angel-tree-donation-stream-email-admins"
-region = "us-east-1"
+region = "us-west-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"

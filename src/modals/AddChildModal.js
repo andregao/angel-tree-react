@@ -3,7 +3,6 @@ import Dialog from '@material-ui/core/Dialog';
 import styled from 'styled-components/macro';
 import { itemsToArray } from '../services/utils';
 import { postNewChild } from '../services/api';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { AppContext } from '../App';
 import { actions } from '../services/state';
 import { useHistory } from 'react-router-dom';

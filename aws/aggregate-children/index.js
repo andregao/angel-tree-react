@@ -1,5 +1,5 @@
 const DYNAMODB_ENDPOINT = 'http://docker.for.mac.localhost:8000';
-const REGION = 'us-east-1';
+const REGION = 'us-west-1';
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 const {
   DynamoDBClient,
@@ -108,9 +108,11 @@ exports.childItemStreamAggregateToSummary = async (event, context) => {
   // delete uses OldImage
   if (eventName === 'REMOVE') {
     // delete child
+    const oldId = OldImage.id.S;
     childrenSummary.ids = childrenSummary.ids.filter(
-      childId => childId !== OldImage.id.S
+      childId => childId !== oldId
     );
+    delete childrenSummary[oldId];
   }
 
   // compose update request

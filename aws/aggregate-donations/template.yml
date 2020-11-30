@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Angel tree dynamodb donation table stream trigger email to admins
+Description: Angel tree dynamodb donation table stream trigger aggregation to summary table
 Transform: AWS::Serverless-2016-10-31
 
 Globals:
@@ -9,18 +9,18 @@ Globals:
     Timeout: 5
 
 Resources:
-  processDynamoDBDonationStreamFunction:
+  DynamoDBChildItemStreamFunction:
     Type: AWS::Serverless::Function
     Properties:
       MemorySize: 192
-      Handler: index.donationStreamEmailAdmins
-      Description: New donation item triggers SNS email to admins
+      Handler: index.donationItemStreamAggregateToSummary
+      Description: Donation item update triggers aggregation to summary table
       Policies:
         - AWSLambdaDynamoDBExecutionRole
         - DynamoDBReadPolicy:
-            TableName: Child
-        - SNSPublishMessagePolicy:
-            TopicName: Donations
+            TableName: Donation
+        - DynamoDBCrudPolicy:
+            TableName: Summary
       Events:
         Stream:
           Type: DynamoDB
@@ -28,6 +28,6 @@ Resources:
             Stream: arn:aws:dynamodb:us-east-1:486040421677:table/Donation/stream/2020-11-30T11:16:10.344
             BatchSize: 1
             StartingPosition: LATEST
-            Enabled: false
+            Enabled: true
       EventInvokeConfig:
         MaximumRetryAttempts: 2

@@ -1,5 +1,5 @@
 const DYNAMODB_ENDPOINT = 'http://docker.for.mac.localhost:8000';
-const REGION = 'us-east-1';
+const REGION = 'us-west-1';
 const {
   DynamoDBClient,
   GetItemCommand,

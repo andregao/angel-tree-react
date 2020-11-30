@@ -1,6 +1,6 @@
 const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
-const REGION = 'us-east-1';
+const REGION = 'us-west-1';
 const dbClient = new DynamoDBClient(REGION);
 require('dotenv').config();
 const sgMail = require('@sendgrid/mail');
