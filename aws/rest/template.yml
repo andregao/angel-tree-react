@@ -128,6 +128,20 @@ Resources:
           Properties:
             Path: /child/{id}
             Method: DELETE
+  putDonationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.putDonationHandler
+      Description: Update donation item in dynamodb
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: Donation
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /donation/{id}
+            Method: PUT
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"

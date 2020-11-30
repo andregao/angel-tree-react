@@ -333,7 +333,7 @@ exports.postChildHandler = async event => {
 exports.putChildHandler = async event => {
   if (event.httpMethod !== 'PUT') {
     throw new Error(
-      `postChild only accept PUT method, you tried: ${event.httpMethod}`
+      `putChild only accept PUT method, you tried: ${event.httpMethod}`
     );
   }
   console.info('putChild received:', event);
@@ -445,6 +445,69 @@ exports.deleteChildHandler = async event => {
     };
   }
 };
+
+exports.putDonationHandler = async event => {
+  if (event.httpMethod !== 'PUT') {
+    throw new Error(
+      `putDonation only accept PUT method, you tried: ${event.httpMethod}`
+    );
+  }
+  console.info('putDonation received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  // organize data
+  const id = event.pathParameters.id;
+  const data = JSON.parse(event.body);
+  const { name, phone, email } = data;
+  // compose updateItem request
+  const params = {
+    TableName: 'Donation',
+    Key: { id: { S: id } },
+    UpdateExpression:
+      'SET #n = :name, ' + 'phone = :phone, ' + 'email = :email',
+    ExpressionAttributeNames: {
+      '#n': 'name',
+    },
+    ExpressionAttributeValues: marshall({
+      ':name': name,
+      ':phone': phone,
+      ':email': email,
+    }),
+  };
+  try {
+    await dbClient.send(new UpdateItemCommand(params));
+    console.log('updateItem success, childId:', id);
+    return {
+      statusCode: 200,
+      headers: { ...corsHeaders },
+    };
+  } catch (err) {
+    handleCRUDError(err);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders },
+    };
+  }
+};
+
+exports.deleteDonationHandler = async event => {};
 // error handling templates from AWS, made meaningful in a few cases to client
 const internal = { statusCode: 500 };
 

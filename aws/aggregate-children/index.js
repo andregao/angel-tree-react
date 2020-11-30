@@ -33,8 +33,6 @@ exports.childItemStreamAggregateToSummary = async (event, context) => {
     eventName,
     dynamodb: { NewImage, OldImage },
   } = record;
-  NewImage && console.log('new image', JSON.stringify(NewImage));
-  OldImage && console.log('old image', JSON.stringify(OldImage));
 
   let newChildren = null;
   // create and update use NewImage
