@@ -445,7 +445,6 @@ exports.deleteChildHandler = async event => {
     };
   }
 };
-
 exports.putDonationHandler = async event => {
   if (event.httpMethod !== 'PUT') {
     throw new Error(
@@ -493,7 +492,84 @@ exports.putDonationHandler = async event => {
   };
   try {
     await dbClient.send(new UpdateItemCommand(params));
-    console.log('updateItem success, childId:', id);
+    console.log('updateItem success, donation:', id);
+    return {
+      statusCode: 200,
+      headers: { ...corsHeaders },
+    };
+  } catch (err) {
+    handleCRUDError(err);
+    return {
+      statusCode: 500,
+      headers: { ...corsHeaders },
+    };
+  }
+};
+exports.deleteDonationHandler = async event => {
+  console.info('deleteDonation received:', event);
+  // authorization
+  if (
+    !event.headers.Authorization ||
+    !event.headers.Authorization.startsWith('Bearer ')
+  ) {
+    console.log('secret missing');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+  const secretWord = event.headers.Authorization.split('Bearer ')[1];
+  if (secretWord !== process.env.SECRECT_WORD) {
+    console.log('secret incorrect');
+    return {
+      statusCode: 403,
+      headers: { ...corsHeaders },
+    };
+  }
+
+  const donationId = event.pathParameters.id;
+  // get child id from donation item
+  const getParams = {
+    TableName: 'Donation',
+    Key: { id: { S: donationId } },
+    ProjectionExpression: 'childId',
+  };
+  const { Item } = await dbClient.send(new GetItemCommand(getParams));
+  const childId = Item.childId.S;
+  // compose transaction request
+  const transactParams = {
+    TransactItems: [
+      {
+        Update: {
+          TableName: 'Child',
+          Key: { id: { S: childId } },
+          ConditionExpression: 'donated=:true',
+          UpdateExpression:
+            'SET donated=:false REMOVE donationId, #date, donorName',
+          ExpressionAttributeValues: marshall({
+            ':true': true,
+            ':false': false,
+          }),
+          ExpressionAttributeNames: {
+            '#date': 'date',
+          },
+        },
+      },
+      {
+        Delete: {
+          TableName: 'Donation',
+          Key: {
+            id: { S: donationId },
+          },
+        },
+      },
+    ],
+  };
+  try {
+    const transactionResponse = await dbClient.send(
+      new TransactWriteItemsCommand(transactParams)
+    );
+    console.log('transaction response from DynamoDB', transactionResponse);
     return {
       statusCode: 200,
       headers: { ...corsHeaders },
@@ -507,7 +583,6 @@ exports.putDonationHandler = async event => {
   }
 };
 
-exports.deleteDonationHandler = async event => {};
 // error handling templates from AWS, made meaningful in a few cases to client
 const internal = { statusCode: 500 };
 
