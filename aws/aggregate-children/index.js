@@ -18,15 +18,6 @@ if (process.env.AWS_SAM_LOCAL) {
 }
 
 exports.childItemStreamAggregateToSummary = async (event, context) => {
-  // get current tree content
-  const getItemParams = {
-    TableName: 'Summary',
-    Key: { use: { S: 'tree' } },
-  };
-  const { Item } = await dbClient.send(new GetItemCommand(getItemParams));
-  const {
-    content: { children: prevChildren },
-  } = unmarshall(Item);
   // extract data from stream
   const record = event.Records[0];
   const {
@@ -34,7 +25,20 @@ exports.childItemStreamAggregateToSummary = async (event, context) => {
     dynamodb: { NewImage, OldImage },
   } = record;
 
-  let newChildren = null;
+  // UPDATE TREE
+  // get current tree content
+  const getTreeItemParams = {
+    TableName: 'Summary',
+    Key: { use: { S: 'tree' } },
+  };
+  const { Item: treeItem } = await dbClient.send(
+    new GetItemCommand(getTreeItemParams)
+  );
+  const {
+    content: { children: prevTreeChildren },
+  } = unmarshall(treeItem);
+
+  let newTreeChildren = null;
   // create and update use NewImage
   if (eventName === 'INSERT' || eventName === 'MODIFY') {
     const updatedChild = unmarshall(NewImage);
@@ -42,23 +46,26 @@ exports.childItemStreamAggregateToSummary = async (event, context) => {
     const { donated, id, gender, age } = updatedChild;
     const newChild = { donated, id, gender, age };
     // modify tree content
-    eventName === 'INSERT' && (newChildren = [...prevChildren, newChild]);
+    eventName === 'INSERT' &&
+      (newTreeChildren = [...prevTreeChildren, newChild]);
     if (eventName === 'MODIFY') {
-      const targetIndex = prevChildren.findIndex(child => child.id === id);
-      newChildren = [
-        ...prevChildren.slice(0, targetIndex),
+      const targetIndex = prevTreeChildren.findIndex(child => child.id === id);
+      newTreeChildren = [
+        ...prevTreeChildren.slice(0, targetIndex),
         newChild,
-        ...prevChildren.slice(targetIndex + 1, -1),
+        ...prevTreeChildren.slice(targetIndex + 1),
       ];
     }
   }
   // delete uses OldImage
   if (eventName === 'REMOVE') {
     // modify tree content
-    newChildren = prevChildren.filter(child => child.id !== OldImage.id.S);
+    newTreeChildren = prevTreeChildren.filter(
+      child => child.id !== OldImage.id.S
+    );
   }
   const updated = Date.now();
-  const newTreeContent = { updated, children: newChildren };
+  const newTreeContent = { updated, children: newTreeChildren };
   // update tree content
   const updateItemParams = {
     TableName: 'Summary',
@@ -70,4 +77,50 @@ exports.childItemStreamAggregateToSummary = async (event, context) => {
   };
   await dbClient.send(new UpdateItemCommand(updateItemParams));
   console.log(`update tree success, event: ${eventName}`);
+
+  // UPDATE CHILDREN SUMMARY
+  // get current children summary
+  const getChildrenSummaryParams = {
+    TableName: 'Summary',
+    Key: { use: { S: 'children' } },
+  };
+  const { Item: childrenItem } = await dbClient.send(
+    new GetItemCommand(getChildrenSummaryParams)
+  );
+  const { content: childrenSummary } = unmarshall(childrenItem);
+  // create and update use NewImage
+  if (eventName === 'INSERT' || eventName === 'MODIFY') {
+    const updatedChild = unmarshall(NewImage);
+    const { donated, id, name, donorName, donationId } = updatedChild;
+    const newChild = {
+      donated,
+      id,
+      name,
+      donorName: donorName || '',
+      donationId: donationId || '',
+    };
+    // add or update child
+    childrenSummary[id] = newChild;
+    if (eventName === 'INSERT') {
+      childrenSummary.ids.push(id);
+    }
+  }
+  // delete uses OldImage
+  if (eventName === 'REMOVE') {
+    // delete child
+    childrenSummary.ids = childrenSummary.ids.filter(
+      childId => childId !== OldImage.id.S
+    );
+  }
+
+  // compose update request
+  const updateChildrenSummaryParams = {
+    TableName: 'Summary',
+    Key: { use: { S: 'children' } },
+    UpdateExpression: 'SET content = :content',
+    ExpressionAttributeValues: marshall({
+      ':content': childrenSummary,
+    }),
+  };
+  await dbClient.send(new UpdateItemCommand(updateChildrenSummaryParams));
 };
