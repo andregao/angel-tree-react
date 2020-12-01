@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import TreeSvg from '../assets/tree.svg';
 import OrnamentArea from '../OrnamentArea';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { Typography } from '@material-ui/core';
 import { AppContext } from '../App';
+import Button from '@material-ui/core/Button';
+import InstructionModal from '../modals/InstructionModal';
 
 const Tree = () => {
   const {
@@ -13,11 +15,21 @@ const Tree = () => {
   const history = useHistory();
 
   const handleAdmin = () => history.push(adminSecret ? '/admin' : '/login');
+
+  const [isModalOpen, setModalOpen] = useState(false);
   return (
     <Container>
       <SiteTitle variant='h6' color='primary' onClick={handleAdmin}>
         Mater Academy Bonanza Angel Tree 2020
       </SiteTitle>
+      <InstructionButton
+        variant='outlined'
+        size='small'
+        color='primary'
+        onClick={() => setModalOpen(true)}
+      >
+        Instructions
+      </InstructionButton>
       <TreeContainer>
         <TreeImage src={TreeSvg} />
         <BranchesWithPaddings>
@@ -27,17 +39,7 @@ const Tree = () => {
         </BranchesWithPaddings>
       </TreeContainer>
 
-      {/*temporary button*/}
-      {/*<div style={{ position: 'fixed', right: 10, bottom: 30 }}>*/}
-      {/*  <Button*/}
-      {/*    variant='contained'*/}
-      {/*    component={Link}*/}
-      {/*    to={adminSecret ? '/admin' : '/login'}*/}
-      {/*    color='primary'*/}
-      {/*  >*/}
-      {/*    Admin*/}
-      {/*  </Button>*/}
-      {/*</div>*/}
+      <InstructionModal {...{ isModalOpen, setModalOpen }} />
     </Container>
   );
 };
@@ -60,6 +62,13 @@ const SiteTitle = styled(Typography)`
   z-index: 100;
   padding: 0 1rem;
   background-color: rgba(251, 245, 233, 0.8);
+`;
+const InstructionButton = styled(Button)`
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  margin: 5% 3%;
 `;
 
 const TreeContainer = styled.ul`
