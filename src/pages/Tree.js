@@ -25,7 +25,6 @@ const Tree = () => {
       <InstructionButton
         variant='outlined'
         size='small'
-        color='primary'
         onClick={() => setModalOpen(true)}
       >
         Instructions
@@ -52,6 +51,12 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: start;
+  background: linear-gradient(
+    rgb(0, 96, 145),
+    rgb(137, 188, 202) 61%,
+    rgb(225, 230, 239) 72%,
+    rgb(245, 251, 255)
+  );
 `;
 
 const SiteTitle = styled(Typography)`
@@ -60,8 +65,8 @@ const SiteTitle = styled(Typography)`
   width: 100%;
   text-align: center;
   z-index: 100;
-  padding: 0 1rem;
-  background-color: rgba(251, 245, 233, 0.8);
+  padding: 0.2rem 1rem;
+  background-color: rgba(251, 245, 233, 0.85);
 `;
 const InstructionButton = styled(Button)`
   position: fixed;
@@ -69,6 +74,8 @@ const InstructionButton = styled(Button)`
   right: 0;
   z-index: 100;
   margin: 5% 3%;
+  color: white;
+  border-color: white;
 `;
 
 const TreeContainer = styled.ul`
@@ -80,6 +87,7 @@ const TreeContainer = styled.ul`
 `;
 const TreeImage = styled.img`
   width: 100%;
+  filter: drop-shadow(0 3px 3px rgba(255, 255, 255, 0.6));
 `;
 
 const BranchesWithPaddings = styled.div`
