@@ -7,9 +7,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
-const instructions = `If you would like to donate to one of our angels please check which angel by clicking on the ornament. (Or angel if you change it) please fill out your name, email and phone number and be sure to click submit. 
+const instructions = `If you would like to donate to one of our angels please choose one by clicking on an angle card and check out their wishes. After clicking donate, fill out your name, email and phone number and be sure to click submit.
 
-The information will be emailed to you. Please make sure to drop off the gifts to Mater Bonanza’s front office no later than December 14th.
+Once submitted, the card will be taken off the tree and the child's information will be emailed to you. Please make sure to drop off the gifts to Mater Bonanza’s front office no later than December 14th.
 
 4760 East Bonanza Road, Las Vegas, NV 89110.
 

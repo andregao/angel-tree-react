@@ -87,7 +87,7 @@ const TreeContainer = styled.ul`
 `;
 const TreeImage = styled.img`
   width: 100%;
-  filter: drop-shadow(0 3px 3px rgba(255, 255, 255, 0.6));
+  filter: drop-shadow(0 3px 3px rgba(255, 255, 255, 0.5));
 `;
 
 const BranchesWithPaddings = styled.div`
