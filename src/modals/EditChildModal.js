@@ -3,7 +3,7 @@ import { AppContext } from '../App';
 import { deleteChild, getChildInfo, updateChild } from '../services/api';
 import { actions } from '../services/state';
 import Dialog from '@material-ui/core/Dialog';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import ChildForm from '../components/ChildForm';
 import { itemsToArray } from '../services/utils';
 import { useHistory } from 'react-router-dom';

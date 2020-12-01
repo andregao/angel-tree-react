@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { itemsToArray } from '../services/utils';
 import { postNewChild } from '../services/api';
 import { AppContext } from '../App';

@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import dayjs from 'dayjs';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
 
 const DonatedNotice = ({ date }) => {

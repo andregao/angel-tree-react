@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';

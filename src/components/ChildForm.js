@@ -5,7 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { itemsFromArray } from '../services/utils';
 
 const ChildForm = ({

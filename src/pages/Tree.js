@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import TreeSvg from '../assets/tree.svg';
 import OrnamentArea from '../OrnamentArea';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { AppContext } from '../App';
 import Button from '@material-ui/core/Button';

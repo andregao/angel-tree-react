@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';

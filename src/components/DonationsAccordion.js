@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import CachedIcon from '@material-ui/icons/Cached';
 import { DataGrid } from '@material-ui/data-grid';
 import Accordion from '@material-ui/core/Accordion';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 
 const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {

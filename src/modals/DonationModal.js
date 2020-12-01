@@ -2,7 +2,7 @@ import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import ProgressBar from '../components/ProgressBar';
 
 const DonationModal = ({
