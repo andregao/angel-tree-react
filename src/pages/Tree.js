@@ -23,6 +23,18 @@ const Tree = () => {
       <Snow layer='back' />
     </>
   );
+  const jingleBellsRef = useRef(null);
+  const [played, setPlay] = useState(false);
+  const handlePlaySound = () => {
+    if (!played) {
+      setPlay(true);
+      jingleBellsRef.current.play();
+    }
+  };
+  const handleInstructionClick = () => {
+    setModalOpen(true);
+    handlePlaySound();
+  };
   const [isModalOpen, setModalOpen] = useState(false);
   return (
     <Container>
@@ -32,11 +44,11 @@ const Tree = () => {
       <InstructionButton
         variant='outlined'
         size='small'
-        onClick={() => setModalOpen(true)}
+        onClick={handleInstructionClick}
       >
         Instructions
       </InstructionButton>
-      <TreeContainer>
+      <TreeContainer onClick={handlePlaySound}>
         <TreeImage src={TreeSvg} />
         <BranchesWithPaddings>
           <LeftPadding />
@@ -47,6 +59,11 @@ const Tree = () => {
 
       {snow.current}
       <InstructionModal {...{ isModalOpen, setModalOpen }} />
+      <audio
+        src='https://firebasestorage.googleapis.com/v0/b/xmas2020.appspot.com/o/bells.mp3?alt=media&token=3b680f62-840f-4063-8165-6f8820624ca3'
+        preload='auto'
+        ref={jingleBellsRef}
+      />
     </Container>
   );
 };

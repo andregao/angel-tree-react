@@ -62,7 +62,7 @@ function getBoxShadow(flakeCount) {
     }vh 0 -${Math.floor(Math.random() * 5) / 10}rem white`;
     i !== flakeCount - 1 && (result += ',');
   }
-  console.log(result);
+  // console.log(result);
   return result;
 }
 
