@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import TreeSvg from '../assets/tree.svg';
 import OrnamentArea from '../OrnamentArea';
 import { useHistory } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { Typography } from '@material-ui/core';
 import { AppContext } from '../App';
 import Button from '@material-ui/core/Button';
 import InstructionModal from '../modals/InstructionModal';
+import Snow from '../components/Snow';
 
 const Tree = () => {
   const {
@@ -15,7 +16,13 @@ const Tree = () => {
   const history = useHistory();
 
   const handleAdmin = () => history.push(adminSecret ? '/admin' : '/login');
-
+  const snow = useRef(
+    <>
+      <Snow layer='front' />
+      <Snow layer='mid' />
+      <Snow layer='back' />
+    </>
+  );
   const [isModalOpen, setModalOpen] = useState(false);
   return (
     <Container>
@@ -38,6 +45,7 @@ const Tree = () => {
         </BranchesWithPaddings>
       </TreeContainer>
 
+      {snow.current}
       <InstructionModal {...{ isModalOpen, setModalOpen }} />
     </Container>
   );
@@ -51,6 +59,7 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: start;
+  z-index: 0;
   background: linear-gradient(
     rgb(0, 96, 145),
     rgb(137, 188, 202) 61%,
@@ -84,6 +93,7 @@ const TreeContainer = styled.ul`
   top: 0;
   width: 100%;
   max-height: 100vh;
+  z-index: 50;
 `;
 const TreeImage = styled.img`
   width: 100%;
