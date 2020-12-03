@@ -25,7 +25,10 @@ exports.donationStreamEmailDonors = (event, context, callback) => {
 
           const msg = {
             to: email,
-            from: { email: process.env.SG_SENDER, name: 'Angel Tree' },
+            from: {
+              email: process.env.SG_SENDER,
+              name: 'Angel Tree Mater Academy Bonanza',
+            },
             templateId: process.env.SG_TEMPLATE_ID,
             dynamicTemplateData: {
               donorName,
