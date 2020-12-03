@@ -11,8 +11,12 @@ import TextField from '@material-ui/core/TextField';
 
 const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {
   const [filter, setFilter] = useState('');
-  const handleChange = ({ target: { value } }) => setFilter(value);
   const [filteredRows, setFilteredRows] = useState(rows);
+  const [pageNumber, setPageNumber] = useState(1);
+  const handleChange = ({ target: { value } }) => {
+    setPageNumber(1);
+    setFilter(value);
+  };
   useEffect(() => {
     const result = rows.filter(item =>
       item.name.toLowerCase().includes(filter.toLowerCase())
@@ -48,6 +52,10 @@ const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {
           rows={filteredRows}
           columns={columns}
           pageSize={10}
+          onPageChange={params => {
+            setPageNumber(params.page);
+          }}
+          page={pageNumber}
           autoHeight
           loading={isLoading}
         />

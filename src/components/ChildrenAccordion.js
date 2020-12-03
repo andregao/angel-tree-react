@@ -17,7 +17,11 @@ const ChildrenAccordion = ({
   handleAddChild,
 }) => {
   const [filter, setFilter] = useState('');
-  const handleChange = ({ target: { value } }) => setFilter(value);
+  const [pageNumber, setPageNumber] = useState(1);
+  const handleChange = ({ target: { value } }) => {
+    setPageNumber(1);
+    setFilter(value);
+  };
   const [filteredRows, setFilteredRows] = useState(rows);
   useEffect(() => {
     const result = rows.filter(item => {
@@ -65,6 +69,10 @@ const ChildrenAccordion = ({
           columns={columns}
           pageSize={10}
           autoHeight
+          onPageChange={params => {
+            setPageNumber(params.page);
+          }}
+          page={pageNumber}
           loading={isLoading}
         />
       </div>
@@ -77,9 +85,6 @@ const AccordionActions = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  //> :first-child {
-  //  margin-right: 1rem;
-  //}
   > * {
     margin-bottom: 1rem;
   }
