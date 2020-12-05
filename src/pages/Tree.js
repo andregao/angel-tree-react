@@ -1,13 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import TreeSvg from '../assets/tree.svg';
 import OrnamentArea from '../OrnamentArea';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import { AppContext, TreeContext } from '../App';
 import Button from '@material-ui/core/Button';
-import Slide from '@material-ui/core/Slide';
-import Snackbar from '@material-ui/core/Snackbar';
 import InstructionModal from '../modals/InstructionModal';
 import Snow from '../components/Snow';
 
@@ -21,13 +19,14 @@ const Tree = () => {
   const history = useHistory();
 
   const handleAdmin = () => history.push(adminSecret ? '/admin' : '/login');
-  const snow = useRef(
+  const fullSnow = useRef(
     <>
       <Snow layer='front' />
       <Snow layer='mid' />
       <Snow layer='back' />
     </>
   );
+  const lightSnow = useRef(<Snow layer='back' />);
   const jingleBellsRef = useRef(null);
   const [played, setPlay] = useState(false);
   const handlePlaySound = () => {
@@ -41,16 +40,12 @@ const Tree = () => {
     handlePlaySound();
   };
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
-  useEffect(() => {
-    allDonated && setSnackbarOpen(true);
-  }, [allDonated]);
+
+  const santa = useRef(
+    <SantaContainer>
+      <Santa src='https://firebasestorage.googleapis.com/v0/b/xmas2020.appspot.com/o/Santa-Sleigh.png?alt=media&token=fdc36ea1-2761-422c-bd2d-668617630b5d' />
+    </SantaContainer>
+  );
   return (
     <Container>
       <SiteTitle variant='h6' color='primary' onClick={handleAdmin}>
@@ -63,7 +58,7 @@ const Tree = () => {
             variant='outlined'
             onClick={() => history.push('/waitlist')}
           >
-            Join Waitlist
+            We did it!
           </TopRightButton>
         ) : (
           <TopRightButton
@@ -83,19 +78,8 @@ const Tree = () => {
         </BranchesWithPaddings>
       </TreeContainer>
 
-      {snow.current}
-
-      {allDonated && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          TransitionComponent={Transition}
-          transitionDuration={800}
-          open={isSnackbarOpen}
-          onClose={handleSnackbarClose}
-          autoHideDuration={5000}
-          message='All children donated!'
-        />
-      )}
+      {children && (allDonated ? lightSnow.current : fullSnow.current)}
+      {allDonated && santa.current}
       <InstructionModal {...{ isModalOpen, setModalOpen }} />
       <audio
         src='https://firebasestorage.googleapis.com/v0/b/xmas2020.appspot.com/o/bells.mp3?alt=media&token=3b680f62-840f-4063-8165-6f8820624ca3'
@@ -104,10 +88,6 @@ const Tree = () => {
       />
     </Container>
   );
-};
-
-const Transition = props => {
-  return <Slide {...props} direction='left' />;
 };
 
 const Container = styled.section`
@@ -186,6 +166,49 @@ const RightPadding = styled.div`
   width: 50%;
   height: 100%;
   float: right;
+`;
+const SantaContainer = styled.div`
+  position: fixed;
+  top: 5%;
+  object-fit: contain;
+  filter: blur(0.7px);
+  opacity: 0.8;
+  width: 60vw;
+  max-width: 450px;
+  z-index: 46;
+
+  @keyframes fly {
+    0% {
+      left: 0;
+      top: 40%;
+      transform: translateX(-100%) rotateY(0deg) rotateZ(-5deg);
+    }
+    44% {
+      left: 100%;
+      top: 3%;
+      transform: translateX(100%) rotateY(0deg) rotateZ(-5deg);
+    }
+    50% {
+      left: 100%;
+      top: 40%;
+      transform: translateX(100%) rotateY(180deg) rotateZ(-5deg);
+    }
+    94% {
+      left: 0;
+      top: 3%;
+      transform: translateX(-100%) rotateY(180deg) rotateZ(-5deg);
+    }
+    100% {
+      left: 0;
+      top: 40%;
+      transform: translateX(-100%) rotateY(0deg) rotateZ(-5deg);
+    }
+  }
+  animation: fly 18s linear infinite;
+`;
+const Santa = styled.img`
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 export default Tree;

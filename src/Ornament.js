@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -10,14 +10,20 @@ import Typography from '@material-ui/core/Typography';
 import { AppContext } from './App';
 import { actions } from './services/state';
 
-const Ornament = ({ width, child, onDetailsClick }) => {
+const Ornament = ({ width, child, onDetailsClick, allDonated }) => {
   const fill = useMemo(() => getRandomColor(), []);
-  const ornamentIndex = useMemo(() => Math.floor(Math.random() * 3), []);
+  const ornamentShapeIndex = useMemo(() => Math.floor(Math.random() * 3), []);
   const ornamentRotation = useMemo(
     () => Math.floor(Math.random() * 20) - 10,
     []
   );
   const angelRotation = useMemo(() => Math.floor(Math.random() * 40) - 20, []);
+  const glowConfig = useMemo(
+    () => ({
+      length: Math.random() + 0.8,
+    }),
+    []
+  );
   const tooltipContent = (
     <TooltipContentContainer>
       <h3 className='info'>
@@ -63,12 +69,19 @@ const Ornament = ({ width, child, onDetailsClick }) => {
       leaveTouchDelay={60000}
       onOpen={handleTooltipOpen}
     >
-      <Container width={width}>
-        {child.donated ? (
+      <Container width={width} showShadow={!allDonated}>
+        {allDonated ? (
+          <FlashingOrnament
+            fill={fill}
+            rotation={ornamentRotation}
+            index={ornamentShapeIndex}
+            glowConfig={glowConfig}
+          />
+        ) : child.donated ? (
           <StyledOrnament
             fill={fill}
             rotation={ornamentRotation}
-            index={ornamentIndex}
+            index={ornamentShapeIndex}
           />
         ) : (
           <Angel rotation={angelRotation} />
@@ -83,19 +96,15 @@ const Container = styled.li`
   --width: ${({ width }) => width};
   margin: calc(var(--width) * 0.3) calc(var(--width) * 0.4);
   width: var(--width);
-  filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);
+  ${({ showShadow }) =>
+    showShadow ? 'filter: drop-shadow(0.3vmin 0.3vmin 0.3vmin #545454);' : ''}
   :hover {
     filter: drop-shadow(0 0 0.7vmin white);
   }
-  animation: fadeIn 1.5s;
+  animation: fadeIn 2s;
   opacity: 1;
   @keyframes fadeIn {
     from {
-      opacity: 0;
-    }
-  }
-  @keyframes fadeOut {
-    to {
       opacity: 0;
     }
   }
@@ -111,6 +120,18 @@ const StyledOrnament = styled(OrnamentSvg)`
   > :first-child {
     fill: ${({ fill }) => fill};
   }
+`;
+const FlashingOrnament = styled(StyledOrnament)`
+  opacity: 0;
+  @keyframes flashOrnament {
+    0% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  animation: flashOrnament ${p => p.glowConfig.length}s alternate infinite;
 `;
 
 const TooltipContentContainer = styled.section`

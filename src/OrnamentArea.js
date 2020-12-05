@@ -26,7 +26,7 @@ const OrnamentArea = () => {
       abort = true;
     };
   }, []);
-  console.log('tree state', treeState);
+  // console.log('tree state', treeState);
 
   const children =
     treeState.children?.length > 100
@@ -50,6 +50,7 @@ const OrnamentArea = () => {
               width={ornamentWidth}
               child={child}
               onDetailsClick={() => handleOpenModal(child)}
+              allDonated={treeState.allDonated}
             />
           ))
         ) : (
