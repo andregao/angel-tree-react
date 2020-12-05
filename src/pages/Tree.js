@@ -53,13 +53,13 @@ const Tree = () => {
       </SiteTitle>
       {children &&
         (allDonated ? (
-          <TopRightButton
+          <WeDidItButton
             size='small'
             variant='outlined'
             onClick={() => history.push('/waitlist')}
           >
             We did it!
-          </TopRightButton>
+          </WeDidItButton>
         ) : (
           <TopRightButton
             variant='outlined'
@@ -125,6 +125,14 @@ const TopRightButton = styled(Button)`
   color: white;
   border-color: white;
 `;
+const WeDidItButton = styled(TopRightButton)`
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+  animation: pulse 1.5s infinite;
+`;
 
 const TreeContainer = styled.ul`
   position: absolute;
@@ -183,17 +191,17 @@ const SantaContainer = styled.div`
       top: 40%;
       transform: translateX(-100%) rotateY(0deg) rotateZ(-5deg);
     }
-    44% {
+    40% {
       left: 100%;
       top: 3%;
-      transform: translateX(100%) rotateY(0deg) rotateZ(-5deg);
+      transform: translateX(0) rotateY(0deg) rotateZ(-5deg);
     }
     50% {
       left: 100%;
       top: 40%;
-      transform: translateX(100%) rotateY(180deg) rotateZ(-5deg);
+      transform: translateX(0) rotateY(180deg) rotateZ(-5deg);
     }
-    94% {
+    90% {
       left: 0;
       top: 3%;
       transform: translateX(-100%) rotateY(180deg) rotateZ(-5deg);

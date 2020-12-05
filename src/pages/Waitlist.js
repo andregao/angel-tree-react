@@ -52,8 +52,8 @@ const Waitlist = () => {
         All {count > 0 && `${count} `}angels has been donated!
       </Typography>
       <Typography variant='body1'>
-        If you would like us to contact you if more angels become available for
-        donation. Please enter your information below. Thank you and happy
+        If you would like us to contact you when more angels become available
+        for donation. Please enter your information below. Thank you and happy
         holidays!
       </Typography>
       <form onSubmit={handleSubmit}>

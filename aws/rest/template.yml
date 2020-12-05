@@ -56,6 +56,20 @@ Resources:
           Properties:
             Path: /donations
             Method: GET
+  getWaitlistSummaryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.getWaitlistSummaryHandler
+      Description: Get Waitlist summary data for admin page
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: Waitlist
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /waitlist
+            Method: GET
   getChildInfoByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
