@@ -1,10 +1,10 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import dayjs from 'dayjs';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
+import { dayjsExtended } from './services/utils';
 
 const DonatedNotice = ({ date }) => {
   return (
@@ -16,7 +16,7 @@ const DonatedNotice = ({ date }) => {
         <Typography variant='body1' gutterBottom>
           {' '}
           Someone just made a commitment donating to this child{' '}
-          {dayjs(date).fromNow()}
+          {dayjsExtended(date).fromNow()}
         </Typography>
         <Button variant='contained' color='primary' component={Link} to='/'>
           Pick another

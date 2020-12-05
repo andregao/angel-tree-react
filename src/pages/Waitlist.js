@@ -12,11 +12,12 @@ import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import { postWaitlist } from '../services/api';
 import ProgressBar from '../components/ProgressBar';
+import { dayjsExtended } from '../services/utils';
 
 const formInitialValues = { name: '', email: '', phone: '' };
 const Waitlist = () => {
   const {
-    treeState: { children },
+    treeState: { children, updated },
   } = useContext(TreeContext);
   const count = children?.length || 0;
   const [values, setValues] = useState(formInitialValues);
@@ -49,7 +50,8 @@ const Waitlist = () => {
         WE DID IT!
       </Typography>
       <Typography variant='h6' gutterBottom>
-        All {count > 0 && `${count} `}angels has been donated!
+        All {count > 0 && `${count} `}angels has been donated
+        {updated && ` ${dayjsExtended(updated).fromNow()}`}!
       </Typography>
       <Typography variant='body1'>
         If you would like us to contact you when more angels become available

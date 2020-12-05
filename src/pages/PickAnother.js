@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { getChildInfo } from '../services/api';
 import { actions } from '../services/state';
-import dayjs from 'dayjs';
+import { dayjsExtended } from '../services/utils';
 
 const PickAnother = () => {
   // get information from state
@@ -26,8 +26,8 @@ const PickAnother = () => {
       <Typography variant='h4'>Oops</Typography>
       <Typography variant='body1'>
         Sorry{name && ` ${name}`}. Someone else had just made a commitment to
-        this child{date && ` ${dayjs(date).fromNow()}`}, Let's go back and pick
-        another one!
+        this child{date && ` ${dayjsExtended(date).fromNow()}`}, Let's go back
+        and pick another one!
       </Typography>
       <Button variant='text' color='primary' component={Link} to='/'>
         Back

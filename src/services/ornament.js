@@ -1,7 +1,4 @@
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-
-dayjs.extend(relativeTime);
+import { dayjsExtended } from './utils';
 
 const variantOptions = ['round', 'oval', 'star'];
 const colorOptions = [
@@ -66,4 +63,4 @@ export const limitChildren = children => {
     .map(item => item.value);
 };
 
-export const getTimeFromNow = time => dayjs(time).fromNow();
+export const getTimeFromNow = time => dayjsExtended(time).fromNow();
