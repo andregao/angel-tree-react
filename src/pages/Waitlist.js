@@ -23,7 +23,7 @@ const Waitlist = () => {
   const { name, email, phone } = values;
   const [isSubmitting, setSubmitting] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [isSnackbarOpen, setSnackbarOpen] = useState(true);
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
   const handleSubmit = e => {
     setSubmitting(true);
     e.preventDefault();

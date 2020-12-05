@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { AppContext } from '../App';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import { getChildInfo } from '../services/api';
 import { actions } from '../services/state';
 import dayjs from 'dayjs';

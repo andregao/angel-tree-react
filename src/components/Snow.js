@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 // reference https://youtu.be/8eyAoBBucHk
-const flakCount = { front: 15, mid: 20, back: 30 };
+const flakCount = { front: 10, mid: 20, back: 30 };
 const zIndices = { front: 55, mid: 45, back: 35 };
 const sizes = { front: '2.5vh', mid: '2vh', back: '1.5vh' };
 const blurLevels = { front: '1.5px', mid: '3px', back: '6px' };
-const speeds = { front: '12', mid: '15', back: '18' };
+const speeds = { front: '12', mid: '16', back: '20' };
 const iterationCount = { front: 1, mid: 2, back: 'infinite' };
 const Snow = ({ layer }) => {
   const boxShadow = getBoxShadow(flakCount[layer]);
@@ -51,7 +51,7 @@ const Flakes = styled.li`
   box-shadow: ${props => props.config.boxShadow};
   animation: fall linear ${props => props.config.iterationCount};
   animation-duration: ${props => props.config.duration}s;
-  animation-delay: -${props => (props.delayed ? props.config.duration / 2 : 0)}s;
+  animation-delay: ${props => (props.delayed ? props.config.duration / 2 : 0)}s;
 `;
 
 function getBoxShadow(flakeCount) {
