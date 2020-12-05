@@ -1,6 +1,7 @@
 export const actions = {
   // tree actions
   receiveTreeData: 'RECEIVE_TREE_DATA',
+  checkAllDonated: 'CHECK_ALL_DONATED',
   // app actions
   receiveChildInfo: 'RECEIVE_CHILD_INFO',
   receiveChildDetails: 'RECEIVE_CHILD_DETAILS',
@@ -25,7 +26,8 @@ export function treeReducer(state, { type, payload }) {
         return state;
       }
       return { ...payload };
-
+    case actions.checkAllDonated:
+      return { ...state, allDonated: payload };
     default:
       throw new Error('invalid action dispatched');
   }

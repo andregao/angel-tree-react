@@ -15,6 +15,7 @@ const Admin = React.lazy(() => import('./pages/Admin'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Success = React.lazy(() => import('./pages/Success'));
 const PickAnother = React.lazy(() => import('./pages/PickAnother'));
+const Waitlist = React.lazy(() => import('./pages/Waitlist'));
 export const TreeContext = createContext({});
 export const AppContext = createContext({});
 
@@ -35,11 +36,14 @@ function App() {
       <Suspense fallback={<Loading />}>
         <Switch>
           <AppContext.Provider value={appContextValue}>
-            <Route exact path='/'>
-              <TreeContext.Provider value={treeContextValue}>
+            <TreeContext.Provider value={treeContextValue}>
+              <Route exact path='/'>
                 <Tree />
-              </TreeContext.Provider>
-            </Route>
+              </Route>
+              <Route path='/waitlist'>
+                <Waitlist />
+              </Route>
+            </TreeContext.Provider>
             <Route path='/donate/:childId'>
               <Commitment />
             </Route>
@@ -52,7 +56,6 @@ function App() {
             <Route path='/admin'>
               <Admin />
             </Route>
-
             <Route path='/login'>
               <Login />
             </Route>

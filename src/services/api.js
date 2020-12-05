@@ -54,6 +54,17 @@ export async function postNewChild(data, secret) {
   });
 }
 
+export async function postWaitlist(data) {
+  return await fetch(`${FUNCTIONS_BASE_URL}/waitlist`, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+}
+
 export async function updateChild(data, secret) {
   return await fetch(`${FUNCTIONS_BASE_URL}/child/${data.id}`, {
     method: 'PUT',

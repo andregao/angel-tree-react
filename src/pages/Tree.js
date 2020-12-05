@@ -1,11 +1,13 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import TreeSvg from '../assets/tree.svg';
 import OrnamentArea from '../OrnamentArea';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { AppContext } from '../App';
+import { AppContext, TreeContext } from '../App';
 import Button from '@material-ui/core/Button';
+import Slide from '@material-ui/core/Slide';
+import Snackbar from '@material-ui/core/Snackbar';
 import InstructionModal from '../modals/InstructionModal';
 import Snow from '../components/Snow';
 
@@ -13,6 +15,9 @@ const Tree = () => {
   const {
     appState: { adminSecret },
   } = useContext(AppContext);
+  const {
+    treeState: { children, allDonated },
+  } = useContext(TreeContext);
   const history = useHistory();
 
   const handleAdmin = () => history.push(adminSecret ? '/admin' : '/login');
@@ -36,18 +41,39 @@ const Tree = () => {
     handlePlaySound();
   };
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+  useEffect(() => {
+    allDonated && setSnackbarOpen(true);
+  }, [allDonated]);
   return (
     <Container>
       <SiteTitle variant='h6' color='primary' onClick={handleAdmin}>
         Mater Academy Bonanza Angel Tree 2020
       </SiteTitle>
-      <InstructionButton
-        variant='outlined'
-        size='small'
-        onClick={handleInstructionClick}
-      >
-        Instructions
-      </InstructionButton>
+      {children &&
+        (allDonated ? (
+          <TopRightButton
+            size='small'
+            variant='outlined'
+            onClick={() => history.push('/waitlist')}
+          >
+            Join Waitlist
+          </TopRightButton>
+        ) : (
+          <TopRightButton
+            variant='outlined'
+            size='small'
+            onClick={handleInstructionClick}
+          >
+            Instructions
+          </TopRightButton>
+        ))}
       <TreeContainer onClick={handlePlaySound}>
         <TreeImage src={TreeSvg} />
         <BranchesWithPaddings>
@@ -58,6 +84,18 @@ const Tree = () => {
       </TreeContainer>
 
       {snow.current}
+
+      {allDonated && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          TransitionComponent={Transition}
+          transitionDuration={800}
+          open={isSnackbarOpen}
+          onClose={handleSnackbarClose}
+          autoHideDuration={5000}
+          message='All children donated!'
+        />
+      )}
       <InstructionModal {...{ isModalOpen, setModalOpen }} />
       <audio
         src='https://firebasestorage.googleapis.com/v0/b/xmas2020.appspot.com/o/bells.mp3?alt=media&token=3b680f62-840f-4063-8165-6f8820624ca3'
@@ -66,6 +104,10 @@ const Tree = () => {
       />
     </Container>
   );
+};
+
+const Transition = props => {
+  return <Slide {...props} direction='left' />;
 };
 
 const Container = styled.section`
@@ -94,7 +136,7 @@ const SiteTitle = styled(Typography)`
   padding: 0.2rem 1rem;
   background-color: rgba(251, 245, 233, 0.85);
 `;
-const InstructionButton = styled(Button)`
+const TopRightButton = styled(Button)`
   position: fixed;
   top: 0;
   right: 0;

@@ -100,6 +100,20 @@ Resources:
           Properties:
             Path: /child
             Method: POST
+  postWaitlistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.postWaitlistHandler
+      Description: Post new waitlist item to dynamodb
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: Waitlist
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /waitlist
+            Method: POST
   putChildFunction:
     Type: AWS::Serverless::Function
     Properties:

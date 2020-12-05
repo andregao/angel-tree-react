@@ -583,6 +583,45 @@ exports.deleteDonationHandler = async event => {
   }
 };
 
+exports.postWaitlistHandler = async event => {
+  if (event.httpMethod !== 'POST') {
+    throw new Error(
+      `postWaitlist only accept POST method, you tried: ${event.httpMethod}`
+    );
+  }
+  console.info('postChild received:', event);
+  const data = JSON.parse(event.body);
+  const { name, email, phone } = data;
+  const date = Date.now();
+  const id = date.toString().slice(-9) + Math.floor(Math.random() * 100);
+  const waitlistDetails = {
+    id,
+    name,
+    email,
+    phone,
+    date,
+  };
+  // compose put item request
+  const params = {
+    TableName: 'Waitlist',
+    Item: marshall(waitlistDetails),
+    ConditionExpression: `attribute_not_exists(id)`,
+  };
+  try {
+    await dbClient.send(new PutItemCommand(params));
+    console.log('postWaitlist success, ID:', id);
+    return {
+      statusCode: 200,
+      headers: { ...corsHeaders },
+      body: JSON.stringify(waitlistDetails),
+    };
+  } catch (err) {
+    handleCRUDError(err);
+    return {
+      statusCode: 500,
+    };
+  }
+};
 // error handling templates from AWS, made meaningful in a few cases to client
 const internal = { statusCode: 500 };
 

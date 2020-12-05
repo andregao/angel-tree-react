@@ -26,14 +26,20 @@ const OrnamentArea = () => {
       abort = true;
     };
   }, []);
-  // console.log('tree state', treeState);
+  console.log('tree state', treeState);
 
   const children =
     treeState.children?.length > 100
       ? limitChildren(treeState.children)
       : treeState.children;
   const ornamentWidth = getOrnamentWidth(children?.length);
-
+  // check if all donated
+  useEffect(() => {
+    if (children?.length > 0) {
+      const result = !children.filter(child => !child.donated).length;
+      treeDispatch({ type: actions.checkAllDonated, payload: result });
+    }
+  }, [treeState.updated]);
   return (
     <>
       <Container>
