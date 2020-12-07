@@ -474,20 +474,29 @@ exports.putDonationHandler = async event => {
   // organize data
   const id = event.pathParameters.id;
   const data = JSON.parse(event.body);
-  const { name, phone, email } = data;
+  const { name, phone, email, received } = data;
+  let receiveDate = 0;
+  received && (receiveDate = Date.now());
   // compose updateItem request
   const params = {
     TableName: 'Donation',
     Key: { id: { S: id } },
     UpdateExpression:
-      'SET #n = :name, ' + 'phone = :phone, ' + 'email = :email',
+      'SET #n = :name, ' +
+      'phone = :phone, ' +
+      'email = :email, ' +
+      'received = :received, ' +
+      '#rd = :receiveDate',
     ExpressionAttributeNames: {
       '#n': 'name',
+      '#rd': 'receiveDate',
     },
     ExpressionAttributeValues: marshall({
       ':name': name,
       ':phone': phone,
       ':email': email,
+      ':received': received || false,
+      ':receiveDate': receiveDate,
     }),
   };
   try {
@@ -496,6 +505,7 @@ exports.putDonationHandler = async event => {
     return {
       statusCode: 200,
       headers: { ...corsHeaders },
+      body: JSON.stringify({ receiveDate }),
     };
   } catch (err) {
     handleCRUDError(err);

@@ -11,6 +11,7 @@ import {
 import { actions } from '../services/state';
 import PageHeader from '../components/PageHeader';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 import AddChildModal from '../modals/AddChildModal';
 import dayjs from 'dayjs';
 import EditChildModal from '../modals/EditChildModal';
@@ -140,6 +141,24 @@ const Admin = () => {
       }
     });
   };
+  const handleDonationReceived = (e, data) => {
+    const updatedDonation = { ...data, received: !data.received };
+    setLoading(true);
+    updateDonation(updatedDonation, adminSecret).then(result => {
+      setLoading(false);
+      if (result.status === 200) {
+        result.json().then(({ receiveDate }) => {
+          appDispatch({
+            type: actions.updateDonationDetails,
+            payload: { ...updatedDonation, receiveDate },
+          });
+        });
+      }
+      if (result.status === 403) {
+        history.push('/login');
+      }
+    });
+  };
 
   // children data grid
   const childrenColumns = [
@@ -201,7 +220,7 @@ const Admin = () => {
     { field: 'phone', headerName: 'Phone Number', width: 130 },
     {
       field: 'viewDonation',
-      headerName: 'Action',
+      headerName: 'Donor',
       width: 80,
       sortable: false,
       renderCell: ({ data }) => (
@@ -215,13 +234,8 @@ const Admin = () => {
       ),
     },
     {
-      field: 'childName',
-      headerName: 'Donate To',
-      width: 160,
-    },
-    {
       field: 'viewChild',
-      headerName: 'More',
+      headerName: 'Donate To',
       width: 120,
       sortable: false,
       renderCell: ({ data }) => (
@@ -230,8 +244,22 @@ const Admin = () => {
           size='small'
           onClick={() => handleViewChildClick(data.childId)}
         >
-          Child Info
+          {data.childName.split(' ')[0]}
         </Button>
+      ),
+    },
+    {
+      field: 'markReceived',
+      headerName: 'Received',
+      width: 95,
+      sortable: false,
+      renderCell: ({ data }) => (
+        <Checkbox
+          color='primary'
+          checked={data.received}
+          onClick={e => handleDonationReceived(e, data)}
+          inputProps={{ 'aria-label': 'received checkbox' }}
+        />
       ),
     },
     {
@@ -240,14 +268,26 @@ const Admin = () => {
       width: 130,
       valueGetter: params => dayjs(params.data.date).format('MM/DD h:mma'),
     },
+    {
+      field: 'receiveDate',
+      headerName: 'Receive Date',
+      width: 130,
+      valueGetter: ({ data: { receiveDate } }) => {
+        return receiveDate
+          ? dayjs(receiveDate).format('MM/DD h:mma')
+          : 'Not Received';
+      },
+    },
   ];
   let donationRows = [];
   if (donations?.ids?.length > 0 && children?.ids?.length > 0) {
     donationRows = donations.ids.map(id => {
-      // inject id and child name
+      // inject id, child name and populate received attributes
       let donation = donations[id];
       donation.id = id;
       donation.childName = children[donation.childId].name;
+      donation.received === undefined && (donation.received = false);
+      donation.receiveDate === undefined && (donation.receiveDate = 0);
       return donation;
     });
   }
