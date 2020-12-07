@@ -188,19 +188,22 @@ const Admin = () => {
     { field: 'donated', headerName: 'Donated', width: 90 },
     {
       field: 'viewDonor',
-      headerName: 'Donation Details',
-      width: 170,
+      headerName: 'Donor Info',
+      width: 120,
       sortable: false,
-      renderCell: ({ data }) => (
-        <Button
-          color='primary'
-          size='small'
-          disabled={!data.donated}
-          onClick={() => handleDonationInfoClick(data.donationId)}
-        >
-          {data.donorName.split(' ')[0]}
-        </Button>
-      ),
+      renderCell: ({ data }) =>
+        data.donated ? (
+          <Button
+            color='primary'
+            size='small'
+            disabled={!data.donated}
+            onClick={() => handleDonationInfoClick(data.donationId)}
+          >
+            {data.donorName.split(' ')[0]}
+          </Button>
+        ) : (
+          'No Donation'
+        ),
     },
     {
       field: 'receiveDate',
