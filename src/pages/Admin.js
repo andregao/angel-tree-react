@@ -177,6 +177,7 @@ const Admin = () => {
         ) : (
           <Button
             color='primary'
+            variant='outlined'
             size='small'
             onClick={() => handleEditChildClick(data.id)}
           >
@@ -185,11 +186,10 @@ const Admin = () => {
         ),
     },
     { field: 'donated', headerName: 'Donated', width: 90 },
-    { field: 'donorName', headerName: 'Donor Name', width: 170 },
     {
       field: 'viewDonor',
-      headerName: 'Donation',
-      width: 90,
+      headerName: 'Donation Details',
+      width: 170,
       sortable: false,
       renderCell: ({ data }) => (
         <Button
@@ -198,17 +198,30 @@ const Admin = () => {
           disabled={!data.donated}
           onClick={() => handleDonationInfoClick(data.donationId)}
         >
-          Info
+          {data.donorName}
         </Button>
       ),
+    },
+    {
+      field: 'receiveDate',
+      headerName: 'Items Received',
+      width: 140,
+      valueGetter: ({ data: { receiveDate } }) => {
+        return receiveDate
+          ? dayjs(receiveDate).format('MM/DD h:mma')
+          : 'Not Received';
+      },
     },
   ];
   let childrenRows = [];
   if (children) {
     childrenRows = children.ids.map(id => {
-      // inject id
+      // inject id, receive donation status
       let child = children[id];
       child.id = id;
+      if (child.donationId) {
+        child.receiveDate = donations[child.donationId].receiveDate || 0;
+      }
       return child;
     });
   }
@@ -225,6 +238,7 @@ const Admin = () => {
       sortable: false,
       renderCell: ({ data }) => (
         <Button
+          variant='outlined'
           color='primary'
           size='small'
           onClick={() => handleEditDonationClick(data.id)}
@@ -240,7 +254,7 @@ const Admin = () => {
       sortable: false,
       renderCell: ({ data }) => (
         <Button
-          variant='outlined'
+          color='primary'
           size='small'
           onClick={() => handleViewChildClick(data.childId)}
         >

@@ -215,6 +215,8 @@ exports.postDonationHandler = async event => {
   const childId = event.pathParameters.id;
   const donationDetails = JSON.parse(event.body);
   donationDetails.childId = childId;
+  donationDetails.received = false;
+  donationDetails.receiveDate = 0;
 
   // transaction
   const timestamp = Date.now();
@@ -222,7 +224,6 @@ exports.postDonationHandler = async event => {
     timestamp.toString().slice(-9) + Math.floor(Math.random() * 100);
   donationDetails.date = timestamp;
   donationDetails.id = donationId;
-  console.log(donationDetails);
   const transactParams = {
     TransactItems: [
       {
