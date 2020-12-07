@@ -198,7 +198,7 @@ const Admin = () => {
           disabled={!data.donated}
           onClick={() => handleDonationInfoClick(data.donationId)}
         >
-          {data.donorName}
+          {data.donorName.split(' ')[0]}
         </Button>
       ),
     },
