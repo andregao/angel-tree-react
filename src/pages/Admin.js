@@ -217,12 +217,12 @@ const Admin = () => {
     },
   ];
   let childrenRows = [];
-  if (children) {
+  if (children?.ids?.length > 0) {
     childrenRows = children.ids.map(id => {
       // inject id, receive donation status
       let child = children[id];
       child.id = id;
-      if (child.donationId) {
+      if (child.donationId && donations?.ids?.length > 0) {
         child.receiveDate = donations[child.donationId].receiveDate || 0;
       }
       return child;
@@ -269,7 +269,6 @@ const Admin = () => {
       field: 'markReceived',
       headerName: 'Received',
       width: 95,
-      sortable: false,
       renderCell: ({ data }) => (
         <Checkbox
           color='primary'
@@ -278,6 +277,13 @@ const Admin = () => {
           inputProps={{ 'aria-label': 'received checkbox' }}
         />
       ),
+      sortComparator: (v1, v2, param1, param2) => {
+        let value1 = 0,
+          value2 = 0;
+        param1.data.received && (value1 = 1);
+        param2.data.received && (value2 = 1);
+        return value1 - value2;
+      },
     },
     {
       field: 'date',
