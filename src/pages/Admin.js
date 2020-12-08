@@ -25,49 +25,37 @@ const Admin = () => {
   // console.log('app state:', appState);
   // fetch summary data on render
   const history = useHistory();
-  const [needRefresh, setRefresh] = useState(true);
-  const [isLoading, setLoading] = useState(false);
+  const [apiDataReady, setApiDataReady] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (needRefresh) {
+    if (!apiDataReady) {
       setLoading(true);
-      let receivedChildren = false;
-      let receivedDonations = false;
-      getChildrenData(adminSecret).then(result => {
-        if (result.status === 200) {
-          result.json().then(({ content }) => {
-            appDispatch({
-              type: actions.receiveChildrenData,
-              payload: content,
-            });
+      Promise.all([
+        getChildrenData(adminSecret),
+        getDonationsData(adminSecret),
+      ]).then(results => {
+        if (results.every(r => r.status === 200)) {
+          Promise.all(results.map(result => result.json())).then(data => {
+            appDispatch({ type: actions.receiveSummaryData, payload: data });
           });
-        }
-        // not authorized redirect
-        if (result.status === 403) {
+          setLoading(false);
+        } else {
+          // not authorized, redirect
           history.push('/login');
         }
-        receivedChildren = true;
-        receivedDonations && setLoading(false);
       });
-      getDonationsData(adminSecret).then(result => {
-        if (result.status === 200) {
-          result.json().then(({ content }) => {
-            appDispatch({
-              type: actions.receiveDonationsData,
-              payload: content,
-            });
-          });
-        }
-        // not authorized redirect
-        if (result.status === 403) {
-          history.push('/login');
-        }
-        receivedDonations = true;
-        receivedChildren && setLoading(false);
-      });
-      setRefresh(false);
     }
-  }, [needRefresh]);
+  }, [apiDataReady]);
+
+  // When app state updates, check api data ready
+  useEffect(() => {
+    if (!apiDataReady) {
+      if (donations?.ids && children?.ids) {
+        setApiDataReady(true);
+      }
+    }
+  }, [children, donations]);
 
   // add, edit and view children
   const [isAddChildModalOpen, setAddChildModalOpen] = useState(false);
@@ -160,7 +148,7 @@ const Admin = () => {
     });
   };
 
-  // children data grid
+  // data grid config
   const childrenColumns = [
     { field: 'id', headerName: 'ID', width: 130, type: 'number' },
     { field: 'name', headerName: 'Child Name', width: 170 },
@@ -216,20 +204,6 @@ const Admin = () => {
       },
     },
   ];
-  let childrenRows = [];
-  if (children?.ids?.length > 0) {
-    childrenRows = children.ids.map(id => {
-      // inject id, receive donation status
-      let child = children[id];
-      child.id = id;
-      if (child.donationId && donations?.ids?.length > 0) {
-        child.receiveDate = donations[child.donationId].receiveDate || 0;
-      }
-      return child;
-    });
-  }
-
-  //donation data grid
   const donationColumns = [
     { field: 'id', headerName: 'ID', width: 130, type: 'number' },
     { field: 'name', headerName: 'Donor Name', width: 160 },
@@ -302,18 +276,34 @@ const Admin = () => {
       },
     },
   ];
-  let donationRows = [];
-  if (donations?.ids?.length > 0 && children?.ids?.length > 0) {
-    donationRows = donations.ids.map(id => {
-      // inject id, child name and populate received attributes
-      let donation = donations[id];
-      donation.id = id;
-      donation.childName = children[donation.childId].name;
-      donation.received === undefined && (donation.received = false);
-      donation.receiveDate === undefined && (donation.receiveDate = 0);
-      return donation;
-    });
-  }
+  const [childrenRows, setChildrenRows] = useState([]);
+  const [donationRows, setDonationRows] = useState([]);
+  // compose data for data grid
+  useEffect(() => {
+    if (apiDataReady) {
+      // console.log('composing grid data for UI');
+      const childrenRowsData = children.ids.map(id => {
+        // inject id, receive donation status
+        let child = children[id];
+        child.id = id;
+        if (child.donated) {
+          child.receiveDate = donations[child.donationId].receiveDate || 0;
+        }
+        return child;
+      });
+      const donationRowsData = donations.ids.map(id => {
+        // inject id, child name and populate received attributes
+        let donation = donations[id];
+        donation.id = id;
+        donation.childName = children[donation.childId].name;
+        donation.received === undefined && (donation.received = false);
+        donation.receiveDate === undefined && (donation.receiveDate = 0);
+        return donation;
+      });
+      setChildrenRows(childrenRowsData);
+      setDonationRows(donationRowsData);
+    }
+  }, [apiDataReady, children, donations]);
 
   return (
     <>
@@ -322,7 +312,7 @@ const Admin = () => {
         {/*children accordion*/}
         <ChildrenAccordion
           isLoading={isLoading}
-          setRefresh={setRefresh}
+          handleRefresh={() => setApiDataReady(false)}
           handleAddChild={handleAddChild}
           columns={childrenColumns}
           rows={childrenRows}
@@ -330,7 +320,7 @@ const Admin = () => {
         {/*donations accordion*/}
         {donationRows.length > 0 && (
           <DonationsAccordion
-            setRefresh={setRefresh}
+            handleRefresh={() => setApiDataReady(false)}
             isLoading={isLoading}
             rows={donationRows}
             columns={donationColumns}

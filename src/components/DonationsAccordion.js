@@ -9,7 +9,7 @@ import Accordion from '@material-ui/core/Accordion';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 
-const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {
+const DonationsAccordion = ({ isLoading, handleRefresh, rows, columns }) => {
   const [filter, setFilter] = useState('');
   const [filteredRows, setFilteredRows] = useState(rows);
   const [pageNumber, setPageNumber] = useState(1);
@@ -41,7 +41,7 @@ const DonationsAccordion = ({ isLoading, setRefresh, rows, columns }) => {
           size='small'
           startIcon={<CachedIcon />}
           variant='outlined'
-          onClick={() => setRefresh(true)}
+          onClick={handleRefresh}
           disabled={isLoading}
         >
           Refresh

@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 const ChildrenAccordion = ({
   rows,
   columns,
-  setRefresh,
+  handleRefresh,
   isLoading,
   handleAddChild,
 }) => {
@@ -48,7 +48,7 @@ const ChildrenAccordion = ({
             startIcon={<CachedIcon />}
             variant='outlined'
             color='primary'
-            onClick={() => setRefresh(true)}
+            onClick={handleRefresh}
             disabled={isLoading}
           >
             Refresh

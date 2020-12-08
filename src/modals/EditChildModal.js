@@ -17,13 +17,13 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [currentChild, setCurrentChild] = useState(null);
 
-  let dataReady = !!(
-    appState.children &&
+  const [dataReady, setDataReady] = useState(false);
+
+  appState.children &&
     appState.children[id] &&
-    appState.children[id].wishes
-  );
-  // console.log({ dataReady });
-  // console.log('currentChild', currentChild);
+    appState.children[id].wishes &&
+    !dataReady &&
+    setDataReady(true);
   // fetch child info on load
   useEffect(() => {
     id &&
@@ -38,7 +38,7 @@ const EditChildModal = ({ isModalOpen, setModalOpen, id, readOnly }) => {
   }, [dataReady, id]);
   const handleCloseModal = () => {
     setSubmitting(false);
-    dataReady = false;
+    setDataReady(false);
     setModalOpen(false);
   };
   const handleSave = () => {

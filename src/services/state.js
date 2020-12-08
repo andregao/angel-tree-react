@@ -9,6 +9,7 @@ export const actions = {
   receiveAdminSecret: 'RECEIVE_ADMIN_SECRET',
   receiveChildrenData: 'RECEIVE_CHILDREN_DATA',
   receiveDonationsData: 'RECEIVE_DONATIONS_DATA',
+  receiveSummaryData: 'RECEIVE_SUMMARY_DATA',
   receiveChildInfoAdmin: 'RECEIVE_CHILD_INFO_ADMIN',
   updateChildDetails: 'UPDATE_CHILD_DETAILS',
   deleteChild: 'DELETE_CHILD',
@@ -67,6 +68,12 @@ export function appReducer(state, { type, payload }) {
         ...state,
         donations: payload,
       };
+    case actions.receiveSummaryData:
+      let result = {};
+      payload.forEach(data => {
+        result = { ...result, [data.use]: data.content };
+      });
+      return { ...state, ...result };
     case actions.receiveChildDetails:
       const newChildren = { ...state.children };
       newChildren.ids = [...state.children.ids, payload.id];
