@@ -46,8 +46,8 @@ export const limitChildren = children => {
   // sort available children first, then only take the first 100
   let sortedChildren = children
     .sort((a, b) => {
-      if (a.committed !== b.committed) {
-        if (!a.committed) {
+      if (a.donated !== b.donated) {
+        if (!a.donated) {
           return -1;
         }
         return 1;
