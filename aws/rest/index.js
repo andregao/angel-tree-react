@@ -1,5 +1,5 @@
-const DYNAMODB_ENDPOINT = 'http://docker.for.mac.localhost:8000';
-const REGION = 'us-west-1';
+const LOCAL_ENDPOINT = 'http://docker.for.mac.localhost:8000';
+const REGION = process.env.AWS_REGION;
 const {
   DynamoDBClient,
   GetItemCommand,
@@ -15,7 +15,7 @@ let dbClient;
 if (process.env.AWS_SAM_LOCAL) {
   console.log('sam local detected');
   dbClient = new DynamoDBClient({
-    endpoint: DYNAMODB_ENDPOINT,
+    endpoint: LOCAL_ENDPOINT,
     region: REGION,
   });
 } else {

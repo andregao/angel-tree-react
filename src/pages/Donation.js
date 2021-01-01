@@ -18,6 +18,8 @@ import useForm from '../services/useForm';
 import DonatedNotice from '../DonatedNotice';
 import dayjs from 'dayjs';
 import ProgressBar from '../components/ProgressBar';
+import { DEADLINE } from '../services/config';
+const deadline = dayjs(DEADLINE.date, DEADLINE.format);
 
 const formInitialValues = { name: '', email: '', phone: '' };
 
@@ -130,9 +132,9 @@ const Donation = () => {
                   name='agreement'
                 />
               }
-              label={`I agree to drop off all donations by Dec 14th (${dayjs().to(
-                dayjs('2020-12-14:12', 'YYYY-MM-DD:H')
-              )})`}
+              label={`I agree to drop off all donations by ${dayjs(
+                deadline
+              ).format('MMM D[th]')} (${dayjs().to(deadline)})`}
             />
             <Button
               type='submit'

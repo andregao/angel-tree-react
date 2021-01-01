@@ -8,6 +8,7 @@ import { AppContext, TreeContext } from '../App';
 import Button from '@material-ui/core/Button';
 import InstructionModal from '../modals/InstructionModal';
 import Snow from '../components/Snow';
+import { SITE_BANNER } from '../services/config';
 
 const Tree = () => {
   const {
@@ -49,7 +50,7 @@ const Tree = () => {
   return (
     <Container>
       <SiteTitle variant='h6' color='primary' onClick={handleAdmin}>
-        Mater Academy Bonanza Angel Tree 2020
+        {SITE_BANNER}
       </SiteTitle>
       {children &&
         (allDonated ? (

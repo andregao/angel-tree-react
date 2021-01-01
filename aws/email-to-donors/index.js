@@ -1,6 +1,6 @@
 const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
-const REGION = 'us-west-1';
+const REGION = process.env.AWS_REGION;
 const dbClient = new DynamoDBClient(REGION);
 require('dotenv').config();
 const sgMail = require('@sendgrid/mail');
@@ -27,7 +27,7 @@ exports.donationStreamEmailDonors = (event, context, callback) => {
             to: email,
             from: {
               email: process.env.SG_SENDER,
-              name: 'Angel Tree Mater Academy Bonanza',
+              name: process.env.SG_SENDER_NAME,
             },
             templateId: process.env.SG_TEMPLATE_ID,
             dynamicTemplateData: {

@@ -1,8 +1,9 @@
+import { ENDPOINT } from './config';
+
 export const FUNCTIONS_BASE_URL =
-  // 'https://st71g32d7l.execute-api.us-west-1.amazonaws.com/Prod';
   process.env.NODE_ENV === 'development'
     ? 'http://docker.for.mac.localhost:3001'
-    : 'https://st71g32d7l.execute-api.us-west-1.amazonaws.com/Prod';
+    : ENDPOINT;
 
 export async function getTreeData() {
   const response = await fetch(`${FUNCTIONS_BASE_URL}/tree`);

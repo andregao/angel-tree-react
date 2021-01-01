@@ -8,8 +8,20 @@ Globals:
     MemorySize: 128
     Timeout: 5
 
+Parameters:
+  FirstSubscriber:
+    Type: String
+    Default: someone@somewhere.com
+
 Resources:
-  processDynamoDBDonationStreamFunction:
+  DonationEmailAdmins:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Angel Tree Donation Email Admins
+      Subscription:
+        - Endpoint: !Ref FirstSubscriber
+          Protocol: email
+  ProcessDynamoDBDonationStreamFunction:
     Type: AWS::Serverless::Function
     Properties:
       MemorySize: 192
@@ -17,18 +29,19 @@ Resources:
       Description: New donation item triggers SNS email to admins
       Environment:
         Variables:
-          DONATION_TOPIC_ARN: arn:aws:sns:us-west-1:486040421677:Donations
+          DONATION_TOPIC_ARN: !Ref DonationEmailAdmins
       Policies:
         - AWSLambdaDynamoDBExecutionRole
         - DynamoDBReadPolicy:
             TableName: Child
         - SNSPublishMessagePolicy:
-            TopicName: Donations
+            TopicName: !GetAtt DonationEmailAdmins.TopicName
+
       Events:
         Stream:
           Type: DynamoDB
           Properties:
-            Stream: arn:aws:dynamodb:us-west-1:486040421677:table/Donation/stream/2020-11-30T12:18:18.646
+            Stream: !ImportValue AngelTree-DonationTableStreamArn
             BatchSize: 1
             StartingPosition: LATEST
             Enabled: true
