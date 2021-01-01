@@ -109,7 +109,7 @@ used in earlier AWS CLI configuration when prompted_
 ### Web Client - React App
 
 - Change directory into the root of the folder
-- Open /services/config.js file
+- Open /src/services/config.js file
   - Update ENDPOINT value with output URL from previous step
   - Customize site banner, donation instructions and deadline
 - Customize site title by editing /public/index.html file on line 9 and 28
