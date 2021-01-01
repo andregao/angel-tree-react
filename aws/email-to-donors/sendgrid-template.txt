@@ -1,0 +1,20 @@
+Thank you {{donorName}} for donating to an angel
+
+Here is the information about this {{age}} year old {{sex}}:
+
+Wishes:
+- {{wishesString}}
+Sizes:
+- {{sizesString}}
+
+Please make sure to drop off the donations(Gift wrap preferable) to Our School’s front office no later than December 14th.
+
+123 Main Street, Las Vegas, NV 89110
+
+Thank you for your giving hearts and participation. Merry Christmas and Happy Holidays!
+
+Questions? Email us at someone@somewhere.com or call 555-555-5555
+
+References:
+Child ID: {{childId}}
+Donation ID: {{donationId}}

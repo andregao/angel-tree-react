@@ -1,0 +1,12 @@
+{
+  "name": "angel-tree-dynamodb-tables",
+  "description": "Angel tree database tables",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "init": "cp init/samconfig.toml ./ && sam deploy --guided && aws dynamodb batch-write-item --request-items file://./init/data.json",
+    "deploy": "sam deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

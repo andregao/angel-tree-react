@@ -1,0 +1,4 @@
+SG_API_KEY=SG.yourSGapiKey.willReplaceTHIS
+SG_TEMPLATE_ID=d-theTemplateIDYouCreatedOnSendGrid
+SG_SENDER=someone@somewhere.com
+SG_SENDER_NAME="Someone from Angel Tree"

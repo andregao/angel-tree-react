@@ -6,15 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import { INSTRUCTIONS } from '../services/config';
 
-const instructions = `If you would like to donate to one of our angels please choose one by clicking on an angel card and check out their wishes. After clicking donate, fill out your name, email and phone number and be sure to click submit.
-
-Once submitted, the card will be taken off the tree and the child's information will be emailed to you. Please make sure to drop off the donations(Gift wrap preferable) to Mater Bonanza’s front office no later than December 14th.
-
-4760 East Bonanza Road, Las Vegas, NV 89110.
-
-Thank you for your giving hearts and participation. Happy Holidays!
-`;
 const InstructionModal = ({ isModalOpen, setModalOpen }) => {
   const handleCloseModal = () => setModalOpen(false);
   return (
@@ -28,7 +21,7 @@ const InstructionModal = ({ isModalOpen, setModalOpen }) => {
         Welcome to Mater Academy Bonanza’s 2020 Virtual Angel Tree
       </DialogTitle>
       <StyledContent dividers>
-        <DialogContentText tabIndex={-1}>{instructions}</DialogContentText>
+        <DialogContentText tabIndex={-1}>{INSTRUCTIONS}</DialogContentText>
       </StyledContent>
       <ActionArea>
         <Button

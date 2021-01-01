@@ -1,0 +1,358 @@
+{
+  "Child": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "84248313317"
+          },
+          "age": {
+            "N": "10"
+          },
+          "gender": {
+            "S": "male"
+          },
+          "wishes": {
+            "L": [
+              {
+                "S": "Scooter"
+              },
+              {
+                "S": "Shoes"
+              }
+            ]
+          },
+          "sizes": {
+            "L": [
+              {
+                "S": "Shirt: 3"
+              },
+              {
+                "S": "Pants: 26/24"
+              }
+            ]
+          },
+          "donated": {
+            "BOOL": false
+          },
+          "name": {
+            "S": "Andre Gao"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "84274114013"
+          },
+          "age": {
+            "N": "7"
+          },
+          "gender": {
+            "S": "female"
+          },
+          "wishes": {
+            "L": [
+              {
+                "S": "Trampoline"
+              },
+              {
+                "S": "Yoga Ball"
+              }
+            ]
+          },
+          "sizes": {
+            "L": [
+              {
+                "S": "Dress: 3"
+              },
+              {
+                "S": "Hats: 4"
+              }
+            ]
+          },
+          "donated": {
+            "BOOL": true
+          },
+          "date": {
+            "N": "1605651813183"
+          },
+          "name": {
+            "S": "Joanna Xu"
+          },
+          "donationId": {
+            "S": "02204445388"
+          },
+          "donorName": {
+            "S": "Santa Claus"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "84283120960"
+          },
+          "age": {
+            "N": "9"
+          },
+          "gender": {
+            "S": "male"
+          },
+          "wishes": {
+            "L": [
+              {
+                "S": "Guitar"
+              },
+              {
+                "S": "Headphones"
+              }
+            ]
+          },
+          "sizes": {
+            "L": [
+              {
+                "S": "Hat: 6"
+              },
+              {
+                "S": "Height: 4'2\""
+              }
+            ]
+          },
+          "donated": {
+            "BOOL": false
+          },
+          "name": {
+            "S": "Lucas Fendt"
+          }
+        }
+      }
+    }
+  ],
+  "Summary": [
+    {
+      "PutRequest": {
+        "Item": {
+          "use": {
+            "S": "tree"
+          },
+          "content": {
+            "M": {
+              "children": {
+                "L": [
+                  {
+                    "M": {
+                      "age": {
+                        "N": "10"
+                      },
+                      "id": {
+                        "S": "84248313317"
+                      },
+                      "gender": {
+                        "S": "male"
+                      },
+                      "donated": {
+                        "BOOL": false
+                      }
+                    }
+                  },
+                  {
+                    "M": {
+                      "age": {
+                        "N": "7"
+                      },
+                      "id": {
+                        "S": "84274114013"
+                      },
+                      "gender": {
+                        "S": "female"
+                      },
+                      "donated": {
+                        "BOOL": true
+                      },
+                      "date": {
+                        "N": "1605651813183"
+                      }
+                    }
+                  },
+                  {
+                    "M": {
+                      "age": {
+                        "N": "9"
+                      },
+                      "id": {
+                        "S": "84283120960"
+                      },
+                      "gender": {
+                        "S": "male"
+                      },
+                      "donated": {
+                        "BOOL": false
+                      }
+                    }
+                  }
+                ]
+              },
+              "updated": {
+                "N": "1605867358036"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "use": {
+            "S": "children"
+          },
+          "content": {
+            "M": {
+              "84248313317": {
+                "M": {
+                  "donated": {
+                    "BOOL": false
+                  },
+                  "name": {
+                    "S": "Andre Gao"
+                  }
+                }
+              },
+              "84274114013": {
+                "M": {
+                  "donated": {
+                    "BOOL": true
+                  },
+                  "donationId": {
+                    "S": "02204445388"
+                  },
+                  "donorName": {
+                    "S": "Santa Claus"
+                  },
+                  "name": {
+                    "S": "Joanna Xu"
+                  }
+                }
+              },
+              "84283120960": {
+                "M": {
+                  "donated": {
+                    "BOOL": false
+                  },
+                  "name": {
+                    "S": "Lucas Fendt"
+                  }
+                }
+              },
+              "ids": {
+                "L": [
+                  {
+                    "S": "84248313317"
+                  },
+                  {
+                    "S": "84274114013"
+                  },
+                  {
+                    "S": "84283120960"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "use": {
+            "S": "donations"
+          },
+          "content": {
+            "M": {
+              "02204445388": {
+                "M": {
+                  "childId": {
+                    "S": "02"
+                  },
+                  "date": {
+                    "N": "1605651813183"
+                  },
+                  "name": {
+                    "S": "Santa Claus"
+                  },
+                  "email": {
+                    "S": "santa@northpole.com"
+                  },
+                  "phone": {
+                    "S": "555-555-5555"
+                  },
+                  "received": {
+                    "BOOL": true
+                  },
+                  "receiveDate": {
+                    "N": "1607961469649"
+                  }
+                }
+              },
+              "ids": {
+                "L": [
+                  {
+                    "S": "02204445388"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "use": {
+            "S": "waitlist"
+          },
+          "content": {
+            "M": {
+              "ids": {
+                "L": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "Donation": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "02204445388"
+          },
+          "name": {
+            "S": "Santa Claus"
+          },
+          "email": {
+            "S": "santa@northpole.com"
+          },
+          "phone": {
+            "S": "555-555-5555"
+          },
+          "childId": {
+            "S": "84274114013"
+          },
+          "date": {
+            "N": "1605651813183"
+          }
+        }
+      }
+    }
+  ]
+}

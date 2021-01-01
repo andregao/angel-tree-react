@@ -1,0 +1,1 @@
+SECRECT_WORD="Your Secret Phrase To Authorize as Admin"
