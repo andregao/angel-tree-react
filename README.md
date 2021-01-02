@@ -82,7 +82,7 @@ used in earlier AWS CLI configuration when prompted_
 
   It will ask for a _FirstSubscriber_ email to add to the admin email list. People on this list will receive an email
   notification whenever someone submits a donation. Enter a valid email address here, and they will receive a
-  verification email to confirm the subscription. More emails can be added to the list by going
+  verification email to confirm the subscription (make sure to check spam folder). More emails can be added to the list by going
   to [AWS SNS console](https://console.aws.amazon.com/sns/v3/home#/topics), selecting this topic, and clicking the "
   Create subscription" button. Select "Email" as Protocol and enter an email address in the "Endpoint" field
 
@@ -98,7 +98,7 @@ used in earlier AWS CLI configuration when prompted_
 - Make sure you're back in _email-to-donors_ folder and run:
   > npm run init
 
-### REST Endpoints - API resources
+### REST Endpoints - API Resources
 
 - Change directory to _rest_ folder
 - Open _env-init.txt_ file inside "init" folder and update the admin pass phrase
@@ -118,7 +118,7 @@ used in earlier AWS CLI configuration when prompted_
 
 ### Hosting - Firebase or Netlify
 
-- If using Firebase, initialize its configuration by running:
+- If using Firebase, at root of the folder and initialize its configuration by running:
   > firebase init
   - Select Hosting service and create a new project
   - Be sure to type "build" for the public directory and configure this as a single-page app
@@ -127,22 +127,29 @@ used in earlier AWS CLI configuration when prompted_
   - Take note of the hosted URL
 - If using Netlify
   - Login on [netlify.com](https://app.netlify.com)
-  - Go to "sites" tab and drag the "build" folder into the new site drop area
+  - Go to "sites" tab and drag the "build" directory in root folder into the new site drop area
   - Take note of the hosted URL
 - Go to the hosted URL and check out your new site!
 
 ## Local Development Notes
 
-Local testing is limited to the web app, REST endpoints and database only.
+Local testing is limited to the web app, REST endpoints and database only. Stream processors need to be deployed to test
+
 - Launch Docker Desktop
 - Change directory to _aws/dynamodb-tables_ folder and launch local DynamoDB by running:
   > npm run dev
 - Open another terminal window and go to the same directory, fill in sample data by running:
+
   > npm run init-dev
+
+  _If encounter long output pager in terminal window where you can move the cursor up and down or seeing (END),
+  type "q" a few times to proceed until the script finishes and you're brought back to the normal command prompt_
+
 - Change directory to _aws/rest_, launch SAM local by running:
   > npm run local
 - Change directory to root of the folder, launch React development server by running:
   > npm start
 
-Note: "ENDPOINT_LOCAL" needs to be updated
-Any question feel free to message me
+Note: If not using MacOS, "ENDPOINT_LOCAL" in _src/services/config.js_ needs to be updated to match your localhost address
+
+Any question feel free to [email me](mailto:andregao@me.com)
