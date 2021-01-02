@@ -10,3 +10,4 @@ Thank you for your giving hearts and participation. Happy Holidays!
 export const DEADLINE = { date: '2020-12-14:12', format: 'YYYY-MM-DD:H' };
 export const ENDPOINT =
   'https://st71g32d7l.execute-api.us-west-1.amazonaws.com/Prod';
+export const ENDPOINT_LOCAL = 'http://docker.for.mac.localhost:3001';

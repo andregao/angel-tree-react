@@ -60,7 +60,7 @@ Clone this repository to a local folder, open a terminal window, change director
 
 ### Database - DynamoDB
 
-Change directory to _dynamodb-tables_ folder, deploy the tables needed and fill in sample data by running:
+Change directory to _aws/dynamodb-tables_ folder, deploy the tables needed and fill in sample data by running:
 
 > npm run init
 
@@ -70,13 +70,13 @@ used in earlier AWS CLI configuration when prompted_
 
 ### Data Stream Processors - Lambda Functions
 
-- Change directory to each of these folders: _aggregate-children_, _aggregate-donations_, _aggregate-waitlist_, and run:
+- Change directory to each of these folders: _aws/aggregate-children_, _aws/aggregate-donations_, _aws/aggregate-waitlist_, and run:
 
   > npm run init
 
   _Again you can leave things at default just make sure region code matches all previous entries_
 
-- Change directory to _email-to-admins_ folder and run:
+- Change directory to _aws/email-to-admins_ folder and run:
 
   > npm run init
 
@@ -117,6 +117,7 @@ used in earlier AWS CLI configuration when prompted_
   > npm install && npm run build
 
 ### Hosting - Firebase or Netlify
+
 - If using Firebase, initialize its configuration by running:
   > firebase init
   - Select Hosting service and create a new project
@@ -132,6 +133,16 @@ used in earlier AWS CLI configuration when prompted_
 
 ## Local Development Notes
 
-Coming soon
+Local testing is limited to the web app, REST endpoints and database only.
+- Launch Docker Desktop
+- Change directory to _aws/dynamodb-tables_ folder and launch local DynamoDB by running:
+  > npm run dev
+- Open another terminal window and go to the same directory, fill in sample data by running:
+  > npm run init-dev
+- Change directory to _aws/rest_, launch SAM local by running:
+  > npm run local
+- Change directory to root of the folder, launch React development server by running:
+  > npm start
 
+Note: "ENDPOINT_LOCAL" needs to be updated
 Any question feel free to message me

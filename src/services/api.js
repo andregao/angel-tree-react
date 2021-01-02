@@ -1,9 +1,7 @@
-import { ENDPOINT } from './config';
+import { ENDPOINT, ENDPOINT_LOCAL } from './config';
 
 export const FUNCTIONS_BASE_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://docker.for.mac.localhost:3001'
-    : ENDPOINT;
+  process.env.NODE_ENV === 'development' ? ENDPOINT_LOCAL : ENDPOINT;
 
 export async function getTreeData() {
   const response = await fetch(`${FUNCTIONS_BASE_URL}/tree`);
